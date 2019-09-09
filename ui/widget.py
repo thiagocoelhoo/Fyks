@@ -68,4 +68,3 @@ class Widget:
     def draw(self, surface):
         rect = (self.pos, self.size)
         pygame.gfxdraw.rectangle(surface, rect, self.color)
-
