@@ -8,6 +8,7 @@ class RigidBody:
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
         self.color = (255, 0, 0)
+        self.selected = False
     
     def update(self, dt):
         self.x += self.vx * dt
@@ -29,13 +30,3 @@ class RigidBody:
     @classmethod
     def get_all(cls):
         return cls.__instances
-
-    @classmethod
-    def update_all(cls, dt):
-        for inst in cls.__instances:
-            inst.update(dt)
-    
-    @classmethod
-    def draw_all(cls, surface):
-        for inst in cls.__instances:
-            inst.draw(surface)
