@@ -1,11 +1,10 @@
 import os
 
 import core
-from core.camera import Camera
 from core.rigidbody import RigidBody
 
 core.init()
-from ui import Button, Entry, Label, Frame, GraphicFrame, SubWindow, OptionsList
+from ui import Button, Entry, Label, Frame
 from application.simulationframe import SimulationFrame
 from application.application import App
 
@@ -92,11 +91,10 @@ class MainViewFrame(Frame):
             print('Error!', e)
     
     def del_comp(self):
-        comp = self.widgets['content_frame'].selected
-        if comp:
+        for comp in self.widgets['content_frame'].selection.copy():
             content_frame = self.widgets['content_frame']
-            content_frame.selected = None
             content_frame.components.remove(comp)
+            self.widgets['content_frame'].selection.remove(comp)
             if 'obj_data_frame' in content_frame.widgets:
                 content_frame.remove_widget('obj_data_frame')
             
