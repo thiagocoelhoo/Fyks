@@ -1,4 +1,5 @@
 import weakref
+import string
 
 import pygame
 
@@ -7,6 +8,8 @@ from .label import Label
 from render_engine import aa_round_rect, _aa_render_region
 import core
 
+
+printset = set(string.printable)
 mouse = core.get_mouse()
 eventhandler = core.get_eventhandler()
 
@@ -55,23 +58,21 @@ class Entry(Widget):
 
     def on_keydown(self, key):
         if self.active:
-            if key.key == pygame.K_BACKSPACE:
-                # self.text = self.text[:-1]
-                self.text = self.text[:self.cursor-1] + self.text[self.cursor + 1:]
-                if self.cursor > 0:
+            if key.key == pygame.K_BACKSPACE and self.cursor > 0:
+                    self.text = self.text[:self.cursor - 1] + self.text[self.cursor:]
                     self.cursor -= 1
             elif key.key == pygame.K_RETURN:
                 self.active = False
             elif key.key == pygame.K_LEFT and self.cursor > 0:
                 self.cursor -= 1
-            elif key.key == pygame.K_RIGHT and self.cursor < len(self.text) - 1:
-                self.cursor += 1
+            elif key.key == pygame.K_RIGHT:
+                if self.cursor < len(self.text):
+                    self.cursor += 1
             else:
                 uc = key.unicode
-                if uc.isprintable():
-                    print("UC:", uc)
-                    self.text = self.text[:self.cursor] + uc + self.text[self.cursor:]
-                    self.cursor += 1
+                print("UC:", uc)
+                self.text = self.text[:self.cursor] + uc + self.text[self.cursor:]
+                self.cursor += 1
 
     def update(self, dt, event=pygame.NOEVENT):
         if mouse.pressed[0]:

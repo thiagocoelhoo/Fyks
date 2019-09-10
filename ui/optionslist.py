@@ -30,4 +30,3 @@ class OptionsList(Frame):
         for k in self.master.widgets.copy():
             if self.master.widgets[k] == self:    
                 del self.master.widgets[k]
-        

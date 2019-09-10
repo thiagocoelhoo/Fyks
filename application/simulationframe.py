@@ -1,3 +1,4 @@
+# frame de simulação de particulas (plano cartesiano)
 import pygame
 import pygame.gfxdraw
 
@@ -163,15 +164,21 @@ class SimulationFrame(Frame):
                     self.cam.area.x -= rx
                     self.cam.area.y -= ry
                 elif key[pygame.K_LSHIFT]:
-                    if self.selection_box is not None:
-                        self.selection_box.w = mx - self.selection_box[0]
-                        self.selection_box.h = my - self.selection_box[1]
-                    else:
-                        self.selection_box = pygame.Rect([mx, my, 0, 0])
-                else:
                     for obj in self.selection:
                         obj.x += rx
                         obj.y += ry
+                else:
+                    for k in self.widgets:
+                        if self.widgets[k].active:
+                            if self.selection_box:
+                                self.selection_box = None
+                            break
+                    else:
+                        if self.selection_box is not None:
+                            self.selection_box.w = mx - self.selection_box[0]
+                            self.selection_box.h = my - self.selection_box[1]
+                        else:
+                            self.selection_box = pygame.Rect([mx, my, 0, 0])
             elif self.selection_box:
                 self.selection_box = None
         
@@ -186,12 +193,6 @@ class SimulationFrame(Frame):
         
         for comp in self.components:
             if self.cam.collide(comp):
-                '''
-                dx = (comp.x - mx - self.cam.area.x)
-                dy = (comp.y - my - self.cam.area.y)
-                d = (dx**2 + dy**2)**0.5
-                '''
-
                 comp_rect = ((comp.x - self.cam.area.x, comp.y - self.cam.area.y), comp.size)
                 if self.selection_box is not None:
                     if comp not in self.selection:
@@ -201,13 +202,6 @@ class SimulationFrame(Frame):
                     elif not self.selection_box.colliderect(comp_rect):
                         self.selection.remove(comp)
                         comp.selected = False
-                '''
-                elif d <= 20:
-                    self.selection.clear()
-                    self.selection.append(comp)
-                elif comp in self.selection:
-                    self.selection.remove(comp)
-                '''
             if not self.paused:
                 comp.update(dt)
     
@@ -215,7 +209,6 @@ class SimulationFrame(Frame):
         self.surface.fill(self.bg_color)
         self.cam.draw_grid(self.surface)
         self.cam.draw_axes(self.surface)
-        # self.draw_overlay()
         self.draw_components()
         self.draw_selection_box()
         

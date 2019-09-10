@@ -6,7 +6,6 @@ import pygame.gfxdraw
 import render_engine
 
 
-
 class Camera:
     def __init__(self, position, size):
         self.area = pygame.Rect([position, size])
@@ -41,8 +40,8 @@ class Camera:
         objx = int(obj.x * self.zoom - self.area.x)
         objy = int(obj.y * self.zoom - self.area.y)
         if obj.selected:
-            pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.zoom), (50, 100, 255, 50))
-            pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.zoom), (50, 100, 255))
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.zoom), (50, 255, 100, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.zoom), (50, 255, 100))
         else:
             pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.zoom), (255, 0, 0, 50))
             pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.zoom), obj.color)

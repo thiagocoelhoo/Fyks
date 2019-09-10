@@ -20,6 +20,17 @@ class SubWindow(Frame):
         self.moving = False
         self.autoclear = False
         self.color = (50, 50, 50)
+        self.active = False
+        eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
+
+    def on_mousedown(self, event):
+        if event.button == 1:
+            if self.is_hover():
+                self.active = True
+                if self.hover_controler_bar(event.pos[0], event.pos[1]):
+                    self.moving = True
+            else:
+                self.active = False
 
     def hover_controler_bar(self, x, y):
         gx, gy = self.global_pos
@@ -29,17 +40,17 @@ class SubWindow(Frame):
         return False
     
     def update(self, dt):
-        super().update(dt)
+        if self.active:
+            super().update(dt)
+            if self.moving:
+                self.pos[0] += mouse.rel[0]
+                self.pos[1] += mouse.rel[1]
+            # elif self.hover_controler_bar(mouse.pos[0], mouse.pos[1]) and mouse.pressed[0]:
+                # self.moving = True
 
-        if self.moving:
-            self.pos[0] += mouse.rel[0]
-            self.pos[1] += mouse.rel[1]
-        elif self.hover_controler_bar(mouse.pos[0], mouse.pos[1]) and mouse.pressed[0]:
-            self.moving = True
-        
-        if not mouse.pressed[0] and self.moving:
-            self.moving = False
-    
+            if not mouse.pressed[0] and self.moving:
+                self.moving = False
+
     def draw(self, surface):
         super().draw(surface)
         pygame.draw.rect(self.surface, (180, 180, 200), [(0, 0), (self.w, 30)])
