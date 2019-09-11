@@ -14,6 +14,7 @@ class Widget:
         self.pos = np.array(position)
         self.size = size
         self.color = (0, 255, 0)
+        self.active = False
         
         self.__instances.add(weakref.ref(self))
     

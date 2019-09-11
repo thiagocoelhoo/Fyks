@@ -1,7 +1,15 @@
+# frame de simulação de particulas (plano cartesiano)
 import pygame
 import pygame.gfxdraw
 
-from ui import Frame, Button, Label, SubWindow, Entry
+from ui import (
+    Frame,
+    Button,
+    Label,
+    SubWindow,
+    Entry,
+    OptionsList,
+)
 import core
 from core.camera import Camera
 from core.rigidbody import RigidBody
@@ -49,15 +57,13 @@ class SimulationFrame(Frame):
         self.zoom = 1
         
         self.max_time = 0
-
         self.time  = 0
+
         self.x_data = []
         self.y_data = []
 
         self.eventhandler = core.get_eventhandler()
-        self.eventhandler.add_handler(pygame.MOUSEMOTION, self.on_mousemotion)
         self.eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
-        self.eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
     
     @property
     def selected(self):
@@ -101,20 +107,27 @@ class SimulationFrame(Frame):
             pygame.gfxdraw.rectangle(self.surface, [compx, compy, 41, 41], (0, 255, 0))
     
     def show_options(self, mpos):
-        menu = Frame(mpos, (200, 100))
-        menu['add'] = Button((0, 0), (200, 25), 'add', func=self.show_add_options)
-        menu['remove'] = Button((0, 25), (200, 25), 'remove', func=self.remove_object)
-        menu['view'] = Button((0, 50), (200, 25), 'view')
-        menu['exit'] = Button((0, 75), (200, 25), 'exit')
+        options = OptionsList(mpos, (200, 75))
+        options.set_options({
+            'add': self.show_add_options,
+            'remove': self.remove_object,
+            'view': None,
+        })
         
-        self.widgets['options_menu'] = menu
+        self.add_widget('options_menu', options)
     
     def show_add_options(self):
         frame = SubWindow(mouse.pos, 230, 135)
         frame.bg_color = (220, 220, 220)
         frame.autoclear = True
-        frame["position_x_entry"] = Entry("position x", (10, 60), (100, 25))
-        frame["position_y_entry"] = Entry("position y", (120, 60), (100, 25))
+
+        pos_x_entry = Entry("position x", (10, 60), (100, 25))
+        pos_y_entry = Entry("position y", (120, 60), (100, 25))
+        pos_x_entry.text = "0"
+        pos_y_entry.text = "0"
+        frame["position_x_entry"] = pos_x_entry
+        frame["position_y_entry"] = pos_y_entry
+
         add_func = lambda: self.add_object((int(frame.widgets['position_x_entry'].text), int(frame.widgets['position_y_entry'].text)))
         frame["add_button"] = Button((120, 95), (100, 25), "add", func=add_func)
         self.widgets["add_options"] = frame
@@ -129,27 +142,12 @@ class SimulationFrame(Frame):
     def remove_object(self):
         pass
 
-    def hide_options(self):
-        try:
-            del self.widgets['options_menu']
-        except:
-            pass
-    
-    def on_mousemotion(self, event):
-        if self.is_inside(event.pos):
-            pass
-    
     def on_mousedown(self, event):
         if event.button == 3:
-            if self.selection:
-                self.selected = self.selection[-1]
-            else:
-                self.show_options((mouse.pos[0] - 5, mouse.pos[1] - 5))
-
-    def on_mouseup(self, event):
-        if event.button == 3:
-            self.hide_options()
-
+            self.show_options((mouse.pos[0] - 10, mouse.pos[1] - 10))
+        if event.button == 1 and self.selection:
+            self.selected = self.selection[-1]
+    
     def update(self, dt):
         super().update(dt)
 
@@ -159,17 +157,6 @@ class SimulationFrame(Frame):
 
         if self.max_time and self.time >= self.max_time:
             self.paused = True
-        
-        if not self.paused and self.selected and self.selected.vx:
-            self.time += dt
-            self.x_data.append(self.time)
-            self.y_data.append(self.selected.vx)
-            w = max(self.x_data) - min(self.x_data) + 1
-            h = max(self.y_data) - min(self.y_data) + 1
-            y = [i/h*200 for i in self.y_data]
-            x = [j/w*200 for j in self.x_data]
-
-            self.widgets['graphic'].plot(x, y)
 
         if self.is_hover():
             if mouse.pressed[0]:
@@ -177,16 +164,21 @@ class SimulationFrame(Frame):
                     self.cam.area.x -= rx
                     self.cam.area.y -= ry
                 elif key[pygame.K_LSHIFT]:
-                    if self.selection_box is not None:
-                        self.selection_box.w = mx - self.selection_box[0]
-                        self.selection_box.h = my - self.selection_box[1]
-                    else:
-                        self.selection_box = pygame.Rect([mx, my, 0, 0])
-                else:
                     for obj in self.selection:
                         obj.x += rx
                         obj.y += ry
-
+                else:
+                    for k in self.widgets:
+                        if self.widgets[k].active:
+                            if self.selection_box:
+                                self.selection_box = None
+                            break
+                    else:
+                        if self.selection_box is not None:
+                            self.selection_box.w = mx - self.selection_box[0]
+                            self.selection_box.h = my - self.selection_box[1]
+                        else:
+                            self.selection_box = pygame.Rect([mx, my, 0, 0])
             elif self.selection_box:
                 self.selection_box = None
         
@@ -201,21 +193,15 @@ class SimulationFrame(Frame):
         
         for comp in self.components:
             if self.cam.collide(comp):
-                dx = (comp.x - mx - self.cam.area.x)
-                dy = (comp.y - my - self.cam.area.y)
-                d = (dx**2 + dy**2)**0.5
                 comp_rect = ((comp.x - self.cam.area.x, comp.y - self.cam.area.y), comp.size)
                 if self.selection_box is not None:
-                    if self.selection_box.colliderect(comp_rect):
-                        self.selection.append(comp)
-                    elif comp in self.selection:
+                    if comp not in self.selection:
+                        if self.selection_box.colliderect(comp_rect):
+                            self.selection.append(comp)
+                            comp.selected = True
+                    elif not self.selection_box.colliderect(comp_rect):
                         self.selection.remove(comp)
-                elif d <= 20:
-                    self.selection.clear()
-                    self.selection.append(comp)
-                elif comp in self.selection:
-                    self.selection.remove(comp)
-            
+                        comp.selected = False
             if not self.paused:
                 comp.update(dt)
     
@@ -223,7 +209,6 @@ class SimulationFrame(Frame):
         self.surface.fill(self.bg_color)
         self.cam.draw_grid(self.surface)
         self.cam.draw_axes(self.surface)
-        self.draw_overlay()
         self.draw_components()
         self.draw_selection_box()
         

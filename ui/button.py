@@ -1,10 +1,9 @@
-import pygame
-import pygame.gfxdraw
-import numpy as np
-
 from .widget import Widget
 from .label import Label
 from render_engine import aa_round_rect, _aa_render_region
+import core
+
+mouse = core.get_mouse()
 
 
 class Button(Widget):
@@ -20,7 +19,7 @@ class Button(Widget):
         self.pressed = False
     
     def update(self, dt):
-        mouse_down = pygame.mouse.get_pressed()
+        mouse_down = mouse.pressed
 
         if self.is_hover():
             if mouse_down[0]:
