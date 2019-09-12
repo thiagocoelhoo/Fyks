@@ -1,13 +1,14 @@
 import pygame
 
 from .widget import Widget
+import core
 
 
 class Frame(Widget):
     def __init__(self, position, size):
         super().__init__(position, size)
         self.color = (0, 0, 0)
-        self.bg_color = (10, 10, 10)
+        self.bg_color = core.theme["frame-background-color"]
         self.surface = pygame.surface.Surface(size)
         self.widgets = dict()
         self.autoclear = True

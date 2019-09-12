@@ -107,18 +107,19 @@ class SimulationFrame(Frame):
             pygame.gfxdraw.rectangle(self.surface, [compx, compy, 41, 41], (0, 255, 0))
     
     def show_options(self, mpos):
-        options = OptionsList(mpos, (200, 75))
+        options = OptionsList(mpos, (200, 125))
         options.set_options({
             'add': self.show_add_options,
             'remove': self.remove_object,
-            'view': None,
+            'dinamic': None,
+            'info': None,
+            'exit': None,
         })
         
         self.add_widget('options_menu', options)
     
     def show_add_options(self):
         frame = SubWindow(mouse.pos, 230, 135)
-        frame.bg_color = (220, 220, 220)
         frame.autoclear = True
 
         pos_x_entry = Entry("position x", (10, 60), (100, 25))

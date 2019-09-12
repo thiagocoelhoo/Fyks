@@ -1,6 +1,7 @@
 import pygame
 
 from .widget import Widget
+import core
 
 
 class Label(Widget):
@@ -10,7 +11,7 @@ class Label(Widget):
         super().__init__(position, (0, 0), False)
         self.font = pygame.font.SysFont('consolas', 14)
         self.text = text
-        self.color = (255, 255, 255)
+        self.color = core.theme['label-color']
     
     def draw(self, surface):
         rendered_text = self.font.render(self.text, True, self.color)

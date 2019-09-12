@@ -12,7 +12,7 @@ width = 1366
 height = 738
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
-
+core.set_theme("black")
 
 class MainViewFrame(Frame):
     def __init__(self):
@@ -23,10 +23,9 @@ class MainViewFrame(Frame):
         content_frame.master = self
 
         options_frame = Frame((1166, 0), (200, 738))
-        options_frame.color = (200, 200, 200)
-        options_frame.bg_color = (220, 220, 220)
         options_frame.master = self
         
+        '''
         options_frame['del_comp_bt'] = Button((20, 165), (100, 25), text='del', func=self.del_comp)
         
         options_frame['ax_entry'] = Entry('acceleration x', (20, 265), (160, 25))
@@ -34,7 +33,8 @@ class MainViewFrame(Frame):
         options_frame['vx_entry'] = Entry('velocity x', (20, 365), (160, 25))
         options_frame['vy_entry'] = Entry('velocity y', (20, 415), (160, 25))
         options_frame['apply_bt'] = Button((20, 465), (100, 25), text='apply', func=self.apply_comp_acc)
-
+        '''
+        
         options_frame['run_time_entry'] = Entry('time', (20, 565), (160, 25))
         options_frame['run_pause_bt'] = Button((20, 615), (100, 25), text='run/pause', func=self.pause_run)
         
