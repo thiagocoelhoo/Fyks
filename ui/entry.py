@@ -26,7 +26,7 @@ class Entry(Widget):
         self.content_label = Label('', text_pos)
 
         self.content_label.color = (50, 50, 50)
-        self.activated_color = (100, 100, 255)    # (80, 80, 80)
+        self.activated_color = (100, 100, 255)
         self.none_color = (150, 150, 150)
         self.color = self.none_color
 

@@ -12,7 +12,8 @@ width = 1366
 height = 738
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
-core.set_theme("black")
+# core.set_theme("black")
+
 
 class MainViewFrame(Frame):
     def __init__(self):
@@ -25,18 +26,8 @@ class MainViewFrame(Frame):
         options_frame = Frame((1166, 0), (200, 738))
         options_frame.master = self
         
-        '''
-        options_frame['del_comp_bt'] = Button((20, 165), (100, 25), text='del', func=self.del_comp)
-        
-        options_frame['ax_entry'] = Entry('acceleration x', (20, 265), (160, 25))
-        options_frame['ay_entry'] = Entry('acceleration y', (20, 315), (160, 25))
-        options_frame['vx_entry'] = Entry('velocity x', (20, 365), (160, 25))
-        options_frame['vy_entry'] = Entry('velocity y', (20, 415), (160, 25))
-        options_frame['apply_bt'] = Button((20, 465), (100, 25), text='apply', func=self.apply_comp_acc)
-        '''
-        
-        options_frame['run_time_entry'] = Entry('time', (20, 565), (160, 25))
-        options_frame['run_pause_bt'] = Button((20, 615), (100, 25), text='run/pause', func=self.pause_run)
+        options_frame['run_time_entry'] = Entry('time', (20, 35), (160, 25))
+        options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause_run)
         
         self.widgets['options_frame'] = options_frame
         self.widgets['content_frame'] = content_frame
@@ -55,40 +46,6 @@ class MainViewFrame(Frame):
             master.widgets['status_label'] = status_label
 
         master.widgets['status_label'].text = f'paused: {master.paused}'
-
-    def apply_comp_acc(self):
-        master = self.widgets['content_frame']
-        comp = master.selected
-        
-        try:
-            ax = int(self.widgets['options_frame'].widgets['ax_entry'].text or '0')
-            ay = -int(self.widgets['options_frame'].widgets['ay_entry'].text or '0')
-            vx = int(self.widgets['options_frame'].widgets['vx_entry'].text or '0')
-            vy = -int(self.widgets['options_frame'].widgets['vy_entry'].text or '0')
-            comp.ax, comp.ay = (ax, ay)
-            comp.vx, comp.vy = (vx, vy)
-        except Exception as e:
-            print(e)
-
-    def show_comp_menu(self):
-        comp = list(self.widgets['content_frame'].selection)[0]
-        master = self.widgets['content_frame']
-        
-        frame_pos = (comp.x - master.cam.area.x - 125, comp.y - master.cam.area.y + 30)
-        frame = Frame(frame_pos, (250, 40))
-        frame.color = (255, 60, 0)
-        frame['obj_pos_label'] = Label(f'x -> {comp.x}; y -> {comp.y}', (10, 10))
-        
-        master['comp_view'] = frame
-    
-    def add_comp(self):
-        try:
-            x = int(self.widgets['options_frame'].widgets['x_pos_entry'].text)
-            y = int(self.widgets['options_frame'].widgets['y_pos_entry'].text)
-            comp = RigidBody((x, y), (0, 0), (0, 0))
-            self.widgets['content_frame'].add_component(comp)
-        except Exception as e:
-            print('Error!', e)
     
     def del_comp(self):
         for comp in self.widgets['content_frame'].selection.copy():
