@@ -2,6 +2,10 @@
 import pygame
 import pygame.gfxdraw
 
+import core
+from core.camera import Camera
+from core.rigidbody import RigidBody, ForceField
+from core.collisions import collide
 from ui import (
     Frame,
     Button,
@@ -10,27 +14,15 @@ from ui import (
     Entry,
     OptionsList,
 )
-import core
-from core.camera import Camera
-from core.rigidbody import RigidBody
-from core.collisions import collide
+# from application.context import Context
+
 
 mouse = core.get_mouse()
 
 
-class LinkEntry(Entry):
-    def __init__(self, name, position, size, text=''):
-        super().__init__(name, position, size, text)
-        self.changed = False
-
-    def on_keydown(self, event):
-        super().on_keydown(event)
-        self.changed = self.active
-
-
 class ObjectDataFrame(SubWindow):
     def __init__(self, obj):
-        super().__init__((20, 40), 300, 340)
+        super().__init__((20, 40), 300, 340, title="RigidBodyConfig")
         self.color = (100, 100, 100)
         self.autoclear = True
 
@@ -39,14 +31,14 @@ class ObjectDataFrame(SubWindow):
         self['velocity_entry_y'] = Entry("Velocity y", (160, 65), (100, 25))
         self.widgets['velocity_entry_y'].color = (80, 80, 80)
 
-        self['acceleration_entry_x'] = LinkEntry("Acceleration x", (20, 125), (100, 25))
+        self['acceleration_entry_x'] = Entry("Acceleration x", (20, 125), (100, 25))
         self.widgets['acceleration_entry_x'].color = (80, 80, 80)
-        self['acceleration_entry_y'] = LinkEntry("Acceleration y", (160, 125), (100, 25))
+        self['acceleration_entry_y'] = Entry("Acceleration y", (160, 125), (100, 25))
         self.widgets['acceleration_entry_y'].color = (80, 80, 80)
     
-        self['force_entry_x'] = LinkEntry("Force x", (20, 185), (100, 25))
+        self['force_entry_x'] = Entry("Force x", (20, 185), (100, 25))
         self.widgets['force_entry_x'].color = (80, 80, 80)
-        self['force_entry_y'] = LinkEntry("Force y", (160, 185), (100, 25))
+        self['force_entry_y'] = Entry("Force y", (160, 185), (100, 25))
         self.widgets['force_entry_y'].color = (80, 80, 80)
 
         self['position_entry_x'] = Entry("Position x", (20, 245), (100, 25))
@@ -105,9 +97,6 @@ class ObjectDataFrame(SubWindow):
         vx = self.widgets['velocity_entry_x'].text
         vy = self.widgets['velocity_entry_y'].text
         
-        # ax = self.widgets['acceleration_entry_x'].text
-        # ay = self.widgets['acceleration_entry_y'].text
-
         fx = self.widgets['force_entry_x'].text
         fy = self.widgets['force_entry_y'].text
 
@@ -132,25 +121,29 @@ class ObjectDataFrame(SubWindow):
 class SimulationFrame(Frame):
     def __init__(self, position, size):
         super().__init__(position, size)
+        # self.context = Context()
         self.mode = 'None'
-        self.components = []
+        self.cam = Camera((-size[0]/2, -size[1]/2), size)   # transferir para a classe Context
+        self.components = []    # transferir para a classe Context
+        self.autoclear = False
+        self.paused = True  # transferir para a classe Context
+        self.zoom = 1   # transferir para a classe Context
+
         self.selection = []
         self.__selected = None
         self.selection_box = None
-        self.cam = Camera((-size[0]/2, -size[1]/2), size)
-        self.autoclear = False
-        self.paused = True
-        self.zoom = 1
         
         self.max_time = 0
-        self.time  = 0
+        self.time  = 0  # transferir para a classe Context
 
-        self.x_data = []
-        self.y_data = []
+        # self.x_data = []
+        # self.y_data = []
 
         self.eventhandler = core.get_eventhandler()
         self.eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
         self.eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
+        self.eventhandler.add_handler(pygame.KEYDOWN, self.on_keydown)
+        self.eventhandler.add_handler(pygame.KEYUP, self.on_keyup)
     
     @property
     def selected(self):
@@ -163,28 +156,15 @@ class SimulationFrame(Frame):
     
     def toggle_pause(self):
         self.paused = not self.paused
-    
-    def add_component(self, comp):
-        self.components.append(comp)
-    
-    def draw_selection_box(self):
-        if self.selection_box:
-            pygame.gfxdraw.rectangle(self.surface, self.selection_box, (100, 150, 255, 200))
-            pygame.gfxdraw.box(self.surface, self.selection_box, (100, 150, 255, 50))
-    
-    def draw_components(self):
-        for comp in self.components:
-            if self.cam.collide(comp):
-                self.cam.render(self.surface, comp)
-    
+
     def show_options(self, mpos):
         options = OptionsList(mpos, (200, 125))
         options.set_options({
-            'add': self.show_add_options,
-            'remove': None,
-            'dinamic': None,
-            'info': None,
-            'exit': None,
+            'Add rigidbody': self.show_add_options,
+            'Add forcefield': self.add_forcefield_mode,
+            'Remove': self.remove_component,
+            'Info': None,
+            'Exit': None,
         })
         
         self.add_widget('options_menu', options)
@@ -213,36 +193,85 @@ class SimulationFrame(Frame):
             obj_data_frame.master = self
             obj_data_frame.update_data(obj)
             self.widgets['obj_data_frame'] = obj_data_frame
+     
+    # transferir para a classe Context
+    def add_component(self, comp):
+        self.components.append(comp)
+    
+    def add_forcefield_mode(self):
+        self.mode = "forcefield-add"
 
     def add_object(self, position, mass):
         if "add_options" in list(self.widgets):
             self.remove_widget("add_options")
         
         obj = RigidBody(position, (0, 0), (0, 0), float(mass))
-        self.components.append(obj)
+        self.add_component(obj) 
+
+    def remove_component(self):
+        pass
     
     def on_mousedown(self, event):
         if event.button == 3:
-            self.show_options((mouse.pos[0] - 10, mouse.pos[1] - 10))
-        if event.button == 1 and self.selection:
-            self.selected = self.selection[-1]
+            self.show_options((event.pos[0] - 10, event.pos[1] - 10))
+
+        if event.button == 1:
+            if self.mode == 'forcefield-add':
+                ff = ForceField(event.pos, (200, 200), (0.0, 0.0))
+                self.add_component(ff)
+                self.mode == 'forcefield-edit'
+            elif self.selection:
+                self.selected = self.selection[-1]
     
     def on_mouseup(self, event):
-        if self.mode != "None":
+        if event.button == 1 and self.mode == "move":
             self.mode = "None"
     
+    def on_keydown(self, event):
+        if event.key == pygame.K_m:
+            self.mode = "move"
+        elif event.key == pygame.K_LCTRL:
+            self.mode = "move_spc"
+        
+    def on_keyup(self, event):
+        if event.key == pygame.K_LCTRL:
+            self.mode = "None"
+    
+    # transferir para a classe Context
+    def update_components(self, dt):
+        for comp in self.components:
+            if self.cam.collide(comp):
+                comp_rect = comp.get_rect()
+                comp_rect[0] -= self.cam.area.x
+                comp_rect[1] -= self.cam.area.y
+
+                if self.selection_box is not None:
+                    selection_box = [
+                            self.selection_box.x, 
+                            self.selection_box.y,
+                            self.selection_box.w,
+                            self.selection_box.h
+                    ]
+                    collision = collide(selection_box, comp_rect)
+
+                    if comp not in self.selection:    
+                        if collision:
+                            self.selection.append(comp)
+                            comp.selected = True
+                    elif not collision:
+                        self.selection.remove(comp)
+                        comp.selected = False
+            if not self.paused:
+                comp.update(dt)
+
     def update(self, dt):
         super().update(dt)
 
         rx, ry = mouse.rel
         mx, my = mouse.pos
-        key = pygame.key.get_pressed()
 
         if self.max_time and self.time >= self.max_time:
             self.paused = True
-        
-        if key[pygame.K_m]:
-            self.mode = "move"
         
         if self.is_mouse_over():
             if mouse.pressed[0]:
@@ -250,14 +279,13 @@ class SimulationFrame(Frame):
                     for obj in self.selection:
                         obj.x += rx
                         obj.y += ry
-                elif key[pygame.K_LCTRL]:
+                elif self.mode == "move_spc":
                     self.cam.area.x -= rx
                     self.cam.area.y -= ry
-                else:
+                elif self.mode == 'None':
                     for k in self.widgets:
                         if self.widgets[k].active:
-                            if self.selection_box:
-                                self.selection_box = None
+                            self.selection_box = None
                             break
                     else:
                         if self.selection_box is not None:
@@ -271,27 +299,18 @@ class SimulationFrame(Frame):
         if 'obj_data_frame' in list(self.widgets.keys()) and self.selected:
             self.widgets['obj_data_frame'].update_data(self.selected)
         
+        self.update_components(dt)
+    
+    def draw_selection_box(self):
+        if self.selection_box:
+            pygame.gfxdraw.rectangle(self.surface, self.selection_box, (100, 150, 255, 200))
+            pygame.gfxdraw.box(self.surface, self.selection_box, (100, 150, 255, 50))
+    
+    # transferir para a classe Context
+    def draw_components(self):
         for comp in self.components:
             if self.cam.collide(comp):
-                comp_rect = (comp.x - self.cam.area.x, comp.y - self.cam.area.y, comp.size[0], comp.size[1])
-                if self.selection_box is not None:
-                    selection_box = [
-                            self.selection_box.x, 
-                            self.selection_box.y,
-                            self.selection_box.w,
-                            self.selection_box.h
-                        ]
-                    collision = collide(selection_box, comp_rect)
-
-                    if comp not in self.selection:    
-                        if collision:
-                            self.selection.append(comp)
-                            comp.selected = True
-                    elif not collision:
-                        self.selection.remove(comp)
-                        comp.selected = False
-            if not self.paused:
-                comp.update(dt)
+                self.cam.render(self.surface, comp)
     
     def draw(self, surface):
         self.surface.fill(self.bg_color)

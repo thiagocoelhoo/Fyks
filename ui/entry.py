@@ -1,21 +1,14 @@
 import weakref
-import string
 
 import pygame
-# from PIL import ImageFont
 
-from .widget import Widget
-from .label import Label
-from render_engine import aa_round_rect, _aa_render_region
 import core
+from ui.widget import Widget
+from ui.label import Label
+from render_engine import aa_round_rect, _aa_render_region
 
-
-printset = set(string.printable)
 mouse = core.get_mouse()
 eventhandler = core.get_eventhandler()
-
-# font = ImageFont.truetype('times.ttf', 12)
-# size = font.getsize('Hello world')
 
 
 class Entry(Widget):
@@ -37,6 +30,7 @@ class Entry(Widget):
 
         self.text = text
         self.active = False
+        self.changed = False
         self.limit = self.size[0] // 8 - 1
 
         self.__instances.add(weakref.ref(self))
@@ -64,8 +58,9 @@ class Entry(Widget):
         self.__text = value
         self.content_label.text = self.text
 
-    def on_keydown(self, key):
+    def on_keydown(self, key):    
         if self.active:
+            self.changed = True
             if key.key == pygame.K_BACKSPACE:
                 if self.cursor > 0:
                     self.text = self.text[:self.cursor - 1] + self.text[self.cursor:]
@@ -82,7 +77,9 @@ class Entry(Widget):
                 print("UC:", uc)
                 self.text = self.text[:self.cursor] + uc + self.text[self.cursor:]
                 self.cursor += 1
-                
+        else:
+            self.changed = False
+
     def on_mousebuttondown(self, event):
         if event.button == 1:
             if self.is_mouse_over():

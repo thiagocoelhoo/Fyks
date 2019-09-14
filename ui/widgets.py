@@ -14,13 +14,15 @@ eventhandler = core.get_eventhandler()
 
 
 class SubWindow(Frame):
-    def __init__(self, position, width, height):
+    def __init__(self, position, width, height, title='-'):
         super().__init__(position, (width, height + 30))
         self.surface = pygame.Surface((width, height + 30))
         self.moving = False
         self.autoclear = False
         self.color = (50, 50, 50)
         self.active = False
+        self.title = title
+        self.title_label = Label(title, (8, 8))
         
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
 
@@ -46,9 +48,7 @@ class SubWindow(Frame):
             if self.moving:
                 self.pos[0] += mouse.rel[0]
                 self.pos[1] += mouse.rel[1]
-            # elif self.hover_controler_bar(mouse.pos[0], mouse.pos[1]) and mouse.pressed[0]:
-                # self.moving = True
-
+            
             if not mouse.pressed[0] and self.moving:
                 self.moving = False
 
@@ -56,6 +56,7 @@ class SubWindow(Frame):
         super().draw(surface)
         pygame.draw.rect(self.surface, (180, 180, 200), [(0, 0), (self.w, 30)])
         pygame.draw.line(self.surface, (50, 50, 50), (0, 30), (self.w, 30))
+        self.title_label.draw(self.surface)
         surface.blit(self.surface, self.pos)
 
 
