@@ -27,7 +27,7 @@ class Button(Widget):
     
     def on_mousedown(self, event):
         '''
-        if self.is_hover():
+        if self.is_mouse_over():
             if event.button == 0:
                 self.color = self.pressed_color
             self.pressed = True
@@ -45,7 +45,7 @@ class Button(Widget):
     def update(self, dt):
         mouse_down = mouse.pressed
 
-        if self.is_hover():
+        if self.is_mouse_over():
             if mouse_down[0]:
                 self.color = self.pressed_color
                 if not self.pressed:
@@ -59,7 +59,7 @@ class Button(Widget):
             self.color = self.none_color
         
         #if not self.pressed:
-            #if self.is_hover():
+            #if self.is_mouse_over():
                 #self.color = self.hover_color
             #else:
                 #self.color = self.none_color

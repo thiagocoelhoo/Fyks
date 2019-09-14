@@ -20,7 +20,7 @@ class MainViewFrame(Frame):
         super().__init__((0, 0), (width, height))
         content_frame = SimulationFrame((0, 0), (1166, 738))
         content_frame.color = (200, 200, 200)
-        content_frame.bg_color = (10, 10, 10)
+        content_frame.bg_color = core.theme["simulation-frame-background"]
         content_frame.master = self
 
         options_frame = Frame((1166, 0), (200, 738))
@@ -35,6 +35,7 @@ class MainViewFrame(Frame):
     def pause_run(self):
         master = self.widgets['content_frame']
         master.toggle_pause()
+        
         try:
             master.max_time = int(self.widgets['options_frame'].widgets['run_time_entry'].text or '0')
         except Exception as e:

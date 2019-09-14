@@ -51,7 +51,7 @@ class Widget:
             return self.pos + self.master.global_pos
         return self.pos
 
-    def is_hover(self):
+    def is_mouse_over(self):
         mx, my = pygame.mouse.get_pos()
         if self.global_pos[0] <= mx <= self.global_pos[0] + self.size[0]:
             if self.global_pos[1] <= my <= self.global_pos[1] + self.size[1]:

@@ -21,11 +21,12 @@ class SubWindow(Frame):
         self.autoclear = False
         self.color = (50, 50, 50)
         self.active = False
+        
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
 
     def on_mousedown(self, event):
         if event.button == 1:
-            if self.is_hover():
+            if self.is_mouse_over():
                 self.active = True
                 if self.hover_controler_bar(event.pos[0], event.pos[1]):
                     self.moving = True

@@ -19,7 +19,7 @@ class OptionsList(Frame):
     def on_mousedown(self, event):
         if event.button == 1:
             for b in self.widgets.values():
-                if b.is_hover():
+                if b.is_mouse_over():
                     b.function()
             self.close()
 

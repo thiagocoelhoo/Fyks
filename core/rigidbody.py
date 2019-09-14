@@ -1,7 +1,7 @@
 class RigidBody:
     __instances = []
 
-    def __init__(self, position, velocity, acceleration):
+    def __init__(self, position, velocity, acceleration, mass):
         RigidBody.__instances.append(self)
         self.size = (20, 20)
         self.x, self.y = position
@@ -9,6 +9,11 @@ class RigidBody:
         self.ax, self.ay = acceleration
         self.color = (255, 0, 0)
         self.selected = False
+        self.mass = mass
+    
+    def apply_force(self, force):
+        self.ax = force[0]/self.mass
+        self.ay = force[1]/self.mass
     
     def update(self, dt):
         self.x += self.vx * dt
