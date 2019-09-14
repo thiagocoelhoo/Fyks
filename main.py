@@ -1,9 +1,8 @@
 import os
 
 import core
-from core.rigidbody import RigidBody
-
 core.init()
+from core.rigidbody import RigidBody
 from ui import Button, Entry, Label, Frame
 from application.simulationframe import SimulationFrame
 from application.application import App
@@ -12,7 +11,6 @@ width = 1366
 height = 738
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
-# core.set_theme("black")
 
 
 class MainViewFrame(Frame):

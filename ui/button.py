@@ -1,10 +1,9 @@
 import pygame
 
-from .widget import Widget
-from .label import Label
-from render_engine import aa_round_rect, _aa_render_region
 import core
-
+from ui.widget import Widget
+from ui.label import Label
+from render_engine import aa_round_rect, _aa_render_region
 
 mouse = core.get_mouse()
 eventhandler = core.get_eventhandler()
@@ -32,7 +31,6 @@ class Button(Widget):
                 self.color = self.pressed_color
             self.pressed = True
         '''
-        pass
     
     def on_mouseup(self, event):
         '''
@@ -40,7 +38,6 @@ class Button(Widget):
             self.function()
             self.pressed = False
         '''
-        pass
 
     def update(self, dt):
         mouse_down = mouse.pressed

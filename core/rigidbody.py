@@ -3,13 +3,16 @@ class RigidBody:
 
     def __init__(self, position, velocity, acceleration, mass):
         RigidBody.__instances.append(self)
-        self.size = (20, 20)
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
+        self.mass = mass
+        self.r = 20
         self.color = (255, 0, 0)
         self.selected = False
-        self.mass = mass
+    
+    def get_rect(self):
+        return [self.x, self.y, self.r, self.r]
     
     def apply_force(self, force):
         self.ax = force[0]/self.mass
@@ -30,8 +33,20 @@ class RigidBody:
         y2 = int(height/2 - (self.y + self.vy))
         pygame.gfxdraw.line(screen, x1, y1, x2, y2, (0, 255, 0))
         '''
-        pass
     
     @classmethod
     def get_all(cls):
         return cls.__instances
+
+
+class ForceField:
+    def __init__(self, position, size, force):
+        self.x, self.y = position
+        self.w, self.h = size
+        self.force = force    
+    
+    def get_rect(self):
+        return [self.x, self.y, self.w, self.h]
+
+    def update(self, dt):
+        pass

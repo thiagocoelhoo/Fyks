@@ -4,6 +4,7 @@ import pygame
 import pygame.gfxdraw
 
 import render_engine
+from core.rigidbody import RigidBody, ForceField
 
 
 class Camera:
@@ -12,7 +13,7 @@ class Camera:
         self.zoom = 1
 
     def collide(self, obj):
-        return pygame.Rect(self.area).colliderect([(obj.x, obj.y), obj.size])
+        return pygame.Rect(self.area).colliderect(obj.get_rect())
     
     def draw_grid(self, surface):
         color = (50, 50, 50)
@@ -39,31 +40,35 @@ class Camera:
     def render(self, surface, obj):
         objx = int(obj.x * self.zoom - self.area.x)
         objy = int(obj.y * self.zoom - self.area.y)
-        if obj.selected:
-            pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.zoom), (50, 255, 100, 50))
-            pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.zoom), (50, 255, 100))
-        else:
-            pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.zoom), (255, 0, 0, 50))
-            pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.zoom), obj.color)
 
-        if obj.vx or obj.vy:
-            x1 = int(obj.x * self.zoom - self.area.x)
-            y1 = int(obj.y * self.zoom - self.area.y)
+        if type(obj) == RigidBody:
+            if obj.selected:
+                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100, 50))
+                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100))
+            else:
+                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (255, 0, 0, 50))
+                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), obj.color)
 
-            size = (obj.vx * self.zoom, obj.vy * self.zoom)
-            tsize = (obj.vx**2 + obj.vy**2)**0.5
-            ang = render_engine.get_ang(size[0], size[1])
+            if obj.vx or obj.vy:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
 
-            color = (0, 255, 0)
-            render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
-        
-        if obj.ax or obj.ay:
-            x1 = int(obj.x * self.zoom - self.area.x)
-            y1 = int(obj.y * self.zoom - self.area.y) - 30
+                size = (obj.vx * self.zoom, obj.vy * self.zoom)
+                tsize = (obj.vx**2 + obj.vy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
 
-            size = (obj.ax * self.zoom, obj.ay * self.zoom)
-            tsize = (obj.ax**2 + obj.ay**2)**0.5
-            ang = render_engine.get_ang(size[0], size[1])
+                color = (0, 255, 0)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+            
+            if obj.ax or obj.ay:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y) - 30
 
-            color = (200, 50, 255)
-            render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+                size = (obj.ax * self.zoom, obj.ay * self.zoom)
+                tsize = (obj.ax**2 + obj.ay**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+
+                color = (200, 50, 255)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+        elif type(obj) == ForceField:
+            pygame.gfxdraw.rectangle(surface, (objx, objy, obj.w, obj.h), (200, 250, 120, 100))
