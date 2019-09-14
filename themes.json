@@ -1,0 +1,22 @@
+{
+    "white": {
+        "button-color": [180, 180, 180],
+        "button-pressed-color": [200, 200, 200],
+        "button-hover-color": [180, 180, 200],
+        "button-border-color": [100, 100, 100],
+        "frame-background-color": [220, 220, 220],
+        "label-color": [255, 255, 255],
+        "frame-background-color-error": [250, 150, 150],
+        "simulation-frame-background": [100, 100, 120]
+    },
+    "black": {
+        "button-color": [65, 65, 65],
+        "button-pressed-color": [242, 194, 82],
+        "button-hover-color": [90, 90, 90],
+        "button-border-color": [20, 20, 20],
+        "frame-background-color": [100, 100, 100],
+        "label-color": [230, 230, 230],
+        "frame-background-color-error": [250, 150, 150],
+        "simulation-frame-background": [20, 20, 20]
+    }
+}

@@ -1,125 +1,16 @@
-import weakref
-
 import pygame
 import pygame.gfxdraw
-import numpy as np
 
 from .widget import Widget
 from .label import Label
 from .button import Button
+from .frame import Frame
+from .entry import Entry
 from render_engine import aa_round_rect, _aa_render_region
 import core
 
 mouse = core.get_mouse()
 eventhandler = core.get_eventhandler()
-
-
-class Entry(Widget):
-    __instances = set()
-
-    def __init__(self, name, position, size):
-        super().__init__(position, size)
-        text_pos = (position[0] + 4, position[1] + 4)
-        self.cursor = 0
-        self.label = Label(name, (position[0], position[1]-20))
-        self.label.color = (80, 80, 80)
-        self.content_label = Label('', text_pos)
-
-        self.content_label.color = (50, 50, 50)
-        self.activated_color = (100, 100, 255)    # (80, 80, 80)
-        self.none_color = (150, 150, 150)
-        self.color = self.none_color
-
-        self.text = ''
-        self.active = False
-
-        self.__instances.add(weakref.ref(self))
-        eventhandler.add_handler(pygame.KEYDOWN, self.on_keydown)
-
-    @classmethod
-    def all(cls):
-        dead = set()
-        for ref in cls.__instances:
-            obj = ref()
-            if obj is not None:
-                yield obj
-            else:
-                dead.add(ref)
-        cls.__instances -= dead
-
-    def on_keydown(self, key):
-        if self.active:
-            if key.key == pygame.K_BACKSPACE:
-                # self.text = self.text[:-1]
-                self.text = self.text[:self.cursor] + self.text[self.cursor + 1:]
-            elif key.key == pygame.K_RETURN:
-                self.active = False
-            elif key.key == pygame.K_LEFT and self.cursor > 0:
-                self.cursor -= 1
-            elif key.key == pygame.K_RIGHT and self.cursor < len(self.text) - 1:
-                self.cursor += 1
-            else:
-                self.text = self.text + key.unicode
-        self.content_label.text = self.text
-
-    def update(self, dt, event=pygame.NOEVENT):
-        if mouse.pressed[0]:
-            if self.is_hover():
-                self.active = True
-                self.color = self.activated_color
-            else:
-                self.active = False
-                self.color = self.none_color
-
-    def draw(self, surface):
-        # rect = pygame.Rect((self.pos, self.size))
-        # pygame.gfxdraw.box(surface, rect, (240, 240, 240))
-        # super().draw(surface)
-        aa_round_rect(surface, (self.pos, self.size), self.color, rad=2, border=1, inside=(240, 240, 240))
-
-        font_gx = self.global_pos[0] + 4
-        font_gy = self.global_pos[1] + 4
-        
-        self.label.draw(surface)
-        self.content_label.draw(surface)
-        pygame.draw.rect(surface, self.content_label.color, ((font_gx+ 20*self.cursor, font_gy), (2, 20)))
-
-class IntEntry(Entry):
-    pass
-
-
-class Frame(Widget):
-    def __init__(self, position, size):
-        super().__init__(position, size)
-        self.color = (0, 0, 0)
-        self.bg_color = (10, 10, 10)
-        # self.w, self.h = size
-        self.surface = pygame.surface.Surface(size)
-        self.widgets = dict()
-        self.autoclear = True
-    
-    def __setitem__(self, name, widget):
-        self.add_widget(name, widget)
-    
-    def add_widget(self, name, widget):
-        widget.master = self
-        self.widgets[name] = widget
-
-    def remove_widget(self, name):
-        return self.widgets.pop(name)
-    
-    def draw(self, surface):
-        if self.autoclear:
-            self.surface.fill(self.bg_color)
-        
-        for wid in list(self.widgets.values()):
-            wid.draw(self.surface)
-        surface.blit(self.surface, self.pos)
-        super().draw(surface)
-
-    def update(self, dt):
-        for wid in list(self.widgets.values()):
-            wid.update(dt)
 
 
 class SubWindow(Frame):
@@ -129,6 +20,18 @@ class SubWindow(Frame):
         self.moving = False
         self.autoclear = False
         self.color = (50, 50, 50)
+        self.active = False
+        
+        eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
+
+    def on_mousedown(self, event):
+        if event.button == 1:
+            if self.is_mouse_over():
+                self.active = True
+                if self.hover_controler_bar(event.pos[0], event.pos[1]):
+                    self.moving = True
+            else:
+                self.active = False
 
     def hover_controler_bar(self, x, y):
         gx, gy = self.global_pos
@@ -138,17 +41,17 @@ class SubWindow(Frame):
         return False
     
     def update(self, dt):
-        super().update(dt)
+        if self.active:
+            super().update(dt)
+            if self.moving:
+                self.pos[0] += mouse.rel[0]
+                self.pos[1] += mouse.rel[1]
+            # elif self.hover_controler_bar(mouse.pos[0], mouse.pos[1]) and mouse.pressed[0]:
+                # self.moving = True
 
-        if self.moving:
-            self.pos[0] += mouse.rel[0]
-            self.pos[1] += mouse.rel[1]
-        elif self.hover_controler_bar(mouse.pos[0], mouse.pos[1]) and mouse.pressed[0]:
-            self.moving = True
-        
-        if not mouse.pressed[0] and self.moving:
-            self.moving = False
-    
+            if not mouse.pressed[0] and self.moving:
+                self.moving = False
+
     def draw(self, surface):
         super().draw(surface)
         pygame.draw.rect(self.surface, (180, 180, 200), [(0, 0), (self.w, 30)])

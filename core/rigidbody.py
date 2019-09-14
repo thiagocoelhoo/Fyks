@@ -1,13 +1,19 @@
 class RigidBody:
     __instances = []
 
-    def __init__(self, position, velocity, acceleration):
+    def __init__(self, position, velocity, acceleration, mass):
         RigidBody.__instances.append(self)
         self.size = (20, 20)
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
         self.color = (255, 0, 0)
+        self.selected = False
+        self.mass = mass
+    
+    def apply_force(self, force):
+        self.ax = force[0]/self.mass
+        self.ay = force[1]/self.mass
     
     def update(self, dt):
         self.x += self.vx * dt
@@ -29,13 +35,3 @@ class RigidBody:
     @classmethod
     def get_all(cls):
         return cls.__instances
-
-    @classmethod
-    def update_all(cls, dt):
-        for inst in cls.__instances:
-            inst.update(dt)
-    
-    @classmethod
-    def draw_all(cls, surface):
-        for inst in cls.__instances:
-            inst.draw(surface)
