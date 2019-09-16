@@ -1,0 +1,16 @@
+AQUA COPPER:
+#e37222
+#07889b
+#66b9bf
+#eeaa7b
+#92cdd1
+
+
+PURPLE GALAXY:
+#0e0b16
+#24212b
+#e7dfdd
+#4717f6
+#a239ca
+
+
