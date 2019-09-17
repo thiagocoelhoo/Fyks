@@ -4,10 +4,30 @@
         "button-pressed-color": [200, 200, 200],
         "button-hover-color": [180, 180, 200],
         "button-border-color": [100, 100, 100],
-        "frame-background-color": [220, 220, 220],
         "label-color": [255, 255, 255],
+        "frame-background-color": [220, 220, 220],
+        "frame-background-color-error": [250, 150, 150],    
+        "context-background": [100, 100, 120],
+        "context-grid": [50, 50, 50],
+        "entry-background-color": [250, 250, 250],
+        "entry-label-color": [80, 80, 80],
+        "entry-border-color activated": [80, 80, 200],
+        "window-controller-bar": [180, 180, 200]
+    },
+    "aqua-copper": {
+        "button-color": [232, 151, 95],
+        "button-pressed-color": [7, 136, 155],
+        "button-hover-color": [102, 185, 191],
+        "button-border-color": [100, 100, 100],
+        "label-color": [255, 255, 255],
+        "frame-background-color": [240, 240, 240],
         "frame-background-color-error": [250, 150, 150],
-        "simulation-frame-background": [100, 100, 120]
+        "context-background": [50, 50, 50],
+        "context-grid": [80, 80, 80],
+        "entry-background-color": [250, 250, 250],
+        "entry-label-color": [80, 80, 80],
+        "entry-border-color activated": [238, 170, 123],
+        "window-controller-bar": [227, 114, 34]
     },
     "black": {
         "button-color": [65, 65, 65],
@@ -17,6 +37,6 @@
         "frame-background-color": [100, 100, 100],
         "label-color": [230, 230, 230],
         "frame-background-color-error": [250, 150, 150],
-        "simulation-frame-background": [20, 20, 20]
+        "context-background": [20, 20, 20]
     }
 }

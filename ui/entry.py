@@ -24,9 +24,10 @@ class Entry(Widget):
         self.content_label = Label('', text_pos)
 
         self.content_label.color = (50, 50, 50)
-        self.activated_color = (100, 100, 255)
+        self.activated_color = core.theme["entry-border-color activated"]
         self.none_color = (150, 150, 150)
-        self.color = self.none_color
+        self.border_color = self.none_color
+        self.background_color = core.theme["entry-background-color"]
 
         self.text = text
         self.active = False
@@ -91,13 +92,13 @@ class Entry(Widget):
         if mouse.pressed[0]:
             if self.is_mouse_over():
                 self.active = True
-                self.color = self.activated_color
+                self.border_color = self.activated_color
             else:
                 self.active = False
-                self.color = self.none_color
+                self.border_color = self.none_color
 
     def draw(self, surface):
-        aa_round_rect(surface, (self.pos, self.size), self.color, rad=2, border=1, inside=(240, 240, 240))
+        aa_round_rect(surface, (self.pos, self.size), self.border_color, rad=2, border=1, inside=self.background_color)
 
         if self.active:
             font_x = self.x + 4

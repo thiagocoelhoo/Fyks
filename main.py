@@ -3,22 +3,22 @@ import os
 import core
 core.init()
 from core.rigidbody import RigidBody
-from ui import Button, Entry, Label, Frame
+from ui import Button, Entry, Label, Frame, SubWindow
 from application.simulationframe import SimulationFrame
-from application.application import App
+from application.base import App
 
 width = 1366
 height = 738
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
+core.set_theme("aqua-copper")
 
 
 class MainViewFrame(Frame):
     def __init__(self):
         super().__init__((0, 0), (width, height))
         content_frame = SimulationFrame((0, 0), (1166, 738))
-        content_frame.color = (200, 200, 200)
-        content_frame.bg_color = core.theme["simulation-frame-background"]
+        # content_frame = SimulationFrame((0, 0), (width, height))
         content_frame.master = self
 
         options_frame = Frame((1166, 0), (200, 738))

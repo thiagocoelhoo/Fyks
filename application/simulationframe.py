@@ -6,6 +6,7 @@ import core
 from core.camera import Camera
 from core.rigidbody import RigidBody, ForceField
 from core.collisions import collide
+from application.context import Context
 from ui import (
     Frame,
     Button,
@@ -14,8 +15,6 @@ from ui import (
     Entry,
     OptionsList,
 )
-# from application.context import Context
-
 
 mouse = core.get_mouse()
 
@@ -121,23 +120,16 @@ class ObjectDataFrame(SubWindow):
 class SimulationFrame(Frame):
     def __init__(self, position, size):
         super().__init__(position, size)
-        # self.context = Context()
+        self.context = Context(size)
         self.mode = 'None'
-        self.cam = Camera((-size[0]/2, -size[1]/2), size)   # transferir para a classe Context
-        self.components = []    # transferir para a classe Context
         self.autoclear = False
-        self.paused = True  # transferir para a classe Context
-        self.zoom = 1   # transferir para a classe Context
+        
+        self.paused = True
+        self.max_time = 0
 
         self.selection = []
         self.__selected = None
         self.selection_box = None
-        
-        self.max_time = 0
-        self.time  = 0  # transferir para a classe Context
-
-        # self.x_data = []
-        # self.y_data = []
 
         self.eventhandler = core.get_eventhandler()
         self.eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
@@ -193,11 +185,7 @@ class SimulationFrame(Frame):
             obj_data_frame.master = self
             obj_data_frame.update_data(obj)
             self.widgets['obj_data_frame'] = obj_data_frame
-     
-    # transferir para a classe Context
-    def add_component(self, comp):
-        self.components.append(comp)
-    
+
     def add_forcefield_mode(self):
         self.mode = "forcefield-add"
 
@@ -206,7 +194,7 @@ class SimulationFrame(Frame):
             self.remove_widget("add_options")
         
         obj = RigidBody(position, (0, 0), (0, 0), float(mass))
-        self.add_component(obj) 
+        self.context.add_object(obj) 
 
     def remove_component(self):
         pass
@@ -237,42 +225,15 @@ class SimulationFrame(Frame):
         if event.key == pygame.K_LCTRL:
             self.mode = "None"
     
-    # transferir para a classe Context
-    def update_components(self, dt):
-        for comp in self.components:
-            if self.cam.collide(comp):
-                comp_rect = comp.get_rect()
-                comp_rect[0] -= self.cam.area.x
-                comp_rect[1] -= self.cam.area.y
-
-                if self.selection_box is not None:
-                    selection_box = [
-                            self.selection_box.x, 
-                            self.selection_box.y,
-                            self.selection_box.w,
-                            self.selection_box.h
-                    ]
-                    collision = collide(selection_box, comp_rect)
-
-                    if comp not in self.selection:    
-                        if collision:
-                            self.selection.append(comp)
-                            comp.selected = True
-                    elif not collision:
-                        self.selection.remove(comp)
-                        comp.selected = False
-            if not self.paused:
-                comp.update(dt)
-
     def update(self, dt):
         super().update(dt)
 
         rx, ry = mouse.rel
         mx, my = mouse.pos
 
-        if self.max_time and self.time >= self.max_time:
+        if self.max_time and self.context.time >= self.max_time:
             self.paused = True
-        
+
         if self.is_mouse_over():
             if mouse.pressed[0]:
                 if self.mode == "move":
@@ -280,8 +241,8 @@ class SimulationFrame(Frame):
                         obj.x += rx
                         obj.y += ry
                 elif self.mode == "move_spc":
-                    self.cam.area.x -= rx
-                    self.cam.area.y -= ry
+                    self.context.cam.area.x -= rx
+                    self.context.cam.area.y -= ry
                 elif self.mode == 'None':
                     for k in self.widgets:
                         if self.widgets[k].active:
@@ -299,24 +260,38 @@ class SimulationFrame(Frame):
         if 'obj_data_frame' in list(self.widgets.keys()) and self.selected:
             self.widgets['obj_data_frame'].update_data(self.selected)
         
-        self.update_components(dt)
+        for obj in self.context.objects:
+            if self.context.cam.collide(obj):
+                rect = obj.get_rect()
+                rect[0] -= self.context.cam.area.x
+                rect[1] -= self.context.cam.area.y
+
+                if self.selection_box is not None:
+                    selection_box = [
+                            self.selection_box.x, 
+                            self.selection_box.y,
+                            self.selection_box.w,
+                            self.selection_box.h
+                    ]
+                    collision = collide(selection_box, rect)
+
+                    if obj not in self.selection:    
+                        if collision:
+                            self.selection.append(obj)
+                            obj.selected = True
+                    elif not collision:
+                        self.selection.remove(obj)
+                        obj.selected = False
+            
+        if not self.paused:
+            self.context.update(dt)
     
-    def draw_selection_box(self):
+    def draw(self, surface):
+        self.context.draw()
+        self.surface.blit(self.context.surface, (0, 0))
+        
         if self.selection_box:
             pygame.gfxdraw.rectangle(self.surface, self.selection_box, (100, 150, 255, 200))
             pygame.gfxdraw.box(self.surface, self.selection_box, (100, 150, 255, 50))
-    
-    # transferir para a classe Context
-    def draw_components(self):
-        for comp in self.components:
-            if self.cam.collide(comp):
-                self.cam.render(self.surface, comp)
-    
-    def draw(self, surface):
-        self.surface.fill(self.bg_color)
-        self.cam.draw_grid(self.surface)
-        self.cam.draw_axes(self.surface)
-        self.draw_components()
-        self.draw_selection_box()
         
         super().draw(surface)
