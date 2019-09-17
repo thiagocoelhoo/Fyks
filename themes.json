@@ -29,6 +29,21 @@
         "entry-border-color activated": [238, 170, 123],
         "window-controller-bar": [227, 114, 34]
     },
+    "void-amethyst": {
+        "button-color": [129, 110, 255],
+        "button-pressed-color": [208, 84, 255],
+        "button-hover-color": [102, 87, 201],
+        "button-border-color": [10, 10, 10],
+        "label-color": [255, 255, 255],
+        "frame-background-color": [36, 33, 43],
+        "frame-background-color-error": [250, 150, 150],
+        "context-background": [14, 11, 22],
+        "context-grid": [34, 31, 42],
+        "entry-background-color": [215, 200, 215],
+        "entry-label-color": [231, 223, 221],
+        "entry-border-color activated": [71, 23, 246],
+        "window-controller-bar": [102, 87, 201]
+    },
     "black": {
         "button-color": [65, 65, 65],
         "button-pressed-color": [242, 194, 82],
