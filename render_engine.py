@@ -12,24 +12,12 @@ def get_ang(w, h):
     if not w:
         ang = math.pi / 2 if h > 0 else 3 * math.pi / 2
     else:
-        ang = math.atan(h / w)
+        cos = w / (w**2 + h**2)**0.5
+        sin = h / (w**2 + h**2)**0.5
+
+        ang = math.asin(sin)
     
     return ang
-
-
-def rounded_rect(w, h, r, border, color, border_color):
-    surface = pygame.surface.Surface((w, h)).convert_alpha()
-    surface.fill((0, 0, 0, 0))
-    
-    pygame.draw.rect(surface, color, [r, 0, w - 2*r, h])
-    pygame.draw.rect(surface, color, [0, r, r, h - 2*r])
-    pygame.draw.rect(surface, color, [w-r, r, r, h - 2*r])
-    pygame.gfxdraw.filled_circle(surface, r, r, r, color)
-    pygame.gfxdraw.filled_circle(surface, w-r, r, r, color)
-    pygame.gfxdraw.filled_circle(surface, w-r, h-r, r, color)
-    pygame.gfxdraw.filled_circle(surface, r, h-r, r, color)
-
-    return surface
 
 
 def draw_vector(surface, pos, size, ang, color):
@@ -45,6 +33,21 @@ def draw_vector(surface, pos, size, ang, color):
     pygame.draw.aaline(surface, color, pos, end_pos)
     pygame.draw.aaline(surface, color, end_pos, l_line)
     pygame.draw.aaline(surface, color, end_pos, r_line)
+
+
+def rounded_rect(w, h, r, border, color, border_color):
+    surface = pygame.surface.Surface((w, h)).convert_alpha()
+    surface.fill((0, 0, 0, 0))
+    
+    pygame.draw.rect(surface, color, [r, 0, w - 2*r, h])
+    pygame.draw.rect(surface, color, [0, r, r, h - 2*r])
+    pygame.draw.rect(surface, color, [w-r, r, r, h - 2*r])
+    pygame.gfxdraw.filled_circle(surface, r, r, r, color)
+    pygame.gfxdraw.filled_circle(surface, w-r, r, r, color)
+    pygame.gfxdraw.filled_circle(surface, w-r, h-r, r, color)
+    pygame.gfxdraw.filled_circle(surface, r, h-r, r, color)
+
+    return surface
 
 
 def aa_round_rect(surface, rect, color, rad=20, border=0, inside=(0,0,0)):
