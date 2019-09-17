@@ -44,6 +44,23 @@
         "entry-border-color activated": [71, 23, 246],
         "window-controller-bar": [102, 87, 201]
     },
+
+    "ice-mines": {
+        "button-color": [153, 211, 223],
+        "button-pressed-color": [87, 175, 235],
+        "button-hover-color": [136, 187, 214],
+        "button-border-color": [39, 235, 245],
+        "label-color": [64, 44, 18],
+        "frame-background-color": [202, 164, 114],
+        "frame-background-color-error": [250, 150, 150],
+        "context-background": [227, 201, 168],
+        "context-grid": [34, 31, 42],
+        "entry-background-color": [227, 201, 168],
+        "entry-label-color": [231, 223, 221],
+        "entry-border-color activated": [153, 211, 223],
+        "window-controller-bar": [153, 211, 223]
+    },
+
     "black": {
         "button-color": [65, 65, 65],
         "button-pressed-color": [242, 194, 82],
