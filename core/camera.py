@@ -44,7 +44,7 @@ class Camera:
 
         if type(obj) == RigidBody:
             if obj.selected:
-                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100, 50))
+                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 100, 100, 50))
                 pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100))
             else:
                 pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (255, 0, 0, 50))
