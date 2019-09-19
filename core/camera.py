@@ -43,8 +43,19 @@ class Camera:
         objy = int(obj.y * self.zoom - self.area.y)
 
         if type(obj) == RigidBody:
+            for fx, fy in obj.forces:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
+
+                size = (fx * self.zoom, fy * self.zoom)
+                tsize = (fx**2 + fy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+
+                color = (200, 200, 200)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+
             if obj.selected:
-                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100, 50))
+                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 100, 100, 50))
                 pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100))
             else:
                 pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (255, 0, 0, 50))
@@ -59,17 +70,6 @@ class Camera:
                 ang = render_engine.get_ang(size[0], size[1])
 
                 color = (0, 255, 0)
-                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
-            
-            for fx, fy in obj.forces:
-                x1 = int(obj.x * self.zoom - self.area.x)
-                y1 = int(obj.y * self.zoom - self.area.y)
-
-                size = (fx * self.zoom, fy * self.zoom)
-                tsize = (fx**2 + fy**2)**0.5
-                ang = render_engine.get_ang(size[0], size[1])
-
-                color = (200, 200, 200)
                 render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
 
             if obj.ax or obj.ay:

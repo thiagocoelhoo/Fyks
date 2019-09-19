@@ -30,7 +30,7 @@ class Frame(Widget):
         for wid in list(self.widgets.values()):
             wid.draw(self.surface)
         surface.blit(self.surface, self.pos)
-        super().draw(surface)
+        # super().draw(surface)
 
     def update(self, dt):
         for wid in list(self.widgets.values()):

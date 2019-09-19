@@ -3,6 +3,18 @@ import random
 import numpy as np
 
 
+class Vector:
+    def __init__(self, cx, cy):
+        self.cx = cx
+        self.cy = cy
+
+    def draw(self, surface):
+        pass
+
+    def update(self):
+        pass
+
+
 class RigidBody:
     __instances = []
 
@@ -13,8 +25,6 @@ class RigidBody:
         self.ax, self.ay = acceleration
         self.mass = mass
         self.forces = []
-        self.add_force((30, 50))
-        self.add_force((-10, -150)) 
 
         self.r = 20
         self.color = (255, 0, 0)
@@ -32,7 +42,7 @@ class RigidBody:
         self.ay += force[1]/self.mass
     
     def add_force(self, force):
-        self.forces.append(force)
+        self.forces.append((force[0], -force[1]))
     
     def remove_force(self, force):
         self.forces.remove(force)

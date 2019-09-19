@@ -30,9 +30,17 @@ class Widget:
     def w(self):
         return self.size[0]
     
+    @w.setter
+    def w(self, value):
+        self.size = (value, self.size[1])
+    
     @property
     def h(self):
         return self.size[1]
+
+    @h.setter
+    def h(self, value):
+        self.size = (self.size[0], value)
         
     @classmethod
     def all(cls):

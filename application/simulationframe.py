@@ -1,4 +1,6 @@
 # frame de simulação de particulas (plano cartesiano)
+import random
+
 import pygame
 import pygame.gfxdraw
 
@@ -151,9 +153,11 @@ class SimulationFrame(Frame):
 
     def show_options(self, mpos):
         options = OptionsList(mpos, (200, 125))
+        options.bg_color = core.theme["button-border-color"]
         options.set_options({
             'Add rigidbody': self.show_add_options,
             'Add forcefield': self.add_forcefield_mode,
+            'Add force': self.show_add_force_options,
             'Remove': self.remove_component,
             'Info': None,
             'Exit': None,
@@ -186,8 +190,21 @@ class SimulationFrame(Frame):
             obj_data_frame.update_data(obj)
             self.widgets['obj_data_frame'] = obj_data_frame
 
-    def add_forcefield_mode(self):
-        self.mode = "forcefield-add"
+    def show_add_force_options(self):
+        frame = SubWindow(mouse.pos, 230, 185)
+        frame.autoclear = True
+
+        pos_x_entry = Entry("Force x", (10, 60), (100, 25))
+        pos_y_entry = Entry("Force y", (120, 60), (100, 25))
+        pos_x_entry.text = "0.00"
+        pos_y_entry.text = "0.00"
+
+        frame["force_x_entry"] = pos_x_entry
+        frame["force_y_entry"] = pos_y_entry
+
+        add_func = lambda: self.add_force(float(frame.widgets['force_x_entry'].text), float(frame.widgets['force_y_entry'].text))
+        frame["add_button"] = Button((120, 180), (100, 25), "Add", func=add_func)
+        self.widgets["add_options"] = frame
 
     def add_object(self, position, mass):
         if "add_options" in list(self.widgets):
@@ -195,9 +212,17 @@ class SimulationFrame(Frame):
         
         obj = RigidBody(position, (0, 0), (0, 0), float(mass))
         self.context.add_object(obj) 
+    
+    def add_forcefield_mode(self):
+        self.mode = "forcefield-add"
+
+    def add_force(self, fx, fy):
+        if self.selected:
+            self.selected.add_force((fx, fy))
 
     def remove_component(self):
-        pass
+        if self.selected:
+            self.context.remove(self.selected)
     
     def on_mousedown(self, event):
         if event.button == 3:
@@ -220,7 +245,7 @@ class SimulationFrame(Frame):
             self.mode = "move"
         elif event.key == pygame.K_LCTRL:
             self.mode = "move_spc"
-        
+    
     def on_keyup(self, event):
         if event.key == pygame.K_LCTRL:
             self.mode = "None"

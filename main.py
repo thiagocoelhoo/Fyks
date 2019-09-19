@@ -11,20 +11,19 @@ width = 1366
 height = 738
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
-core.set_theme("aqua-copper")
+core.set_theme("white")
 
 
 class MainViewFrame(Frame):
     def __init__(self):
         super().__init__((0, 0), (width, height))
         content_frame = SimulationFrame((0, 0), (1166, 738))
-        # content_frame = SimulationFrame((0, 0), (width, height))
         content_frame.master = self
 
         options_frame = Frame((1166, 0), (200, 738))
         options_frame.master = self
         
-        options_frame['run_time_entry'] = Entry('time', (20, 35), (160, 25))
+        options_frame['run_time_entry'] = Entry('Time', (20, 35), (160, 25))
         options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause_run)
         
         self.widgets['options_frame'] = options_frame
