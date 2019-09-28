@@ -15,8 +15,13 @@ class Widget:
         self.size = size
         self.color = (0, 255, 0)
         self.active = False
+        self.container = False
         
         self.__instances.add(weakref.ref(self))
+
+
+    def delete(self):
+        pass
     
     @property
     def x(self):
@@ -61,9 +66,7 @@ class Widget:
 
     def is_mouse_over(self):
         mx, my = pygame.mouse.get_pos()
-        if self.global_pos[0] <= mx <= self.global_pos[0] + self.size[0]:
-            if self.global_pos[1] <= my <= self.global_pos[1] + self.size[1]:
-                return True
+        return self.is_inside((mx, my))
     
     def is_inside(self, position):
         if self.global_pos[0] <= position[0] <= self.global_pos[0] + self.size[0]:

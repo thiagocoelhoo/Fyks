@@ -23,43 +23,24 @@ class Button(Widget):
 
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
         eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
-    
+
     def on_mousedown(self, event):
-        '''
-        if self.is_mouse_over():
-            if event.button == 0:
-                self.color = self.pressed_color
+        if self.is_mouse_over() and not self.pressed and event.button == 1:
+            self.color = self.pressed_color
             self.pressed = True
-        '''
+            print("pressed")
     
     def on_mouseup(self, event):
-        '''
-        if event.button == 0 and self.pressed:
+        if self.pressed and event.button == 1:
             self.function()
             self.pressed = False
-        '''
-
-    def update(self, dt):
-        mouse_down = mouse.pressed
-
-        if self.is_mouse_over():
-            if mouse_down[0]:
-                self.color = self.pressed_color
-                if not self.pressed:
-                    self.function()
-                    self.pressed = True
-            else:
-                self.color = self.hover_color
-                if self.pressed:
-                    self.pressed = False
-        else:
-            self.color = self.none_color
         
-        #if not self.pressed:
-            #if self.is_mouse_over():
-                #self.color = self.hover_color
-            #else:
-                #self.color = self.none_color
+    def update(self, dt):        
+        if not self.pressed:
+            if self.is_mouse_over():
+                self.color = self.hover_color
+            else:
+                self.color = self.none_color
     
     def draw(self, surface):
         aa_round_rect(

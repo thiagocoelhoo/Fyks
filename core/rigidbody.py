@@ -3,23 +3,33 @@ import random
 import numpy as np
 
 
+class Component:
+    def __init__(self):
+        self.selected = False
+        self.children = []
+
+
 class Vector:
     def __init__(self, cx, cy):
         self.cx = cx
         self.cy = cy
 
-    def draw(self, surface):
-        pass
 
-    def update(self):
-        pass
+class Force(Component):
+    def __init__(self, cx, cy, origin):
+        super().__init__()
+
+        self.fx = cx
+        self.fy = cy
+        self.origin = origin
 
 
-class RigidBody:
+class RigidBody(Component):
     __instances = []
 
     def __init__(self, position, velocity, acceleration, mass):
-        RigidBody.__instances.append(self)
+        super().__init__()
+
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
@@ -29,6 +39,8 @@ class RigidBody:
         self.r = 20
         self.color = (255, 0, 0)
         self.selected = False        
+
+        __class__.__instances.append(self)
     
     @classmethod
     def get_all(cls):
@@ -38,11 +50,11 @@ class RigidBody:
         return [self.x, self.y, self.r, self.r]
     
     def apply_force(self, force):
-        self.ax += force[0]/self.mass
-        self.ay += force[1]/self.mass
+        self.ax += force.fx/self.mass
+        self.ay += force.fy/self.mass
     
     def add_force(self, force):
-        self.forces.append((force[0], -force[1]))
+        self.forces.append(force)
     
     def remove_force(self, force):
         self.forces.remove(force)
@@ -80,3 +92,4 @@ class ForceField:
 
     def update(self, dt):
         pass
+

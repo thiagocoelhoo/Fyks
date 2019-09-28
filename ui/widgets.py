@@ -169,4 +169,3 @@ class SplitedFrame(Frame):
 
 class ScroolingBar(Widget):
     pass
-
