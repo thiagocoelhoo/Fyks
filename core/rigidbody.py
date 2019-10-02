@@ -22,6 +22,10 @@ class Force(Component):
         self.fx = cx
         self.fy = cy
         self.origin = origin
+    
+    def __mul__(self, n):
+        # assert n is int
+        return Force(self.fx * n, self.fy * n, self.origin)
 
 
 class RigidBody(Component):
@@ -35,6 +39,7 @@ class RigidBody(Component):
         self.ax, self.ay = acceleration
         self.mass = mass
         self.forces = []
+        self.temp_forces = []
 
         self.r = 20
         self.color = (255, 0, 0)
@@ -59,17 +64,22 @@ class RigidBody(Component):
     def remove_force(self, force):
         self.forces.remove(force)
 
-    def update(self, dt):
-        for force in self.forces:
-            self.apply_force(force)
-        
+    def update_(self, dt):
         self.x += self.vx * dt
         self.y += self.vy * dt
         self.vx += self.ax * dt
         self.vy += self.ay * dt
+    
+    def update(self, dt):
         self.ax = 0.0
         self.ay = 0.0
-    
+
+        for force in self.forces + self.temp_forces:
+            self.apply_force(force)
+        self.temp_forces.clear()
+        
+        self.update_(dt)
+     
     def draw(self, screen):
         '''
         pygame.gfxdraw.circle(screen, int(self.x+width/2), int(height/2 - self.y), 20, (255, 0, 0))

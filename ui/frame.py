@@ -29,7 +29,11 @@ class Frame(Widget):
         self.widgets[name] = widget
 
     def remove_widget(self, name):
-        return self.widgets.pop(name)
+        try:
+            return self.widgets.pop(name)
+        except Exception as e:
+            print(str(e))
+            return self
 
     def draw(self, surface):
         if self.autoclear:

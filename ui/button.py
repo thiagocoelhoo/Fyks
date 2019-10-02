@@ -25,18 +25,21 @@ class Button(Widget):
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
         eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
 
+    # ----------- EVENTS --------------
+
     def on_mousedown(self, event):
         if self.is_mouse_over() and not self.pressed and event.button == 1:
             self.color = self.pressed_color
             self.pressed = True
-            print("pressed")
+            self.function()
     
     def on_mouseup(self, event):
         if self.pressed and event.button == 1:
-            self.function()
             self.pressed = False
         
-    def update(self, dt):        
+    # ---------- ESSENCIALS -----------
+
+    def update(self, dt):
         if not self.pressed:
             if self.is_mouse_over():
                 self.color = self.hover_color

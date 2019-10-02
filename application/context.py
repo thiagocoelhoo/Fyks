@@ -10,6 +10,7 @@ class Context():
         self.objects = []
         self.time = 0.0
         self.cam = Camera((-framesize[0]/2, -framesize[1]/2), framesize)
+        self.mode = ''
         
         self.time  = 0
 
@@ -28,5 +29,11 @@ class Context():
                 self.cam.render(self.surface, obj)
 
     def update(self, dt):
+        
         for obj in self.objects:
+            if self.mode == 'interagente':
+                for obj_ in self.objects:
+                    if obj != obj_:
+                        for f in obj_.forces:
+                            obj.temp_forces.append(f * -1)
             obj.update(dt)

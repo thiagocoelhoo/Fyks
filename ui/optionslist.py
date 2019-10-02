@@ -2,6 +2,7 @@ import pygame
 
 from .frame import Frame
 from .button import Button
+from .widget import Widget
 import core
 
 eventhandler = core.get_eventhandler()
@@ -34,3 +35,9 @@ class OptionsList(Frame):
         for k in self.master.widgets.copy():
             if self.master.widgets[k] == self:    
                 del self.master.widgets[k]
+    
+    def draw(self, surface):
+        super().draw(surface)
+        rect = (self.pos, self.size)
+        pygame.gfxdraw.rectangle(surface, rect, (100, 100, 100))
+

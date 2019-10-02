@@ -5,6 +5,9 @@ import core
 
 
 class App:
+    
+    __current = None
+
     def __init__(self, width, height):
         self.surface = pygame.display.set_mode((width, height))
         self.clock = pygame.time.Clock()
@@ -16,6 +19,8 @@ class App:
 
         self.eventhandler = core.get_eventhandler()
         self.eventhandler.add_handler(pygame.QUIT, self.on_quit)
+
+        App.__current = self
 
     def on_quit(self, event):
         self.running = False

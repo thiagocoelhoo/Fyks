@@ -23,7 +23,8 @@ class MainViewFrame(Frame):
         
         options_frame['run_time_entry'] = Entry('Time', (20, 35), (160, 25))
         options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause_run)
-        vector_list = OptionsList((20, 150), (160, 300))
+        options_frame['mode_bt'] = Button((20, 135), (100, 25), text='interagente', func=content_frame.set_intg)
+        vector_list = OptionsList((20, 185), (160, 300))
         vector_list.close_after = False
         vector_list.bg_color = (150, 150, 180)
         options_frame['vectors_list'] = vector_list
@@ -46,14 +47,6 @@ class MainViewFrame(Frame):
             master.widgets['status_label'] = status_label
 
         master.widgets['status_label'].text = f'paused: {master.paused}'
-    
-    def del_comp(self):
-        for comp in self.widgets['content_frame'].selection.copy():
-            content_frame = self.widgets['content_frame']
-            content_frame.components.remove(comp)
-            self.widgets['content_frame'].selection.remove(comp)
-            if 'obj_data_frame' in content_frame.widgets:
-                content_frame.remove_widget('obj_data_frame')
 
 
 if __name__ == "__main__":

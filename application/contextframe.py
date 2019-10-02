@@ -63,6 +63,12 @@ class ContextFrame:
 
     # ------- CONTEXT FUNCTIONS ---------
 
+    def set_intg(self):
+        if self.context.mode == 'interagente':
+            self.context.mode = ''
+        else:
+            self.context.mode = 'interagente'
+    
     def toggle_pause(self):
         self.paused = not self.paused
 
@@ -123,9 +129,6 @@ class ContextFrame:
 
         if self.max_time and self.context.time >= self.max_time:
             self.paused = True
-        
-        if 'obj_data_frame' in list(self.interface.widgets.keys()) and type(self.selected) == RigidBody:
-            self.interface.widgets['obj_data_frame'].update_data(self.selected)
         
         for obj in self.context.objects:
             if self.context.cam.collide(obj):

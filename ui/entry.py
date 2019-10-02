@@ -21,9 +21,10 @@ class Entry(Widget):
         self.cursor = len(text)
         self.label = Label(name, (position[0], position[1]-20))
         self.label.color = (80, 80, 80)
-        self.content_label = Label('', text_pos)
 
+        self.content_label = Label('', text_pos)
         self.content_label.color = (50, 50, 50)
+
         self.activated_color = core.theme["entry-border-color activated"]
         self.none_color = (150, 150, 150)
         self.border_color = self.none_color
@@ -59,6 +60,8 @@ class Entry(Widget):
         self.__text = value
         self.content_label.text = self.text
 
+    # ----------- EVENTS --------------
+
     def on_keydown(self, key):    
         if self.active:
             self.changed = True
@@ -75,7 +78,6 @@ class Entry(Widget):
                     self.cursor += 1
             else:
                 uc = key.unicode
-                print("UC:", uc)
                 self.text = self.text[:self.cursor] + uc + self.text[self.cursor:]
                 self.cursor += 1
         else:
@@ -88,6 +90,8 @@ class Entry(Widget):
             else:
                 self.active = False
 
+    # ---------- ESSENCIALS -----------
+    
     def update(self, dt, event=pygame.NOEVENT):
         if mouse.pressed[0]:
             if self.is_mouse_over():
