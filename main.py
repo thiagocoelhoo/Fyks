@@ -18,7 +18,6 @@ class MainViewFrame(Frame):
     def __init__(self):
         super().__init__((0, 0), (width, height))
         content_frame = ContextFrame(self, (0, 0), (1166, 738))
-
         options_frame = Frame((1166, 0), (200, 738))
         options_frame.master = self
         
