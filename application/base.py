@@ -22,18 +22,14 @@ class App:
     
     def run(self):
         self.running = True
-
         while self.running:
             self.eventhandler.update()
             self.mouse.update()
-
-            self.surface.fill((0, 0, 0))
-
+            
             self.views[self.current_view].update(self.dt)
             self.views[self.current_view].draw(self.surface)  
 
             pygame.display.update()
-
             self.dt = self.clock.tick(0) / 1000
         
         pygame.quit()
