@@ -72,9 +72,16 @@ class ContextFrame:
     def toggle_pause(self):
         self.paused = not self.paused
 
+    def clear_context(self):
+        self.context.clear()
+
     def add_object(self, position, mass):
         obj = RigidBody((position[0], -position[1]), (0, 0), (0, 0), float(mass))
         self.context.add_object(obj) 
+    
+    def add_forcefield(self, position, force):
+        field = ForceField((position[0], -position[1]), 1000, float(force))
+        self.context.add_object(field)
 
     def add_force(self, fx, fy):
         if self.selected:

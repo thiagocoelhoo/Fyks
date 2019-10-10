@@ -126,12 +126,16 @@ class ContextInterface(Frame):
     
     # ------------ GUI (Graphic user interface) ----------------
 
+    def clear_context(self):
+        self.contextframe.clear_context()
+    
     def show_options(self, mpos):
         options = OptionsList(mpos, (200, 125))
         options.bg_color = core.theme["button-border-color"]
         options.set_options({
             'Add object': self.show_add_object_options,
             'Add force': self.show_add_force_options,
+            'Add forcefield': self.show_add_forcefield_options,
             'Remove': self.contextframe.remove_component,
             'Info': None,
             'Exit': None,
@@ -140,14 +144,14 @@ class ContextInterface(Frame):
         self.add_widget('options_menu', options)
 
     def show_object_options(self, obj):
-        if not 'obj_data_frame' in list(self.widgets.keys()):
+        if type(obj) == core.rigidbody.RigidBody and not 'obj_data_frame' in list(self.widgets.keys()):
             obj_data_frame = ObjectDataFrame(obj)
             obj_data_frame.master = self
             obj_data_frame.update_data()
             self.widgets['obj_data_frame'] = obj_data_frame
 
     def show_add_object_options(self):
-        # Criar janela de criação de objectos
+        # Criar janela de criação de objetos
 
         frame = SubWindow(mouse.pos, 230, 185)
         frame.autoclear = True
@@ -199,6 +203,32 @@ class ContextInterface(Frame):
         frame["add_button"] = Button((120, 180), (100, 25), "Add", func=lambda: add_func())
         self.widgets["add_options"] = frame
 
+    def show_add_forcefield_options(self):
+        # Criar janela de criação de campos de força
+
+        frame = SubWindow(mouse.pos, 230, 185)
+        frame.autoclear = True
+
+        frame["position_x_entry"] = Entry("Position X", (10, 60), (100, 25), '0.00')
+        frame["position_y_entry"] = Entry("Position Y", (120, 60), (100, 25), '0.00')
+        frame["force_entry"] = Entry("Force (Newtons)", (10, 115), (100, 25), '10.0')
+
+        def close_func():
+            self.widgets["add_options"].delete()
+            self.remove_widget("add_options")
+        
+        def add_func():
+            posx = float(frame.widgets['position_x_entry'].text)
+            posy = float(frame.widgets['position_y_entry'].text)
+            force = frame.widgets['force_entry'].text
+        
+            self.add_forcefield((posx, posy), force)
+            close_func()
+        
+        frame["close_button"] = Button((10, 180), (100, 25), "Close", func=close_func)
+        frame["add_button"] = Button((120, 180), (100, 25), "Add", func=add_func)
+        
+        self.widgets["add_options"] = frame
     # ----------------------- ACTIONS --------------------------
 
     def add_object(self, position, mass):
@@ -211,7 +241,10 @@ class ContextInterface(Frame):
             # n = len(self.contextframe.selected.forces) - 1
             self.master.widgets["options_frame"].widgets["vectors_list"].set_options({f"vector {self.n}": force})
             self.n += 1
-            
+
+    def add_forcefield(self, position, force):
+        self.contextframe.add_forcefield(position, force)
+
     # ----------------------- EVENTS ---------------------------
 
     def on_mousedown(self, event):

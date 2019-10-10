@@ -11,7 +11,7 @@ width = 1366
 height = 738
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
-core.set_theme("white")
+core.set_theme("aqua-copper")
 
 
 class MainViewFrame(Frame):
@@ -24,7 +24,9 @@ class MainViewFrame(Frame):
         options_frame['run_time_entry'] = Entry('Time', (20, 35), (160, 25))
         options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause_run)
         options_frame['mode_bt'] = Button((20, 135), (100, 25), text='interagente', func=content_frame.set_intg)
-        vector_list = OptionsList((20, 185), (160, 300))
+        options_frame['clear_bt'] = Button((20, 185), (100, 25), text='clear', func=content_frame.clear_context)
+
+        vector_list = OptionsList((20, 235), (160, 300))
         vector_list.close_after = False
         vector_list.bg_color = (150, 150, 180)
         options_frame['vectors_list'] = vector_list

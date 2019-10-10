@@ -9,12 +9,6 @@ class Component:
         self.children = []
 
 
-class Vector:
-    def __init__(self, cx, cy):
-        self.cx = cx
-        self.cy = cy
-
-
 class Force(Component):
     def __init__(self, cx, cy, origin):
         super().__init__()
@@ -76,8 +70,19 @@ class RigidBody(Component):
 
         for force in self.forces + self.temp_forces:
             self.apply_force(force)
-        self.temp_forces.clear()
         
+        self.temp_forces.clear()
+        for field in ForceField.get_all():
+            dx = (field.x - self.x)
+            dy = (field.y - self.y)
+            d = (dx**2 + dy**2)**0.5
+            f = 1 / d**2 * field.force
+
+            if d < field.size:
+                force = Force(dx * f, dy * f, self)
+                self.temp_forces.append(force)
+        
+        # self.temp_forces.clear()
         self.update_(dt)
      
     def draw(self, screen):
@@ -92,14 +97,22 @@ class RigidBody(Component):
 
 
 class ForceField:
+    __instances = []
+
     def __init__(self, position, size, force):
         self.x, self.y = position
-        self.w, self.h = size
-        self.force = force    
+        self.size = size
+        self.force = force
+        self.selected = False
+
+        __class__.__instances.append(self)
     
+    @classmethod
+    def get_all(cls):
+        return cls.__instances
+
     def get_rect(self):
-        return [self.x, self.y, self.w, self.h]
+        return [self.x, self.y, 10, 10]
 
     def update(self, dt):
         pass
-
