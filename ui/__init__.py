@@ -6,4 +6,3 @@ from .entry import Entry
 from .itemlist import ItemList
 from .optionslist import OptionsList
 from .widgets import  SubWindow, GraphicFrame
-

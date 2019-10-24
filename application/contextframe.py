@@ -24,7 +24,7 @@ mouse = core.get_mouse()
 
 class ContextFrame:
     def __init__(self, master, position, size):
-        self.context = Context(size)
+        self.context = Context((size[0] - 200, size[1]))
         self.interface = ContextInterface(position, size, self)
         self.interface.autoclear = False
         self.interface.master = master
@@ -32,7 +32,7 @@ class ContextFrame:
         self.mode = 'None'
         self.paused = True
         self.max_time = 0
-
+        
         self.selection = []
         self.__selected = lambda: None
         self.selection_box = None
@@ -56,12 +56,11 @@ class ContextFrame:
             value.selected = True
         self.interface.show_object_options(value)
         self.__selected = weakref.ref(value)
-    
-    @property
-    def widgets(self):
-        return self.interface.widgets
 
     # ------- CONTEXT FUNCTIONS ---------
+
+    def show_field(self):
+        self.context.show = not self.context.show
 
     def set_intg(self):
         if self.context.mode == 'interagente':
@@ -75,8 +74,8 @@ class ContextFrame:
     def clear_context(self):
         self.context.clear()
 
-    def add_object(self, position, mass):
-        obj = RigidBody((position[0], -position[1]), (0, 0), (0, 0), float(mass))
+    def add_object(self, position, mass, charge):
+        obj = RigidBody((position[0], -position[1]), (0, 0), (0, 0), mass, charge)
         self.context.add_object(obj) 
     
     def add_forcefield(self, position, force):
@@ -108,7 +107,13 @@ class ContextFrame:
                     self.mode == 'forcefield-edit'
                 elif self.selection:
                     self.selected = self.selection[-1]
-        
+            elif event.button == 4:
+                if self.context.cam.zoom < 10:
+                    self.context.cam.zoom += 0.05
+            elif event.button == 5:
+                if self.context.cam.zoom > 0.1:
+                    self.context.cam.zoom -= 0.05
+    
     def on_mouseup(self, event):
         if event.button == 1 and self.mode == "move":
             self.mode = "None"
@@ -118,9 +123,12 @@ class ContextFrame:
             self.mode = "move"
         elif event.key == pygame.K_LCTRL:
             self.mode = "move_spc"
+        elif event.key == pygame.K_SPACE:
+            self.toggle_pause()
         elif event.key == pygame.K_DELETE:
             if type(self.selected) == Force:
                 self.selected.origin.forces.remove(self.selected)
+                # self.interface.widgets['options_frame'].widgets['vectors_list']
     
     def on_keyup(self, event):
         if event.key == pygame.K_LCTRL:
@@ -143,7 +151,7 @@ class ContextFrame:
                 rect[0] -= self.context.cam.area.x
                 rect[1] -= self.context.cam.area.y
 
-                if self.selection_box is not None:
+                if self.selection_box is not None: # and self.context.cam.collide((mx, my, 1, 1)):
                     selection_box = [
                             self.selection_box.x, 
                             self.selection_box.y,

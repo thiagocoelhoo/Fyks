@@ -10,6 +10,7 @@ from ui import (
     SubWindow,
     Entry,
     OptionsList,
+    ItemList
 )
 
 mouse = core.get_mouse()
@@ -119,12 +120,34 @@ class ContextInterface(Frame):
         self.n = 1
 
         self.eventhandler = core.get_eventhandler()
+        self.eventhandler.add_handler(pygame.VIDEORESIZE, self.on_resize)
         self.eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
         self.eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
         self.eventhandler.add_handler(pygame.KEYDOWN, self.on_keydown)
         self.eventhandler.add_handler(pygame.KEYUP, self.on_keyup)
     
     # ------------ GUI (Graphic user interface) ----------------
+
+    def setup_ui(self):
+        options_frame = Frame((1166, 0), (200, 738))
+
+        options_frame['run_time_entry'] = Entry('Time', (20, 35), (160, 25))
+        options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause)
+        options_frame['mode_bt'] = Button((20, 135), (100, 25), text='interagente', func=self.contextframe.set_intg)
+        options_frame['clear_bt'] = Button((20, 185), (100, 25), text='clear', func=self.contextframe.clear_context)
+        options_frame['show_mesh'] = Button((20, 235), (100, 25), text='show field', func=self.contextframe.show_field)
+
+        # vector_list = OptionsList((20, 235), (160, 300))
+        vector_list = ItemList((20, 285), (160, 300))
+        vector_list.close_after = False
+        vector_list.bg_color = (150, 150, 180)
+        options_frame['vectors_list'] = vector_list
+        
+        self.widgets['options_frame'] = options_frame
+        self.widgets['status_label'] = Label('status: None', (20, 20))
+        self.widgets['cam_pos_label'] = Label('cam:', (20, 40))
+        self.widgets['zoom_label'] = Label("zoom:", (20, 60))
+        self.widgets['movement_label'] = Label('movement:', (20, 80))
 
     def clear_context(self):
         self.contextframe.clear_context()
@@ -159,6 +182,7 @@ class ContextInterface(Frame):
         frame["position_x_entry"] = Entry("Position x", (10, 60), (100, 25), '0.00')
         frame["position_y_entry"] = Entry("Position y", (120, 60), (100, 25), '0.00')
         frame["mass_entry"] = Entry("Mass", (10, 115), (100, 25), '10.0')
+        frame["charge_entry"] = Entry("Charge", (120, 115), (100, 25), '10.0')
 
         def close_func():
             self.widgets["add_options"].delete()
@@ -167,9 +191,10 @@ class ContextInterface(Frame):
         def add_func():
             posx = float(frame.widgets['position_x_entry'].text)
             posy = float(frame.widgets['position_y_entry'].text)
-            mass = frame.widgets['mass_entry'].text
+            mass = float(frame.widgets['mass_entry'].text)
+            charge = float(frame.widgets['charge_entry'].text)
         
-            self.add_object((posx, posy), mass)
+            self.add_object((posx, posy), mass, charge)
             close_func()
         
         frame["close_button"] = Button((10, 180), (100, 25), "Close", func=close_func)
@@ -229,23 +254,40 @@ class ContextInterface(Frame):
         frame["add_button"] = Button((120, 180), (100, 25), "Add", func=add_func)
         
         self.widgets["add_options"] = frame
+
     # ----------------------- ACTIONS --------------------------
 
-    def add_object(self, position, mass):
-        self.contextframe.add_object(position, mass)
+    def pause(self):
+        self.contextframe.toggle_pause()
+    
+        try:
+            self.contextframe.max_time = int(self.widgets['options_frame'].widgets['run_time_entry'].text or '0')
+        except Exception as e:
+            print(e)
+
+        self.widgets['status_label'].text = f'paused: {self.contextframe.paused}'
+
+    def add_object(self, position, mass, charge):
+        self.contextframe.add_object(position, mass, charge)
 
     def add_force(self, fx, fy):
         force = self.contextframe.add_force(fx, fy)
         
         if force:
             # n = len(self.contextframe.selected.forces) - 1
-            self.master.widgets["options_frame"].widgets["vectors_list"].set_options({f"vector {self.n}": force})
+            # self.master.widgets["options_frame"].widgets["vectors_list"].set_options({f"vector {self.n}": force})
+            m = self.widgets["options_frame"].widgets["vectors_list"]
+            m[f"vec {self.n}"] = force
             self.n += 1
 
     def add_forcefield(self, position, force):
         self.contextframe.add_forcefield(position, force)
 
     # ----------------------- EVENTS ---------------------------
+
+    def on_resize(self, event):
+        print(event)
+        print(pygame.display.get_surface())
 
     def on_mousedown(self, event):
         if self.is_mouse_over():
@@ -271,11 +313,11 @@ class ContextInterface(Frame):
             if mouse.pressed[0]:
                 if self.contextframe.mode == "move":
                     for obj in self.contextframe.selection:
-                        obj.x += rx
-                        obj.y += ry
+                        obj.x += rx / self.contextframe.context.cam.zoom
+                        obj.y += ry / self.contextframe.context.cam.zoom
                 elif self.contextframe.mode == "move_spc":
-                    self.contextframe.context.cam.area.x -= rx
-                    self.contextframe.context.cam.area.y -= ry
+                    self.contextframe.context.cam.x -= rx / self.contextframe.context.cam.zoom
+                    self.contextframe.context.cam.y -= ry / self.contextframe.context.cam.zoom
                 elif self.contextframe.mode == 'None':
                     for k in self.widgets:
                         if self.widgets[k].active:
@@ -291,6 +333,11 @@ class ContextInterface(Frame):
                             self.contextframe.selection_box = pygame.Rect([mx, my, 0, 0])
             elif self.contextframe.selection_box:
                 self.contextframe.selection_box = None
+
+        self.widgets['status_label'].text = f'paused: {self.contextframe.paused}'
+        self.widgets['cam_pos_label'].text = f'cam: {self.contextframe.context.cam.area}'
+        self.widgets['zoom_label'].text = f'zoom: {self.contextframe.context.cam.zoom}'
+        self.widgets['movement_label'].text = f'movement: {self.contextframe.mode == "move"}'
 
         data_frame = self.widgets.get('obj_data_frame')
         if data_frame and self.contextframe.selected:

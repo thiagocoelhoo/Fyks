@@ -40,4 +40,3 @@ class OptionsList(Frame):
         super().draw(surface)
         rect = (self.pos, self.size)
         pygame.gfxdraw.rectangle(surface, rect, (100, 100, 100))
-

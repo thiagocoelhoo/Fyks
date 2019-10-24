@@ -9,7 +9,7 @@ class App:
     __current = None
 
     def __init__(self, width, height):
-        self.surface = pygame.display.set_mode((width, height))
+        self.surface = pygame.display.set_mode((width, height), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         self.mouse = core.get_mouse()
         self.views = {}

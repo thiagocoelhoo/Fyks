@@ -1,59 +1,24 @@
 import os
+import numpy as np
 
 import core
 core.init()
-from core.rigidbody import RigidBody
-from ui import Button, Entry, Label, Frame, SubWindow, OptionsList, ItemList
 from application.contextframe import ContextFrame
 from application.base import App
 
 width = 1366
 height = 738
 
+
 os.environ['SDL_VIDEO_WINDOW_POS'] = f'0, 30'
 core.set_theme("aqua-copper")
 
-
-class MainViewFrame(Frame):
-    def __init__(self):
-        super().__init__((0, 0), (width, height))
-        content_frame = ContextFrame(self, (0, 0), (1166, 738))
-        options_frame = Frame((1166, 0), (200, 738))
-        options_frame.master = self
-        
-        options_frame['run_time_entry'] = Entry('Time', (20, 35), (160, 25))
-        options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause_run)
-        options_frame['mode_bt'] = Button((20, 135), (100, 25), text='interagente', func=content_frame.set_intg)
-        options_frame['clear_bt'] = Button((20, 185), (100, 25), text='clear', func=content_frame.clear_context)
-
-        vector_list = OptionsList((20, 235), (160, 300))
-        vector_list.close_after = False
-        vector_list.bg_color = (150, 150, 180)
-        options_frame['vectors_list'] = vector_list
-
-        self.widgets['options_frame'] = options_frame
-        self.widgets['content_frame'] = content_frame
-    
-    def pause_run(self):
-        master = self.widgets['content_frame']
-        master.toggle_pause()
-        
-        try:
-            master.max_time = int(self.widgets['options_frame'].widgets['run_time_entry'].text or '0')
-        except Exception as e:
-            print(e)
-        
-        if not 'status_label' in list(master.widgets.keys()):
-            status_label = Label('', (20, 20))
-            status_label.color = (200, 0, 0)
-            master.widgets['status_label'] = status_label
-
-        master.widgets['status_label'].text = f'paused: {master.paused}'
-
-
 if __name__ == "__main__":
     app = App(width, height)
-    mframe = MainViewFrame()
+    mframe = ContextFrame(None, (0, 0), (1366, 738))
+    for i in range(10):
+        mframe.add_object(np.random.randint(-100, 100, 2), np.random.random(), np.random.uniform(-0.001, 0.001))
+    mframe.interface.setup_ui()
     app.views['main'] = mframe
     app.current_view = 'main'
     app.run()

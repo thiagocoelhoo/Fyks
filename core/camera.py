@@ -11,32 +11,76 @@ from core.rigidbody import RigidBody, ForceField
 class Camera:
     def __init__(self, position, size):
         self.area = pygame.Rect([position, size])
-        self.zoom = 1
+        self.position = list(position)
+        self.size = size
+        self._z = 1
+    
+    @property
+    def w(self):
+        return self.size[0]
+    
+    @property
+    def h(self):
+        return self.size[1]
+    
+    @property
+    def x(self):
+        return self.position[0]
+    
+    @x.setter
+    def x(self, value):
+        self.position[0] = value
+        self.area.centerx = (self.position[0] + self.size[0]/2) * self.zoom
+    
+    @property
+    def y(self):
+        return self.position[1]
+
+    @y.setter
+    def y(self, value):
+        self.position[1] = value
+        self.area.centery = (self.position[1] + self.size[1]/2) * self.zoom
+    
+    @property
+    def zoom(self):
+        return self._z
+    
+    @zoom.setter
+    def zoom(self, value):
+        self._z = value
+        self.area.w = self.size[0] * self._z
+        self.area.h = self.size[1] * self._z
+        self.area.centerx = (self.position[0] + self.size[0]/2) * self.zoom
+        self.area.centery = (self.position[1] + self.size[1]/2) * self.zoom
 
     def collide(self, obj):
-        return pygame.Rect(self.area).colliderect(obj.get_rect())
+        # area = list(self.area)
+        # area[2] /= self.zoom
+        # area[3] /= self.zoom
+        # return pygame.Rect(area).colliderect(obj.get_rect())
+        return self.area.colliderect(obj.get_rect())
     
     def draw_grid(self, surface):
         color = core.theme["context-grid"]
+        space = int(20 * self.zoom)
+        cols = self.w / space
+        rows = self.h / space
         
-        cols = self.area.w / 10 / self.zoom / 2
-        rows = self.area.h / 10 / self.zoom / 2
-
-        for c in range(-int(cols)//2, int(cols)//2 + 1):
-            x1 = int(c * self.area.w / cols - self.area.x) % self.area.w
+        for c in range(-int(cols)//2, int(cols)//2 +  1):
+            x1 = (c * space - self.area.x) % int(self.w // space * space)
             y1 = 0
-            y2 = self.area.h
+            y2 = self.h
             pygame.gfxdraw.vline(surface, x1, y1, y2, color)
         
         for r in range(-int(rows)//2, int(rows)//2 + 1):
             x1 = 0
-            x2 = self.area.w
-            y1 = int(r * self.area.h / rows - self.area.y) % self.area.h
+            x2 = self.w
+            y1 = int(r * space - self.area.y) % int(self.h // space * space)
             pygame.gfxdraw.hline(surface, x1, x2, y1, color)
-        
+
     def draw_axes(self, surface):
-        pygame.gfxdraw.line(surface, -self.area.x, 0, -self.area.x, self.area.h, (50, 255, 50))
-        pygame.gfxdraw.line(surface, 0, -self.area.y, self.area.w, -self.area.y, (255, 50, 50))
+        pygame.gfxdraw.line(surface, -self.area.x, 0, -self.area.x, self.h, (50, 255, 50))
+        pygame.gfxdraw.line(surface, 0, -self.area.y, self.w, -self.area.y, (255, 50, 50))
     
     def render(self, surface, obj, v=True):
         objx = int(obj.x * self.zoom - self.area.x)
@@ -102,14 +146,15 @@ class Camera:
                 render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
         elif type(obj) == ForceField:
             if obj.selected:
-                pygame.gfxdraw.aacircle(surface, objx, objy, obj.size, (50, 155, 200, 100))
-                pygame.gfxdraw.filled_circle(surface, objx, objy, obj.size, (50, 155, 200, 100))
+                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.size * self.zoom), (50, 155, 200, 100))
+                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.size * self.zoom), (50, 155, 200, 100))
 
                 pygame.gfxdraw.aacircle(surface, objx, objy, 10, (255, 172, 252))
                 pygame.gfxdraw.filled_circle(surface, objx, objy, 10, (255, 102, 252, 200))
             else:
-                pygame.gfxdraw.aacircle(surface, objx, objy, obj.size, (235, 192, 52, 100))
-                pygame.gfxdraw.filled_circle(surface, objx, objy, obj.size, (235, 192, 52, 80))
+                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.size * self.zoom), (235, 192, 52, 100))
+                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.size * self.zoom), (235, 192, 52, 80))
 
                 pygame.gfxdraw.aacircle(surface, objx, objy, 10, (255, 72, 22))
                 pygame.gfxdraw.filled_circle(surface, objx, objy, 10, (255, 102, 52, 200))
+        # pygame.gfxdraw.rectangle(surface, (self.size[0]/4, self.size[1]/4, self.area.w, self.area.h), (0, 255, 100))

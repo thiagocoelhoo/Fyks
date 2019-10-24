@@ -25,20 +25,21 @@ class Force(Component):
 class RigidBody(Component):
     __instances = []
 
-    def __init__(self, position, velocity, acceleration, mass):
+    def __init__(self, position, velocity, acceleration, mass, charge):
         super().__init__()
 
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
         self.mass = mass
+        self.charge = charge
         self.forces = []
         self.temp_forces = []
 
         self.r = 20
         self.color = (255, 0, 0)
-        self.selected = False        
-
+        self.selected = False
+        
         __class__.__instances.append(self)
     
     @classmethod
@@ -67,22 +68,34 @@ class RigidBody(Component):
     def update(self, dt):
         self.ax = 0.0
         self.ay = 0.0
-
-        for force in self.forces + self.temp_forces:
-            self.apply_force(force)
-        
         self.temp_forces.clear()
+
+        # força de campos
         for field in ForceField.get_all():
             dx = (field.x - self.x)
             dy = (field.y - self.y)
             d = (dx**2 + dy**2)**0.5
-            f = 1 / d**2 * field.force
-
+            f = field.value * self.mass / d**2
             if d < field.size:
                 force = Force(dx * f, dy * f, self)
                 self.temp_forces.append(force)
         
-        # self.temp_forces.clear()
+        # força elétrica
+        for obj in self.__instances:
+            if obj != self:
+                kqq = 9e9 * self.charge * obj.charge
+                dx = (self.x - obj.x)
+                dy = (self.y - obj.y)
+                d = (dx**2 + dy**2) ** 0.5
+                fx = kqq / d**2 * (dx / d)
+                fy = kqq / d**2 * (dy / d)
+                force = Force(fx, fy, self)
+                self.temp_forces.append(force)
+        
+        # aplicação das forças geradas
+        for force in self.forces + self.temp_forces:
+            self.apply_force(force)
+        
         self.update_(dt)
      
     def draw(self, screen):
@@ -99,10 +112,10 @@ class RigidBody(Component):
 class ForceField:
     __instances = []
 
-    def __init__(self, position, size, force):
+    def __init__(self, position, size, value):
         self.x, self.y = position
         self.size = size
-        self.force = force
+        self.value = value
         self.selected = False
 
         __class__.__instances.append(self)
