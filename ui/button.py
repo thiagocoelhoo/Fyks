@@ -57,3 +57,35 @@ class Button(Widget):
         )
         self.label.draw(self.surface)
         surface.blit(self.surface, self.pos)
+
+
+class IconButton(Button):
+    def __init__(self, position, size, icon_path, func=None):
+        super(Button, self).__init__(position, size)
+        
+        self.icon = pygame.image.load(icon_path)
+        self.icon = pygame.transform.scale(self.icon, (40, 40))
+
+        self.pressed_color = core.theme["button-pressed-color"]
+        self.hover_color = core.theme["button-hover-color"]
+        self.none_color = core.theme["button-color"]
+        self.border_color = core.theme["button-border-color"]
+        self.color = self.none_color
+
+        self.function = func or (lambda: print('Pressed'))
+        self.pressed = False
+
+        eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
+        eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
+         
+    def draw(self, surface):
+        aa_round_rect(
+            surface=self.surface,
+            rect=((0, 0), self.size),
+            color=self.border_color,
+            rad=2,
+            border=1,
+            inside=self.color
+        )
+        self.surface.blit(self.icon, (0, 0))
+        surface.blit(self.surface, self.pos)

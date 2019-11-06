@@ -37,6 +37,8 @@ class ContextFrame:
         self.__selected = lambda: None
         self.selection_box = None
 
+        self.mi = None
+
         self.eventhandler = core.get_eventhandler()
         self.eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
         self.eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
@@ -67,6 +69,9 @@ class ContextFrame:
             self.context.mode = ''
         else:
             self.context.mode = 'interagente'
+    
+    def set_mode(self, mode):
+        self.mode = mode
     
     def toggle_pause(self):
         self.paused = not self.paused
@@ -105,6 +110,12 @@ class ContextFrame:
                     ff = ForceField(event.pos, (200, 200), (0.0, 0.0))
                     self.context.add_object(ff)
                     self.mode == 'forcefield-edit'
+                elif self.mode == 'measure':
+                    if self.mi is not None:
+                        self.mode = 'None'
+                        self.mi = None
+                    else:
+                        self.mi = event.pos
                 elif self.selection:
                     self.selected = self.selection[-1]
             elif event.button == 4:
@@ -167,14 +178,19 @@ class ContextFrame:
                     elif not collision:
                         self.selection.remove(obj)
                         obj.selected = False
-            
+        
+        if self.context.time >= self.max_time:
+            self.paused = True
         if not self.paused:
             self.context.update(dt)
     
     def draw(self, surface):
         self.context.draw()
         self.interface.surface.blit(self.context.surface, (0, 0))
-        
+
+        if self.mode == 'measure' and self.mi is not None:
+            pygame.gfxdraw.line(self.interface.surface, *self.mi, *mouse.pos, (50, 200, 150))
+
         if self.selection_box:
             pygame.gfxdraw.rectangle(self.interface.surface, self.selection_box, (100, 150, 255, 200))
             pygame.gfxdraw.box(self.interface.surface, self.selection_box, (100, 150, 255, 50))

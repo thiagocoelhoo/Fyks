@@ -1,6 +1,6 @@
 from .widget import Widget
 from .label import Label
-from .button import Button
+from .button import Button, IconButton
 from .frame import Frame
 from .entry import Entry
 from .itemlist import ItemList

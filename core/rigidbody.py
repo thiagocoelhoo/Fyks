@@ -77,7 +77,7 @@ class RigidBody(Component):
             d = (dx**2 + dy**2)**0.5
             f = field.value * self.mass / d**2
             if d < field.size:
-                force = Force(dx * f, dy * f, self)
+                force = Force(dx / d * f, dy / d * f, self)
                 self.temp_forces.append(force)
         
         # força elétrica
@@ -87,8 +87,8 @@ class RigidBody(Component):
                 dx = (self.x - obj.x)
                 dy = (self.y - obj.y)
                 d = (dx**2 + dy**2) ** 0.5
-                fx = kqq / d**2 * (dx / d)
-                fy = kqq / d**2 * (dy / d)
+                fx = kqq / d**3 * dx
+                fy = kqq / d**3 * dy
                 force = Force(fx, fy, self)
                 self.temp_forces.append(force)
         

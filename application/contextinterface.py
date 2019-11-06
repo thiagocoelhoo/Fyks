@@ -6,6 +6,7 @@ import core
 from ui import (
     Frame,
     Button,
+    IconButton,
     Label,
     SubWindow,
     Entry,
@@ -143,6 +144,7 @@ class ContextInterface(Frame):
         vector_list.bg_color = (150, 150, 180)
         options_frame['vectors_list'] = vector_list
         
+        self.widgets['measure_tool_bt'] = IconButton((1106, 10), (40, 40), 'assets/regua.png', func=lambda: self.contextframe.set_mode('measure'))
         self.widgets['options_frame'] = options_frame
         self.widgets['status_label'] = Label('status: None', (20, 20))
         self.widgets['cam_pos_label'] = Label('cam:', (20, 40))

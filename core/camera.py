@@ -136,7 +136,7 @@ class Camera:
 
             if obj.ax or obj.ay:
                 x1 = int(obj.x * self.zoom - self.area.x)
-                y1 = int(obj.y * self.zoom - self.area.y) - 30
+                y1 = int(obj.y * self.zoom - self.area.y)
 
                 size = (obj.ax * self.zoom, obj.ay * self.zoom)
                 tsize = (obj.ax**2 + obj.ay**2)**0.5
