@@ -21,9 +21,10 @@ class Entry(Widget):
         self.cursor = len(text)
         self.label = Label(name, (position[0], position[1]-20))
         self.label.color = (80, 80, 80)
-        self.content_label = Label('', text_pos)
 
+        self.content_label = Label('', text_pos)
         self.content_label.color = (50, 50, 50)
+
         self.activated_color = core.theme["entry-border-color activated"]
         self.none_color = (150, 150, 150)
         self.border_color = self.none_color
@@ -38,7 +39,8 @@ class Entry(Widget):
 
         eventhandler.add_handler(pygame.KEYDOWN, self.on_keydown)
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousebuttondown)
-
+    
+    '''
     @classmethod
     def all(cls):
         dead = set()
@@ -49,6 +51,19 @@ class Entry(Widget):
             else:
                 dead.add(ref)
         cls.__instances -= dead
+    '''
+
+    @Widget.y.setter
+    def y(self, value):
+        self.label.pos[1] = value-20
+        self.content_label.pos[1] = value + 6
+        self.pos[1] = value
+
+    @Widget.x.setter
+    def x(self, value):
+        self.label.pos[0] = value
+        self.content_label.pos[0] = value + 4
+        self.pos[0] = value
 
     @property
     def text(self):
@@ -59,7 +74,9 @@ class Entry(Widget):
         self.__text = value
         self.content_label.text = self.text
 
-    def on_keydown(self, key):    
+    # ----------- EVENTS --------------
+
+    def on_keydown(self, key):
         if self.active:
             self.changed = True
             if key.key == pygame.K_BACKSPACE:
@@ -75,7 +92,6 @@ class Entry(Widget):
                     self.cursor += 1
             else:
                 uc = key.unicode
-                print("UC:", uc)
                 self.text = self.text[:self.cursor] + uc + self.text[self.cursor:]
                 self.cursor += 1
         else:
@@ -88,6 +104,8 @@ class Entry(Widget):
             else:
                 self.active = False
 
+    # ---------- ESSENCIALS -----------
+    
     def update(self, dt, event=pygame.NOEVENT):
         if mouse.pressed[0]:
             if self.is_mouse_over():

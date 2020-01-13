@@ -17,57 +17,75 @@ class Button(Widget):
         self.none_color = core.theme["button-color"]
         self.border_color = core.theme["button-border-color"]
         self.color = self.none_color
-        self.label = Label(text, (position[0] + 6, position[1] + 6))
+
+        self.label = Label(text, (6, 6))
         self.function = func or (lambda: print('Pressed'))
         self.pressed = False
 
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
         eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
-    
+
+    # ----------- EVENTS --------------
+
     def on_mousedown(self, event):
-        '''
-        if self.is_mouse_over():
-            if event.button == 0:
-                self.color = self.pressed_color
+        if self.is_mouse_over() and not self.pressed and event.button == 1:
+            self.color = self.pressed_color
             self.pressed = True
-        '''
+            self.function()
     
     def on_mouseup(self, event):
-        '''
-        if event.button == 0 and self.pressed:
-            self.function()
+        if self.pressed and event.button == 1:
             self.pressed = False
-        '''
+        
+    # ---------- ESSENCIALS -----------
 
     def update(self, dt):
-        mouse_down = mouse.pressed
-
-        if self.is_mouse_over():
-            if mouse_down[0]:
-                self.color = self.pressed_color
-                if not self.pressed:
-                    self.function()
-                    self.pressed = True
-            else:
+        if not self.pressed:
+            if self.is_mouse_over():
                 self.color = self.hover_color
-                if self.pressed:
-                    self.pressed = False
-        else:
-            self.color = self.none_color
-        
-        #if not self.pressed:
-            #if self.is_mouse_over():
-                #self.color = self.hover_color
-            #else:
-                #self.color = self.none_color
+            else:
+                self.color = self.none_color
     
     def draw(self, surface):
         aa_round_rect(
-            surface=surface,
-            rect=(self.pos, self.size),
+            surface=self.surface,
+            rect=((0, 0), self.size),
             color=self.border_color,
             rad=2,
             border=1,
             inside=self.color
         )
-        self.label.draw(surface)
+        self.label.draw(self.surface)
+        surface.blit(self.surface, self.pos)
+
+
+class IconButton(Button):
+    def __init__(self, position, size, icon_path, func=None):
+        super(Button, self).__init__(position, size)
+        
+        self.icon = pygame.image.load(icon_path)
+        self.icon = pygame.transform.scale(self.icon, (40, 40))
+
+        self.pressed_color = core.theme["button-pressed-color"]
+        self.hover_color = core.theme["button-hover-color"]
+        self.none_color = core.theme["button-color"]
+        self.border_color = core.theme["button-border-color"]
+        self.color = self.none_color
+
+        self.function = func or (lambda: print('Pressed'))
+        self.pressed = False
+
+        eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
+        eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
+         
+    def draw(self, surface):
+        aa_round_rect(
+            surface=self.surface,
+            rect=((0, 0), self.size),
+            color=self.border_color,
+            rad=2,
+            border=1,
+            inside=self.color
+        )
+        self.surface.blit(self.icon, (0, 0))
+        surface.blit(self.surface, self.pos)

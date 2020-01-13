@@ -14,8 +14,17 @@ def get_ang(w, h):
     else:
         cos = w / (w**2 + h**2)**0.5
         sin = h / (w**2 + h**2)**0.5
+        
+        arccos = math.acos(cos)
+        arcsin = math.asin(sin)
 
-        ang = math.asin(sin)
+        if arcsin > 0:
+            ang = arccos
+        else:
+            if arccos < 0:
+                ang = arcsin
+            else:
+                ang = math.pi*2 - arccos
     
     return ang
 

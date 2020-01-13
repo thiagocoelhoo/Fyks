@@ -10,41 +10,53 @@ class Widget:
 
     def __init__(self, position, size, draw_rect=True):
         self.master = None
-
+        
+        self.surface = pygame.Surface(size, pygame.SRCALPHA)
+        self.surface = self.surface.convert_alpha()
         self.pos = np.array(position)
         self.size = size
+
         self.color = (0, 255, 0)
         self.active = False
+        self.container = False
         
         self.__instances.add(weakref.ref(self))
+
+    def delete(self):
+        pass
     
     @property
     def x(self):
         return self.pos[0]
     
+    @x.setter
+    def x(self, value):
+        self.pos[0] = value
+
     @property
     def y(self):
         return self.pos[1]
+    
+    @y.setter
+    def y(self, value):
+        self.pos[1] = value
     
     @property
     def w(self):
         return self.size[0]
     
+    @w.setter
+    def w(self, value):
+        self.size = (value, self.size[1])
+    
     @property
     def h(self):
         return self.size[1]
-        
-    @classmethod
-    def all(cls):
-        dead = set()
-        for ref in cls.__instances:
-            obj = ref()
-            if obj is not None:
-                yield obj
-            else:
-                dead.add(ref)
-        cls.__instances -= dead
 
+    @h.setter
+    def h(self, value):
+        self.size = (self.size[0], value)
+    
     @property
     def global_pos(self):
         if self.master:
@@ -53,9 +65,7 @@ class Widget:
 
     def is_mouse_over(self):
         mx, my = pygame.mouse.get_pos()
-        if self.global_pos[0] <= mx <= self.global_pos[0] + self.size[0]:
-            if self.global_pos[1] <= my <= self.global_pos[1] + self.size[1]:
-                return True
+        return self.is_inside((mx, my))
     
     def is_inside(self, position):
         if self.global_pos[0] <= position[0] <= self.global_pos[0] + self.size[0]:
@@ -66,6 +76,13 @@ class Widget:
     def update(self, dt):
         pass
     
-    def draw(self, surface):
-        rect = (self.pos, self.size)
-        pygame.gfxdraw.rectangle(surface, rect, self.color)
+    def render(self):
+        self.surface.fill((0, 0, 0, 0))
+        rect = ((0, 0), self.size)
+        pygame.gfxdraw.rectangle(self.surface, rect, self.color)
+
+    def draw(self, surface, position=None):
+        self.render()
+        if position is None:
+            position = self.pos
+        surface.blit(self.surface, position)
