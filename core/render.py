@@ -1,0 +1,100 @@
+import pygame
+import pygame.gfxdraw
+
+import core
+import render_engine
+from core.rigidbody import RigidBody, ForceField
+
+
+class Render:
+    def __init__(self, camera):
+        self.camera = camera
+    
+    def draw_grid(self, surface):
+        color = core.theme["context-grid"]
+        space = int(20 * self.camera.zoom)
+        cols = self.camera.w / space
+        rows = self.camera.h / space
+        
+        for c in range(-int(cols)//2, int(cols)//2 +  1):
+            x1 = (c * space - self.camera.area.x) % int(self.camera.w // space * space)
+            y1 = 0
+            y2 = self.camera.h
+            pygame.gfxdraw.vline(surface, x1, y1, y2, color)
+        
+        for r in range(-int(rows)//2, int(rows)//2 + 1):
+            x1 = 0
+            x2 = self.camera.w
+            y1 = int(r * space - self.camera.area.y) % int(self.camera.h // space * space)
+            pygame.gfxdraw.hline(surface, x1, x2, y1, color)
+    
+    def draw_axes(self, surface):
+        pygame.gfxdraw.line(surface, -self.camera.area.x, 0, -self.camera.area.x, self.camera.h, (50, 255, 50))
+        pygame.gfxdraw.line(surface, 0, -self.camera.area.y, self.camera.w, -self.camera.area.y, (255, 50, 50))
+
+    def render(self, surface, obj, vectors=True):
+        objx = int(obj.x * self.camera.zoom - self.camera.area.x)
+        objy = int(obj.y * self.camera.zoom - self.camera.area.y)
+        
+        '''
+        if vectors:
+            for force in obj.forces:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
+
+                size = (force.fx * self.zoom, force.fy * self.zoom)
+                tsize = (force.fx**2 + force.fy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+                
+                if force.selected:
+                    color = (69, 161, 255)
+                else:
+                    color = (200, 200, 200)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+
+            for force in obj.temp_forces:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
+
+                size = (force.fx * self.zoom, force.fy * self.zoom)
+                tsize = (force.fx**2 + force.fy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+                
+                if force.selected:
+                    color = (255, 161, 69)
+                else:
+                    color = (50, 50, 50)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+
+            if obj.vx or obj.vy:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
+
+                size = (obj.vx * self.zoom, obj.vy * self.zoom)
+                tsize = (obj.vx**2 + obj.vy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+
+                color = (0, 255, 0)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+
+            if obj.ax or obj.ay:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
+
+                size = (obj.ax * self.zoom, obj.ay * self.zoom)
+                tsize = (obj.ax**2 + obj.ay**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+
+                color = (200, 50, 255)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+        '''
+        
+        if obj.selected:
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.camera.zoom), (50, 100, 100, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.camera.zoom), (50, 255, 100))
+        else:
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.camera.zoom), (255, 0, 0, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.camera.zoom), obj.color)
+
+
+        # pygame.gfxdraw.rectangle(surface, (self.size[0]/4, self.size[1]/4, self.area.w, self.area.h), (0, 255, 100))
