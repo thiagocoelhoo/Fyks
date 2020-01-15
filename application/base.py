@@ -5,9 +5,13 @@ import core
 
 
 class App:
-    
-    __current = None
+    __instance = None
 
+    def __new__(cls, *args, **kwargs):
+        if cls.__instance is None:
+            cls.__instance = object.__new__(cls)
+        return cls.__instance
+    
     def __init__(self, width, height):
         self.surface = pygame.display.set_mode((width, height), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
@@ -20,8 +24,6 @@ class App:
         self.eventhandler = core.get_eventhandler()
         self.eventhandler.add_handler(pygame.QUIT, self.on_quit)
 
-        App.__current = self
-
     def on_quit(self, event):
         self.running = False
     
@@ -32,9 +34,8 @@ class App:
             self.mouse.update()
             
             self.views[self.current_view].update(self.dt)
-            self.views[self.current_view].draw(self.surface)  
+            self.views[self.current_view].draw(self.surface)
 
             pygame.display.update()
             self.dt = self.clock.tick(0) / 1000
-        
         pygame.quit()
