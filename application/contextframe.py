@@ -5,19 +5,10 @@ import pygame
 import pygame.gfxdraw
 
 import core
-from core.camera import Camera
 from core.rigidbody import RigidBody, ForceField, Force
 from core.collisions import collide
 from application.context import Context
 from application.contextinterface import ContextInterface, ObjectDataFrame
-from ui import (
-    Frame,
-    Button,
-    Label,
-    SubWindow,
-    Entry,
-    OptionsList,
-)
 
 mouse = core.get_mouse()
 
@@ -117,11 +108,11 @@ class ContextFrame:
                     self.selected = self.selection[-1]
                 '''
             elif self.context.is_mouse_over() and event.button == 4:
-                if self.context.cam.zoom < 10:
-                    self.context.cam.zoom += 0.05
+                if self.context.camera.zoom < 10:
+                    self.context.camera.zoom += 0.05
             elif self.context.is_mouse_over() and event.button == 5:
-                if self.context.cam.zoom > 0.1:
-                    self.context.cam.zoom -= 0.05
+                if self.context.camera.zoom > 0.1:
+                    self.context.camera.zoom -= 0.05
     
     def on_mouseup(self, event):
         if event.button == 1:
@@ -167,17 +158,17 @@ class ContextFrame:
             if mouse.pressed[0]:
                 if self.mode == "move":
                     for obj in self.selection:
-                        obj.x += rx / self.context.cam.zoom
-                        obj.y += ry / self.context.cam.zoom
+                        obj.x += rx / self.context.camera.zoom
+                        obj.y += ry / self.context.camera.zoom
                 elif self.mode == "move_spc":
-                    self.context.cam.x -= rx / self.context.cam.zoom
-                    self.context.cam.y -= ry / self.context.cam.zoom
+                    self.context.camera.x -= rx / self.context.camera.zoom
+                    self.context.camera.y -= ry / self.context.camera.zoom
         
         for obj in self.context.objects:
-            if self.context.cam.collide(obj):
+            if self.context.camera.collide(obj):
                 rect = obj.get_rect()
-                rect[0] -= self.context.cam.area.x
-                rect[1] -= self.context.cam.area.y
+                rect[0] -= self.context.camera.area.x
+                rect[1] -= self.context.camera.area.y
 
                 if self.selection_box is not None:
                     selection_box = [
@@ -199,8 +190,8 @@ class ContextFrame:
         # -----------------update interface labels-------------------
 
         self.interface.widgets['status_label'].text = f'paused: {self.context.paused}'
-        self.interface.widgets['cam_pos_label'].text = f'cam: {self.context.cam.area}'
-        self.interface.widgets['zoom_label'].text = f'zoom: {self.context.cam.zoom}'
+        self.interface.widgets['cam_pos_label'].text = f'cam: {self.context.camera.area}'
+        self.interface.widgets['zoom_label'].text = f'zoom: {self.context.camera.zoom}'
         self.interface.widgets['movement_label'].text = f'movement: {self.mode == "move"}'
         
     def draw(self, surface):

@@ -3,6 +3,7 @@ import numpy as np
 
 import core
 from core.camera import Camera
+from core.render import Render
 from core.rigidbody import RigidBody
 from render_engine import draw_vector, get_ang
 from ui import Frame
@@ -12,15 +13,20 @@ class Context(Frame):
     def __init__(self, framesize):
         super().__init__((0, 0), framesize)
         self.size = framesize
-        self.mode = ''
-        self.cam = Camera((-framesize[0]/2, -framesize[1]/2), framesize)
-        self.mesh = np.zeros((framesize[0] // 40 + 1, framesize[1] // 40 + 4, 3))
-        self.show = False
+        self.camera = Camera((-framesize[0]/2, -framesize[1]/2), framesize)
+        self.render = Render(self.camera)
+        
+        # self.mesh = np.zeros((framesize[0] // 40 + 1, framesize[1] // 40 + 4, 3))
+        # self.show = False
+
         self.paths = []
-        self.step = 0.2
+        self.path_step = 0.2
+
         self.timer = 0
         self.paused = False
         self.objects = []
+
+        self.mode = ''
 
     def pause(self):
         self.paused = not self.paused
@@ -41,9 +47,10 @@ class Context(Frame):
     
     def draw(self):
         self.surface.fill(core.theme["context-background"])
-        self.cam.draw_grid(self.surface)
-        self.cam.draw_axes(self.surface)
-           
+        self.render.draw_grid(self.surface)
+        self.render.draw_axes(self.surface)
+
+        '''
         if self.show:
             for x in range(self.mesh.shape[0]):
                 for y in range(self.mesh.shape[1]):
@@ -58,30 +65,32 @@ class Context(Frame):
                         color = (0, 0, 255)
 
                     draw_vector(self.surface, pos, 50, ang, color)
+        '''
         
         for x, y in self.paths:
             pcolor = core.theme["path-color"]
-            x_ = int(x * self.cam.zoom - self.cam.area.x)
-            y_ = int(y * self.cam.zoom - self.cam.area.y)
-            pygame.gfxdraw.filled_circle(self.surface, x_, y_, int(3 * self.cam.zoom), (*pcolor, 100))
-            pygame.gfxdraw.aacircle(self.surface, x_, y_, int(3 * self.cam.zoom), pcolor)
+            x_ = int(x * self.camera.zoom - self.camera.area.x)
+            y_ = int(y * self.camera.zoom - self.camera.area.y)
+            pygame.gfxdraw.filled_circle(self.surface, x_, y_, int(3 * self.camera.zoom), (*pcolor, 100))
+            pygame.gfxdraw.aacircle(self.surface, x_, y_, int(3 * self.camera.zoom), pcolor)
         
         for obj in self.objects:
-            if self.cam.collide(obj):
-                self.cam.render(self.surface, obj)
+            if self.camera.collide(obj):
+                self.render.render(self.surface, obj)
     
     def update(self, dt):
-        self.mesh = np.zeros(self.mesh.shape)
+        # self.mesh = np.zeros(self.mesh.shape)
 
         for obj in self.objects:
             if not self.paused:
                 obj.update(dt)
 
-                if type(obj) == RigidBody and self.timer >= self.step:
-                    pos = (obj.x, obj.y)
-                    if not pos in self.paths:
-                        self.paths.append(pos)
-                
+                if type(obj) == RigidBody and self.timer >= self.path_step:
+                    obj_position = (obj.x, obj.y)
+                    if not obj_position in self.paths:
+                        self.paths.append(obj_position)
+
+            '''
             # atualizar malha de mostragem de campo
             if self.show:
                 for x in range(self.mesh.shape[0]):
@@ -97,6 +106,7 @@ class Context(Frame):
                             self.mesh[x, y, 2] += 9e9 * obj.charge / d**2
                         except:
                             pass
+            '''
         
         if not self.paused:
             self.timer += dt

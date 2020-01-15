@@ -212,8 +212,8 @@ class ContextInterface(Frame):
     def on_mousedown(self, event):
         if self.is_mouse_over():
             if event.button == 1:
-                for k in self.widgets:
-                    if self.widgets[k].active:
+                for widget in self.widgets.values():
+                    if widget.active:
                         self.contextframe.selection_box = None
                         self.active = False
                         break
