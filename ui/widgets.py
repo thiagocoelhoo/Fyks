@@ -1,13 +1,15 @@
 import pygame
 import pygame.gfxdraw
 
-from .widget import Widget
-from .label import Label
-from .button import Button
-from .frame import Frame
-from .entry import Entry
-from render_engine import aa_round_rect, _aa_render_region
 import core
+from render_engine import aa_round_rect, _aa_render_region
+from ui import (
+    Widget,
+    Label,
+    Button,
+    Frame,
+    Entry
+)
 
 mouse = core.get_mouse()
 eventhandler = core.get_eventhandler()

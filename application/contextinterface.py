@@ -34,59 +34,39 @@ class ObjectDataFrame(Frame):
         self["velocity_y_entry"] = Entry("Vel. y", (120, 100), (100, 25), f'{-obj.vy:.2f}')
         self["acceleration_x_entry"] = Entry("Acc. x", (10, 155), (100, 25), f'{obj.ax:.2f}')
         self["acceleration_y_entry"] = Entry("Acc. y", (120, 155), (100, 25), f'{-obj.ay:.2f}')
-        # self["mass_entry"] = Entry("Mass", (10, 170), (100, 25), '10.0')
-        # self["charge_entry"] = Entry("Charge", (120, 170), (100, 25), '10.0')
 
     def update(self, dt):
         super().update(dt)
         obj = self.target()
+
         if obj:
             if not self.widgets['position_x_entry'].active:
                 self.widgets['position_x_entry'].text = f'{obj.x:.2f}'
             else:
-                try:
-                    obj.x = float(self.widgets['position_x_entry'].text)
-                except:
-                    pass
+                obj.x = self.widgets['position_x_entry'].get_value()
             
             if not self.widgets['position_y_entry'].active:
                 self.widgets['position_y_entry'].text = f'{-obj.y:.2f}'
             else:
-                try:
-                    obj.y = -float(self.widgets['position_y_entry'].text)
-                except:
-            
-                    pass
+                obj.y = -self.widgets['position_y_entry'].get_value()
             
             if not self.widgets['velocity_x_entry'].active:
                 self.widgets['velocity_x_entry'].text = f'{obj.vx:.2f}'
             else:
-                try:
-                    obj.vx = float(self.widgets['velocity_x_entry'].text)
-                except:
-                    pass
-            
+                obj.vx = self.widgets['velocity_x_entry'].get_value()
+                
             if not self.widgets['velocity_y_entry'].active:
                 self.widgets['velocity_y_entry'].text = f'{-obj.vy:.2f}'
             else:
-                try:
-                    obj.vy = -float(self.widgets['velocity_y_entry'].text)
-                except:
-                    pass
+                obj.vy = -self.widgets['velocity_y_entry'].get_value()
             
             if self.widgets['acceleration_x_entry'].active:
-                try:
-                    f = rigidbody.Force(float(self.widgets['acceleration_x_entry'].text) * obj.mass, 0, None)
-                    obj.forces[0] = f
-                except:
-                    pass
+                f = rigidbody.Force(self.widgets['acceleration_x_entry'].get_value() * obj.mass, 0, None)
+                obj.forces[0] = f
             
             if self.widgets['acceleration_y_entry'].active:
-                try:
-                    f = rigidbody.Force(0, -float(self.widgets['acceleration_y_entry'].text) * obj.mass, None)
-                    obj.forces[1] = f
-                except:
-                    pass     
+                f = rigidbody.Force(0, -self.widgets['acceleration_y_entry'].get_value() * obj.mass, None)
+                obj.forces[1] = f
         else:
             self.delete()
 
@@ -151,8 +131,6 @@ class ContextInterface(Frame):
             # 'Add force': self.show_add_force_options,
             # 'Add forcefield': self.show_add_forcefield_options,
             'Remove': self.contextframe.remove_selected,
-            # 'Info': None,
-            # 'Exit': None,
         })
         
         self.add_widget('options_menu', options)

@@ -1,7 +1,8 @@
 import json
 
-from .eventhandler import EventHandler
-from .mouse import Mouse
+from core.eventhandler import EventHandler
+from core.mouse import Mouse
+
 
 _eventhandler = None
 _mouse = None

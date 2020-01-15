@@ -9,6 +9,7 @@ from core.rigidbody import RigidBody, ForceField
 class Render:
     def __init__(self, camera):
         self.camera = camera
+        self.show_vector_mesh = False
     
     def draw_grid(self, surface):
         color = core.theme["context-grid"]
@@ -31,6 +32,31 @@ class Render:
     def draw_axes(self, surface):
         pygame.gfxdraw.line(surface, -self.camera.area.x, 0, -self.camera.area.x, self.camera.h, (50, 255, 50))
         pygame.gfxdraw.line(surface, 0, -self.camera.area.y, self.camera.w, -self.camera.area.y, (255, 50, 50))
+
+    def draw_vector_mesh(self, surface, mesh):
+        if self.show_vector_mesh:
+            for x in range(self.mesh.shape[0]):
+                    for y in range(mesh.shape[1]):
+                        pos = (x * 40, y * 40)
+                        ang = get_ang(mesh[x, y, 0], self.mesh[x, y, 1])
+                        i = mesh[x, y, 2]
+
+                        if 100 > i > -100:
+                            color = (150, 150, 150)
+                        elif i > 100:
+                            color = (250, 0, 0)
+                        else:
+                            color = (0, 0, 255)
+
+                        draw_vector(surface, pos, 50, ang, color)
+
+    def draw_paths(self, surface, paths):
+        for x, y in paths:
+            pcolor = core.theme["path-color"]
+            x_ = int(x * self.camera.zoom - self.camera.area.x)
+            y_ = int(y * self.camera.zoom - self.camera.area.y)
+            pygame.gfxdraw.filled_circle(self.surface, x_, y_, int(3 * self.camera.zoom), (*pcolor, 100))
+            pygame.gfxdraw.aacircle(self.surface, x_, y_, int(3 * self.camera.zoom), pcolor)
 
     def render(self, surface, obj, vectors=True):
         objx = int(obj.x * self.camera.zoom - self.camera.area.x)

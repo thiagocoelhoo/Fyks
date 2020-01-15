@@ -17,7 +17,6 @@ class Force(Component):
         self.origin = origin
     
     def __mul__(self, n):
-        # assert n is int
         return Force(self.fx * n, self.fy * n, self.origin)
 
 

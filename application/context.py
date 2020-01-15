@@ -5,7 +5,6 @@ import core
 from core.camera import Camera
 from core.render import Render
 from core.rigidbody import RigidBody
-from render_engine import draw_vector, get_ang
 from ui import Frame
 
 
@@ -16,8 +15,7 @@ class Context(Frame):
         self.camera = Camera((-framesize[0]/2, -framesize[1]/2), framesize)
         self.render = Render(self.camera)
         
-        # self.mesh = np.zeros((framesize[0] // 40 + 1, framesize[1] // 40 + 4, 3))
-        # self.show = False
+        self.mesh = np.zeros((framesize[0] // 40 + 1, framesize[1] // 40 + 4, 3))
 
         self.paths = []
         self.path_step = 0.2
@@ -49,30 +47,8 @@ class Context(Frame):
         self.surface.fill(core.theme["context-background"])
         self.render.draw_grid(self.surface)
         self.render.draw_axes(self.surface)
-
-        '''
-        if self.show:
-            for x in range(self.mesh.shape[0]):
-                for y in range(self.mesh.shape[1]):
-                    pos = (x * 40, y * 40)
-                    ang = get_ang(self.mesh[x, y, 0], self.mesh[x, y, 1])
-                    i = self.mesh[x, y, 2]
-                    if 100 > i > -100:
-                        color = (150, 150, 150)
-                    elif i > 100:
-                        color = (250, 0, 0)
-                    else:
-                        color = (0, 0, 255)
-
-                    draw_vector(self.surface, pos, 50, ang, color)
-        '''
-        
-        for x, y in self.paths:
-            pcolor = core.theme["path-color"]
-            x_ = int(x * self.camera.zoom - self.camera.area.x)
-            y_ = int(y * self.camera.zoom - self.camera.area.y)
-            pygame.gfxdraw.filled_circle(self.surface, x_, y_, int(3 * self.camera.zoom), (*pcolor, 100))
-            pygame.gfxdraw.aacircle(self.surface, x_, y_, int(3 * self.camera.zoom), pcolor)
+        self.render.draw_vector_mesh(self.surface, mesh)
+        self.render.draw_paths(self.surface, self.paths)
         
         for obj in self.objects:
             if self.camera.collide(obj):

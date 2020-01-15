@@ -198,9 +198,11 @@ class ContextFrame:
         self.context.draw()
         self.interface.surface.blit(self.context.surface, (0, 0))
 
+        '''
         if self.mode == 'measure' and self.mi is not None:
             pygame.gfxdraw.line(self.interface.surface, *self.mi, *mouse.pos, (50, 200, 150))
-
+        '''
+        
         if self.selection_box:
             pygame.gfxdraw.rectangle(self.interface.surface, self.selection_box, (100, 150, 255, 200))
             pygame.gfxdraw.box(self.interface.surface, self.selection_box, (100, 150, 255, 50))

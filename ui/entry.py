@@ -1,4 +1,5 @@
 import weakref
+import re
 
 import pygame
 
@@ -74,6 +75,12 @@ class Entry(Widget):
         self.__text = value
         self.content_label.text = self.text
 
+    def get_value(self):
+        try:
+            return float(self.text)
+        except ValueError:
+            return 0
+        
     # ----------- EVENTS --------------
 
     def on_keydown(self, key):
