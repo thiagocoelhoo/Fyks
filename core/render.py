@@ -1,9 +1,52 @@
+import math
+
 import pygame
 import pygame.gfxdraw
 
 import core
 import render_engine
 from core.rigidbody import RigidBody, ForceField
+
+
+def rot(x, y, ang):
+    return (x*math.cos(ang) - y*math.sin(ang), y*math.cos(ang) + x*math.sin(ang))
+
+
+def get_ang(w, h):
+    if not w:
+        ang = math.pi / 2 if h > 0 else 3 * math.pi / 2
+    else:
+        hip = (w**2 + h**2)**0.5
+        cos = w / hip
+        sin = h / hip
+        
+        arccos = math.acos(cos)
+        arcsin = math.asin(sin)
+
+        if arcsin > 0:
+            ang = arccos
+        else:
+            if arccos < 0:
+                ang = arcsin
+            else:
+                ang = math.pi*2 - arccos
+    
+    return ang
+
+
+def draw_vector(surface, pos, size, ang, color):
+    local_pos = rot(size, 0, ang)
+    end_pos = local_pos[0] + pos[0], local_pos[1] + pos[1]
+    
+    local_l_line = rot(size - 10, -5, ang)
+    l_line = local_l_line[0] + pos[0], local_l_line[1] + pos[1]
+
+    local_r_line = rot(size - 10, 5, ang)
+    r_line = local_r_line[0] + pos[0], local_r_line[1] + pos[1]
+    
+    pygame.draw.aaline(surface, color, pos, end_pos)
+    pygame.draw.aaline(surface, color, end_pos, l_line)
+    pygame.draw.aaline(surface, color, end_pos, r_line)
 
 
 class Render:
@@ -35,10 +78,10 @@ class Render:
 
     def draw_vector_mesh(self, surface, mesh):
         if self.show_vector_mesh:
-            for x in range(self.mesh.shape[0]):
+            for x in range(mesh.shape[0]):
                     for y in range(mesh.shape[1]):
                         pos = (x * 40, y * 40)
-                        ang = get_ang(mesh[x, y, 0], self.mesh[x, y, 1])
+                        ang = get_ang(mesh[x, y, 0], mesh[x, y, 1])
                         i = mesh[x, y, 2]
 
                         if 100 > i > -100:
@@ -55,8 +98,8 @@ class Render:
             pcolor = core.theme["path-color"]
             x_ = int(x * self.camera.zoom - self.camera.area.x)
             y_ = int(y * self.camera.zoom - self.camera.area.y)
-            pygame.gfxdraw.filled_circle(self.surface, x_, y_, int(3 * self.camera.zoom), (*pcolor, 100))
-            pygame.gfxdraw.aacircle(self.surface, x_, y_, int(3 * self.camera.zoom), pcolor)
+            pygame.gfxdraw.filled_circle(surface, x_, y_, int(3 * self.camera.zoom), (*pcolor, 100))
+            pygame.gfxdraw.aacircle(surface, x_, y_, int(3 * self.camera.zoom), pcolor)
 
     def render(self, surface, obj, vectors=True):
         objx = int(obj.x * self.camera.zoom - self.camera.area.x)

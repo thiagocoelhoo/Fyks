@@ -47,7 +47,7 @@ class Context(Frame):
         self.surface.fill(core.theme["context-background"])
         self.render.draw_grid(self.surface)
         self.render.draw_axes(self.surface)
-        self.render.draw_vector_mesh(self.surface, mesh)
+        self.render.draw_vector_mesh(self.surface, self.mesh)
         self.render.draw_paths(self.surface, self.paths)
         
         for obj in self.objects:
