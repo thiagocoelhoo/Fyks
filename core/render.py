@@ -57,20 +57,26 @@ class Render:
     def draw_grid(self, surface):
         color = core.theme["context-grid"]
         space = int(20 * self.camera.zoom)
-        cols = self.camera.size[0] / space
-        rows = self.camera.size[1] / space
         
-        for c in range(-int(cols)//2, int(cols)//2 +  1):
-            x1 = int(c * space - self.camera.x) % int(self.camera.size[0] // space * space)
+        cstart = -self.camera.centerx / space
+        cmiddle = min((self.camera.size[0], self.camera.centerx)) / space
+        cend = self.camera.size[0] / space - cmiddle
+
+        rstart = -self.camera.centery / space
+        rmiddle = min((self.camera.size[1], self.camera.centery)) / space
+        rend = self.camera.size[1] / space - rmiddle
+
+        for c in range(int(cstart), int(cend)):
+            x = int(c * space + self.camera.centerx)
             y1 = 0
-            y2 = self.camera.size[1]
-            pygame.gfxdraw.vline(surface, x1, y1, y2, color)
-        
-        for r in range(-int(rows)//2, int(rows)//2 + 1):
+            y2 = self.camera.h
+            pygame.gfxdraw.vline(surface, x, y1, y2, color)
+    
+        for r in range(int(rstart), int(rend)):
             x1 = 0
-            x2 = self.camera.size[0]
-            y1 = int(r * space - self.camera.y) % int(self.camera.size[1] // space * space)
-            pygame.gfxdraw.hline(surface, x1, x2, y1, color)
+            x2 = self.camera.w
+            y = int(r * space + self.camera.centery)
+            pygame.gfxdraw.hline(surface, x1, x2, y, color)
     
     def draw_axes(self, surface):
         # pygame.gfxdraw.line(surface, -self.camera.x, 0, -self.camera.x, self.camera.size[1], (50, 255, 50))
@@ -78,7 +84,6 @@ class Render:
         pygame.gfxdraw.line(surface, -self.camera.left, 0, -self.camera.left, self.camera.size[1], (50, 255, 50))
         pygame.gfxdraw.line(surface, 0, -self.camera.top, self.camera.size[0], -self.camera.top, (255, 50, 50))
         
-
     def draw_vector_mesh(self, surface, mesh):
         if self.show_vector_mesh:
             for x in range(mesh.shape[0]):
@@ -97,16 +102,16 @@ class Render:
                         draw_vector(surface, pos, 50, ang, color)
 
     def draw_paths(self, surface, paths):
-        for x, y in paths:
+        for x, y in paths[::20]:
             pcolor = core.theme["path-color"]
-            x_ = int(x * self.camera.zoom - self.camera.area.x)
-            y_ = int(y * self.camera.zoom - self.camera.area.y)
-            pygame.gfxdraw.filled_circle(surface, x_, y_, int(3 * self.camera.zoom), (*pcolor, 100))
-            pygame.gfxdraw.aacircle(surface, x_, y_, int(3 * self.camera.zoom), pcolor)
+            px = int(x * self.camera.zoom + self.camera.centerx)
+            py = int(y * self.camera.zoom + self.camera.centery)
+            pygame.gfxdraw.filled_circle(surface, px, py, int(3 * self.camera.zoom), (*pcolor, 100))
+            pygame.gfxdraw.aacircle(surface, px, py, int(3 * self.camera.zoom), pcolor)
 
     def render(self, surface, obj, vectors=True):
-        objx = int(obj.x * self.camera.zoom - self.camera.x)
-        objy = int(obj.y * self.camera.zoom - self.camera.y)
+        objx = int(obj.x * self.camera.zoom + self.camera.centerx)
+        objy = int(obj.y * self.camera.zoom + self.camera.centery)
         
         '''
         if vectors:

@@ -92,21 +92,8 @@ class ContextFrame:
                     self.selection_box = pygame.Rect([event.pos[0], event.pos[1], 0, 0])
         
         if self.interface.active:
-            if event.button == 1:
-                '''
-                if self.mode == 'forcefield-add':
-                    ff = ForceField(event.pos, (200, 200), (0.0, 0.0))
-                    self.context.add_object(ff)
-                    self.mode == 'forcefield-edit'
-                elif self.mode == 'measure':
-                    if self.mi is not None:
-                        self.mode = 'None'
-                        self.mi = None
-                    else:
-                        self.mi = event.pos
-                if self.selection:
-                    self.selected = self.selection[-1]
-                '''
+            if event.button == 2:
+                self.mode = 'move_spc'
             elif self.context.is_mouse_over() and event.button == 4:
                 if self.context.camera.zoom < 10:
                     self.context.camera.zoom += 0.05
@@ -116,16 +103,16 @@ class ContextFrame:
     
     def on_mouseup(self, event):
         if event.button == 1:
-            if self.mode == "move":
-                self.mode = "none"
+            if self.mode == 'move':
+                self.mode = 'none'
             elif self.selection_box is not None:
                 self.selection_box = None
+        elif event.button == 2:
+            self.mode = 'none'
     
     def on_keydown(self, event):
         if event.key == pygame.K_m:
             self.mode = "move"
-        elif event.key == pygame.K_LCTRL:
-            self.mode = "move_spc"
         elif event.key == pygame.K_SPACE:
             self.toggle_pause()
         elif event.key == pygame.K_DELETE:
@@ -160,24 +147,24 @@ class ContextFrame:
                     for obj in self.selection:
                         obj.x += rx / self.context.camera.zoom
                         obj.y += ry / self.context.camera.zoom
-                elif self.mode == "move_spc":
-                    self.context.camera.move(-rx, -ry)
+            if self.mode == "move_spc":
+                self.context.camera.move(-rx, -ry)
         
         for obj in self.context.objects:
             if self.context.camera.collide(obj):
-                rect = obj.get_rect()
-                rect[0] -= self.context.camera.x
-                rect[1] -= self.context.camera.y
-
                 if self.selection_box is not None:
-                    selection_box = [
-                            self.selection_box.x, 
-                            self.selection_box.y,
-                            self.selection_box.w,
-                            self.selection_box.h
-                    ]
-                    collision = collide(selection_box, rect)
+                    objx = obj.x + self.context.camera.centerx
+                    objy = obj.y + self.context.camera.centery
 
+                    selection_box = (
+                        self.selection_box.x,
+                        self.selection_box.y,
+                        self.selection_box.w,
+                        self.selection_box.h
+                    )
+
+                    collision = collide(selection_box, (objx, objy, obj.r, obj.r))
+                    
                     if obj not in self.selection:    
                         if collision:
                             self.selection.append(obj)
@@ -185,22 +172,14 @@ class ContextFrame:
                     elif not collision:
                         self.selection.remove(obj)
                         obj.selected = False
-
-        # -----------------update interface labels-------------------
-
+        
         self.interface.widgets['status_label'].text = f'paused: {self.context.paused}'
-        # self.interface.widgets['cam_pos_label'].text = f'cam: {self.context.camera.area}'
         self.interface.widgets['zoom_label'].text = f'zoom: {self.context.camera.zoom}'
         self.interface.widgets['movement_label'].text = f'movement: {self.mode == "move"}'
         
     def draw(self, surface):
         self.context.draw()
         self.interface.surface.blit(self.context.surface, (0, 0))
-
-        '''
-        if self.mode == 'measure' and self.mi is not None:
-            pygame.gfxdraw.line(self.interface.surface, *self.mi, *mouse.pos, (50, 200, 150))
-        '''
         
         if self.selection_box:
             pygame.gfxdraw.rectangle(self.interface.surface, self.selection_box, (100, 150, 255, 200))
