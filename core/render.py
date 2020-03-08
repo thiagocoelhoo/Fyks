@@ -57,24 +57,27 @@ class Render:
     def draw_grid(self, surface):
         color = core.theme["context-grid"]
         space = int(20 * self.camera.zoom)
-        cols = self.camera.w / space
-        rows = self.camera.h / space
+        cols = self.camera.size[0] / space
+        rows = self.camera.size[1] / space
         
         for c in range(-int(cols)//2, int(cols)//2 +  1):
-            x1 = (c * space - self.camera.area.x) % int(self.camera.w // space * space)
+            x1 = int(c * space - self.camera.x) % int(self.camera.size[0] // space * space)
             y1 = 0
-            y2 = self.camera.h
+            y2 = self.camera.size[1]
             pygame.gfxdraw.vline(surface, x1, y1, y2, color)
         
         for r in range(-int(rows)//2, int(rows)//2 + 1):
             x1 = 0
-            x2 = self.camera.w
-            y1 = int(r * space - self.camera.area.y) % int(self.camera.h // space * space)
+            x2 = self.camera.size[0]
+            y1 = int(r * space - self.camera.y) % int(self.camera.size[1] // space * space)
             pygame.gfxdraw.hline(surface, x1, x2, y1, color)
     
     def draw_axes(self, surface):
-        pygame.gfxdraw.line(surface, -self.camera.area.x, 0, -self.camera.area.x, self.camera.h, (50, 255, 50))
-        pygame.gfxdraw.line(surface, 0, -self.camera.area.y, self.camera.w, -self.camera.area.y, (255, 50, 50))
+        # pygame.gfxdraw.line(surface, -self.camera.x, 0, -self.camera.x, self.camera.size[1], (50, 255, 50))
+        # pygame.gfxdraw.line(surface, 0, -self.camera.y, self.camera.size[0], -self.camera.y, (255, 50, 50))
+        pygame.gfxdraw.line(surface, -self.camera.left, 0, -self.camera.left, self.camera.size[1], (50, 255, 50))
+        pygame.gfxdraw.line(surface, 0, -self.camera.top, self.camera.size[0], -self.camera.top, (255, 50, 50))
+        
 
     def draw_vector_mesh(self, surface, mesh):
         if self.show_vector_mesh:
@@ -102,8 +105,8 @@ class Render:
             pygame.gfxdraw.aacircle(surface, x_, y_, int(3 * self.camera.zoom), pcolor)
 
     def render(self, surface, obj, vectors=True):
-        objx = int(obj.x * self.camera.zoom - self.camera.area.x)
-        objy = int(obj.y * self.camera.zoom - self.camera.area.y)
+        objx = int(obj.x * self.camera.zoom - self.camera.x)
+        objy = int(obj.y * self.camera.zoom - self.camera.y)
         
         '''
         if vectors:

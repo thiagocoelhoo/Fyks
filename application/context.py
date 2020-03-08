@@ -12,14 +12,12 @@ class Context(Frame):
     def __init__(self, framesize):
         super().__init__((0, 0), framesize)
         self.size = framesize
-        self.camera = Camera((-framesize[0]/2, -framesize[1]/2), framesize)
+        self.camera = Camera((0, 0), framesize)
         self.render = Render(self.camera)
         
         self.mesh = np.zeros((framesize[0] // 40 + 1, framesize[1] // 40 + 4, 3))
-
         self.paths = []
         self.path_step = 0.2
-
         self.timer = 0
         self.paused = False
         self.objects = []
@@ -36,8 +34,8 @@ class Context(Frame):
         self.objects.remove(obj)
 
     def clear(self):
-        self.cam.area.x = -self.cam.area.w/2
-        self.cam.area.y = -self.cam.area.h/2
+        # self.camera.area.x = -self.camera.area.w/2
+        # self.camera.area.y = -self.camera.area.h/2
         self.objects.clear()
         self.mode = ''
         self.paths.clear()

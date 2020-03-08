@@ -1,7 +1,7 @@
 import pygame
 
 import core
-from .widget import Widget
+from ui.widget import Widget
 
 
 class Layout(Widget):

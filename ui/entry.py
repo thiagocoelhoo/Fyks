@@ -4,8 +4,7 @@ import re
 import pygame
 
 import core
-from ui.widget import Widget
-from ui.label import Label
+from ui import Widget, Label
 from render_engine import aa_round_rect, _aa_render_region
 
 mouse = core.get_mouse()

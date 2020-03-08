@@ -26,7 +26,7 @@ class RigidBody(Component):
 
     def __init__(self, position, velocity, acceleration, mass, charge):
         super().__init__()
-        self.id = self.__id
+        self.id = RigidBody.__id
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
@@ -38,11 +38,11 @@ class RigidBody(Component):
         self.color = (255, 0, 0)
         self.selected = False
         
-        __class__.__instances.append(self)
-        __class__.__id += 1
+        RigidBody.__instances.append(self)
+        RigidBody.__id += 1
 
     def delete(self):
-        __class__.__instances.remove(self)
+        RigidBody.__instances.remove(self)
     
     @classmethod
     def get_all(cls):
@@ -122,7 +122,7 @@ class ForceField:
         self.value = value
         self.selected = False
 
-        __class__.__instances.append(self)
+        ForceField.__instances.append(self)
     
     @classmethod
     def get_all(cls):

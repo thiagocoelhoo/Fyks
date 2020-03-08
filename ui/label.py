@@ -1,6 +1,6 @@
 import pygame
 
-from .widget import Widget
+from ui.widget import Widget
 import core
 
 

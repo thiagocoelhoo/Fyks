@@ -1,8 +1,6 @@
 import pygame
 
-from .frame import Frame
-from .button import Button
-from .widget import Widget
+from ui import Frame, Button, Widget
 import core
 
 eventhandler = core.get_eventhandler()
