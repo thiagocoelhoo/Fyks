@@ -34,8 +34,6 @@ class Context(Frame):
         self.objects.remove(obj)
 
     def clear(self):
-        # self.camera.area.x = -self.camera.area.w/2
-        # self.camera.area.y = -self.camera.area.h/2
         self.objects.clear()
         self.mode = ''
         self.paths.clear()

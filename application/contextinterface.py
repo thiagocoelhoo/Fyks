@@ -119,9 +119,8 @@ class ContextInterface(Frame):
 
         self.widgets['options_frame'] = options_frame        
         self.widgets['status_label'] = Label('status: None', (20, 20))
-        self.widgets['cam_pos_label'] = Label('cam:', (20, 40))
-        self.widgets['zoom_label'] = Label("zoom:", (20, 60))
-        self.widgets['movement_label'] = Label('movement:', (20, 80))
+        self.widgets['zoom_label'] = Label("zoom:", (20, 40))
+        self.widgets['movement_label'] = Label('movement:', (20, 60))
         
     def show_options(self, mpos):
         options = OptionsList(mpos, (200, 50))

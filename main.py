@@ -21,6 +21,4 @@ if __name__ == "__main__":
     
     app.views['main'] = mframe
     app.current_view = 'main'
-
-    print(mframe.context.camera.centerx, mframe.context.camera.x)
     app.run()

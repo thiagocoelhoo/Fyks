@@ -78,6 +78,6 @@ class Camera:
         self.y += y_offset
     
     def collide(self, obj):
-        objx = obj.x / self.zoom
-        objy = obj.y / self.zoom
+        objx = obj.x * self.zoom
+        objy = obj.y * self.zoom
         return self.left <= objx <= self.right and self.top <= objy <= self.bottom
