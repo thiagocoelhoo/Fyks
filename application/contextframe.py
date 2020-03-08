@@ -9,7 +9,7 @@ from core.camera import Camera
 from core.rigidbody import RigidBody, ForceField, Force
 from core.collisions import collide
 from application.context import Context
-from application.contextinterface import ContextInterface
+from application.contextinterface import ContextInterface, ObjectDataFrame
 from ui import (
     Frame,
     Button,
@@ -25,19 +25,16 @@ mouse = core.get_mouse()
 class ContextFrame:
     def __init__(self, master, position, size):
         self.context = Context((size[0] - 200, size[1]))
+        self.mode = 'none'
+        self.endtime = 0
+
         self.interface = ContextInterface(position, size, self)
         self.interface.autoclear = False
         self.interface.master = master
 
-        self.mode = 'None'
-        self.paused = True
-        self.max_time = 0
-        
         self.selection = []
         self.__selected = lambda: None
         self.selection_box = None
-
-        self.mi = None
 
         self.eventhandler = core.get_eventhandler()
         self.eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
@@ -60,52 +57,54 @@ class ContextFrame:
         self.__selected = weakref.ref(value)
 
     # ------- CONTEXT FUNCTIONS ---------
-
+    
+    def toggle_pause(self):
+        self.context.timer = 0
+        self.context.pause()
+    
     def show_field(self):
         self.context.show = not self.context.show
 
-    def set_intg(self):
-        if self.context.mode == 'interagente':
-            self.context.mode = ''
-        else:
-            self.context.mode = 'interagente'
-    
     def set_mode(self, mode):
         self.mode = mode
     
-    def toggle_pause(self):
-        self.paused = not self.paused
-
     def clear_context(self):
         self.context.clear()
 
     def add_object(self, position, mass, charge):
         obj = RigidBody((position[0], -position[1]), (0, 0), (0, 0), mass, charge)
-        self.context.add_object(obj) 
+        self.context.add_object(obj)
+        
+        opt_frame = self.interface.widgets['options_frame']
+        obj_list = opt_frame.widgets['object_list_frame']
+        obj_list.add_object(obj)
+
+    def remove_selected(self):
+        opt_frame = self.interface.widgets['options_frame']
+        object_list = opt_frame.widgets['object_list_frame']
+        
+        for obj in self.selection.copy():
+            self.selection.remove(obj)
+            self.context.remove_object(obj)
+            object_list.remove_object(obj)
+            obj.delete()
     
-    def add_forcefield(self, position, force):
-        field = ForceField((position[0], -position[1]), 1000, float(force))
-        self.context.add_object(field)
-
-    def add_force(self, fx, fy):
-        if self.selected:
-            force = Force(fx, fy, self.selected)
-            self.selected.add_force(force)
-
-            def f():
-                self.selected = force
-            
-            return f
-
-    def remove_component(self):
-        if self.selected:
-            self.context.remove(self.selected)
+    def get_objects(self):
+        return self.context.objects
     
     # ----------- EVENTS ---------------
     
-    def on_mousedown(self, event):
+    def on_mousedown(self, event):    
+        if event.button == 1:
+            if self.mode == 'none' and self.interface.active:
+                if self.selection_box is None:
+                    self.selection_box = pygame.Rect([event.pos[0], event.pos[1], 0, 0])
+        elif event.button == 2:
+            self.mode = 'move_spc'
+        
         if self.interface.active:
             if event.button == 1:
+                '''
                 if self.mode == 'forcefield-add':
                     ff = ForceField(event.pos, (200, 200), (0.0, 0.0))
                     self.context.add_object(ff)
@@ -116,45 +115,67 @@ class ContextFrame:
                         self.mi = None
                     else:
                         self.mi = event.pos
-                elif self.selection:
+                if self.selection:
                     self.selected = self.selection[-1]
-            elif event.button == 4:
+                '''
+            elif self.context.is_mouse_over() and event.button == 4:
                 if self.context.cam.zoom < 10:
                     self.context.cam.zoom += 0.05
-            elif event.button == 5:
+            elif self.context.is_mouse_over() and event.button == 5:
                 if self.context.cam.zoom > 0.1:
                     self.context.cam.zoom -= 0.05
     
     def on_mouseup(self, event):
-        if event.button == 1 and self.mode == "move":
-            self.mode = "None"
+        if event.button == 1:
+            if self.mode == 'move':
+                self.mode = 'none'
+            elif self.mode == 'move_spc':
+                self.mode = 'none'
+            elif self.selection_box is not None:
+                self.selection_box = None
+        elif event.button == 2:
+            if self.mode == 'move_spc':
+                self.mode = 'none'
     
     def on_keydown(self, event):
         if event.key == pygame.K_m:
             self.mode = "move"
-        elif event.key == pygame.K_LCTRL:
-            self.mode = "move_spc"
         elif event.key == pygame.K_SPACE:
             self.toggle_pause()
         elif event.key == pygame.K_DELETE:
             if type(self.selected) == Force:
                 self.selected.origin.forces.remove(self.selected)
-                # self.interface.widgets['options_frame'].widgets['vectors_list']
+            else:
+                self.remove_selected()
     
     def on_keyup(self, event):
-        if event.key == pygame.K_LCTRL:
-            self.mode = "None"
+        pass
     
     # ---------- ESSENCIALS ------------
 
     def update(self, dt):
         self.interface.update(dt)
+        self.context.update(dt)
+
+        if self.context.timer >= self.endtime:
+            self.context.paused = True
 
         rx, ry = mouse.rel
         mx, my = mouse.pos
+        
+        if self.selection_box is not None:
+            self.selection_box.w = mx - self.selection_box[0]
+            self.selection_box.h = my - self.selection_box[1]
 
-        if self.max_time and self.context.time >= self.max_time:
-            self.paused = True
+        if self.interface.is_mouse_over():
+            if mouse.pressed[0]:
+                if self.mode == "move":
+                    for obj in self.selection:
+                        obj.x += rx / self.context.cam.zoom
+                        obj.y += ry / self.context.cam.zoom
+            if self.mode == "move_spc":
+                self.context.cam.x -= rx / self.context.cam.zoom
+                self.context.cam.y -= ry / self.context.cam.zoom
         
         for obj in self.context.objects:
             if self.context.cam.collide(obj):
@@ -162,7 +183,7 @@ class ContextFrame:
                 rect[0] -= self.context.cam.area.x
                 rect[1] -= self.context.cam.area.y
 
-                if self.selection_box is not None: # and self.context.cam.collide((mx, my, 1, 1)):
+                if self.selection_box is not None:
                     selection_box = [
                             self.selection_box.x, 
                             self.selection_box.y,
@@ -178,12 +199,14 @@ class ContextFrame:
                     elif not collision:
                         self.selection.remove(obj)
                         obj.selected = False
+
+        # -----------------update interface labels-------------------
+
+        self.interface.widgets['status_label'].text = f'paused: {self.context.paused}'
+        self.interface.widgets['cam_pos_label'].text = f'cam: {self.context.cam.area}'
+        self.interface.widgets['zoom_label'].text = f'zoom: {self.context.cam.zoom}'
+        self.interface.widgets['movement_label'].text = f'movement: {self.mode == "move"}'
         
-        if self.context.time >= self.max_time:
-            self.paused = True
-        if not self.paused:
-            self.context.update(dt)
-    
     def draw(self, surface):
         self.context.draw()
         self.interface.surface.blit(self.context.surface, (0, 0))

@@ -82,46 +82,39 @@ class Camera:
         pygame.gfxdraw.line(surface, -self.area.x, 0, -self.area.x, self.h, (50, 255, 50))
         pygame.gfxdraw.line(surface, 0, -self.area.y, self.w, -self.area.y, (255, 50, 50))
     
-    def render(self, surface, obj, v=True):
+    def render(self, surface, obj, vectors=True):
         objx = int(obj.x * self.zoom - self.area.x)
         objy = int(obj.y * self.zoom - self.area.y)
+        
+        '''
+        if vectors:
+            for force in obj.forces:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
 
-        if type(obj) == RigidBody:
-            if v:
-                for force in obj.forces:
-                    x1 = int(obj.x * self.zoom - self.area.x)
-                    y1 = int(obj.y * self.zoom - self.area.y)
+                size = (force.fx * self.zoom, force.fy * self.zoom)
+                tsize = (force.fx**2 + force.fy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+                
+                if force.selected:
+                    color = (69, 161, 255)
+                else:
+                    color = (200, 200, 200)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
 
-                    size = (force.fx * self.zoom, force.fy * self.zoom)
-                    tsize = (force.fx**2 + force.fy**2)**0.5
-                    ang = render_engine.get_ang(size[0], size[1])
-                    
-                    if force.selected:
-                        color = (69, 161, 255)
-                    else:
-                        color = (200, 200, 200)
-                    render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
+            for force in obj.temp_forces:
+                x1 = int(obj.x * self.zoom - self.area.x)
+                y1 = int(obj.y * self.zoom - self.area.y)
 
-                for force in obj.temp_forces:
-                    x1 = int(obj.x * self.zoom - self.area.x)
-                    y1 = int(obj.y * self.zoom - self.area.y)
-
-                    size = (force.fx * self.zoom, force.fy * self.zoom)
-                    tsize = (force.fx**2 + force.fy**2)**0.5
-                    ang = render_engine.get_ang(size[0], size[1])
-                    
-                    if force.selected:
-                        color = (255, 161, 69)
-                    else:
-                        color = (50, 50, 50)
-                    render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
-
-            if obj.selected:
-                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 100, 100, 50))
-                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100))
-            else:
-                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (255, 0, 0, 50))
-                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), obj.color)
+                size = (force.fx * self.zoom, force.fy * self.zoom)
+                tsize = (force.fx**2 + force.fy**2)**0.5
+                ang = render_engine.get_ang(size[0], size[1])
+                
+                if force.selected:
+                    color = (255, 161, 69)
+                else:
+                    color = (50, 50, 50)
+                render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
 
             if obj.vx or obj.vy:
                 x1 = int(obj.x * self.zoom - self.area.x)
@@ -144,17 +137,14 @@ class Camera:
 
                 color = (200, 50, 255)
                 render_engine.draw_vector(surface, (x1, y1), tsize, ang, color)
-        elif type(obj) == ForceField:
-            if obj.selected:
-                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.size * self.zoom), (50, 155, 200, 100))
-                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.size * self.zoom), (50, 155, 200, 100))
+        '''
+        
+        if obj.selected:
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (50, 100, 100, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), (50, 255, 100))
+        else:
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.zoom), (255, 0, 0, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.zoom), obj.color)
 
-                pygame.gfxdraw.aacircle(surface, objx, objy, 10, (255, 172, 252))
-                pygame.gfxdraw.filled_circle(surface, objx, objy, 10, (255, 102, 252, 200))
-            else:
-                pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.size * self.zoom), (235, 192, 52, 100))
-                pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.size * self.zoom), (235, 192, 52, 80))
 
-                pygame.gfxdraw.aacircle(surface, objx, objy, 10, (255, 72, 22))
-                pygame.gfxdraw.filled_circle(surface, objx, objy, 10, (255, 102, 52, 200))
         # pygame.gfxdraw.rectangle(surface, (self.size[0]/4, self.size[1]/4, self.area.w, self.area.h), (0, 255, 100))

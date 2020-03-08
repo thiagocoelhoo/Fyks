@@ -35,14 +35,19 @@ class Frame(Widget):
             print(str(e))
             return self
 
-    def draw(self, surface):
+    def render(self):
         if self.autoclear:
             self.surface.fill(self.bg_color)
         
         for wid in list(self.widgets.values()):
             wid.draw(self.surface)
-        surface.blit(self.surface, self.pos)
-
+    
+    def draw(self, surface, position=None):
+        self.render()
+        if position is None:
+            position = self.pos
+        surface.blit(self.surface, position)
+    
     def update(self, dt):
         for wid in list(self.widgets.values()):
             wid.update(dt)

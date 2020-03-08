@@ -39,7 +39,8 @@ class Entry(Widget):
 
         eventhandler.add_handler(pygame.KEYDOWN, self.on_keydown)
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousebuttondown)
-
+    
+    '''
     @classmethod
     def all(cls):
         dead = set()
@@ -50,6 +51,19 @@ class Entry(Widget):
             else:
                 dead.add(ref)
         cls.__instances -= dead
+    '''
+
+    @Widget.y.setter
+    def y(self, value):
+        self.label.pos[1] = value-20
+        self.content_label.pos[1] = value + 6
+        self.pos[1] = value
+
+    @Widget.x.setter
+    def x(self, value):
+        self.label.pos[0] = value
+        self.content_label.pos[0] = value + 4
+        self.pos[0] = value
 
     @property
     def text(self):
@@ -62,7 +76,7 @@ class Entry(Widget):
 
     # ----------- EVENTS --------------
 
-    def on_keydown(self, key):    
+    def on_keydown(self, key):
         if self.active:
             self.changed = True
             if key.key == pygame.K_BACKSPACE:

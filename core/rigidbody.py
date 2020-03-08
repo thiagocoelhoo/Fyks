@@ -12,7 +12,6 @@ class Component:
 class Force(Component):
     def __init__(self, cx, cy, origin):
         super().__init__()
-
         self.fx = cx
         self.fy = cy
         self.origin = origin
@@ -24,23 +23,27 @@ class Force(Component):
 
 class RigidBody(Component):
     __instances = []
+    __id = 0
 
     def __init__(self, position, velocity, acceleration, mass, charge):
         super().__init__()
-
+        self.id = self.__id
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
         self.mass = mass
         self.charge = charge
-        self.forces = []
+        self.forces = [Force(0, 0, None), Force(0, 0, None)]
         self.temp_forces = []
-
         self.r = 20
         self.color = (255, 0, 0)
         self.selected = False
         
         __class__.__instances.append(self)
+        __class__.__id += 1
+
+    def delete(self):
+        __class__.__instances.remove(self)
     
     @classmethod
     def get_all(cls):
@@ -70,6 +73,7 @@ class RigidBody(Component):
         self.ay = 0.0
         self.temp_forces.clear()
 
+        '''
         # força de campos
         for field in ForceField.get_all():
             dx = (field.x - self.x)
@@ -91,6 +95,7 @@ class RigidBody(Component):
                 fy = kqq / d**3 * dy
                 force = Force(fx, fy, self)
                 self.temp_forces.append(force)
+        '''
         
         # aplicação das forças geradas
         for force in self.forces + self.temp_forces:

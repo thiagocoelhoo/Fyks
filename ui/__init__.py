@@ -5,4 +5,5 @@ from .frame import Frame
 from .entry import Entry
 from .itemlist import ItemList
 from .optionslist import OptionsList
+from .layout import Layout
 from .widgets import  SubWindow, GraphicFrame

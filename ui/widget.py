@@ -22,7 +22,6 @@ class Widget:
         
         self.__instances.add(weakref.ref(self))
 
-
     def delete(self):
         pass
     
@@ -30,9 +29,17 @@ class Widget:
     def x(self):
         return self.pos[0]
     
+    @x.setter
+    def x(self, value):
+        self.pos[0] = value
+
     @property
     def y(self):
         return self.pos[1]
+    
+    @y.setter
+    def y(self, value):
+        self.pos[1] = value
     
     @property
     def w(self):
@@ -49,18 +56,7 @@ class Widget:
     @h.setter
     def h(self, value):
         self.size = (self.size[0], value)
-        
-    @classmethod
-    def all(cls):
-        dead = set()
-        for ref in cls.__instances:
-            obj = ref()
-            if obj is not None:
-                yield obj
-            else:
-                dead.add(ref)
-        cls.__instances -= dead
-
+    
     @property
     def global_pos(self):
         if self.master:
@@ -80,7 +76,13 @@ class Widget:
     def update(self, dt):
         pass
     
-    def draw(self, surface):
+    def render(self):
         self.surface.fill((0, 0, 0, 0))
-        rect = (self.pos, self.size)
-        pygame.gfxdraw.rectangle(surface, rect, self.color)
+        rect = ((0, 0), self.size)
+        pygame.gfxdraw.rectangle(self.surface, rect, self.color)
+
+    def draw(self, surface, position=None):
+        self.render()
+        if position is None:
+            position = self.pos
+        surface.blit(self.surface, position)
