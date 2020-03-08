@@ -94,11 +94,12 @@ class ContextFrame:
         if self.interface.active:
             if event.button == 2:
                 self.mode = 'move_spc'
-            elif self.context.is_mouse_over() and event.button == 4:
-                if self.context.camera.zoom < 10:
+            elif self.context.is_mouse_over():
+                if event.button == 4 and self.context.camera.zoom < 10:
+                    self.context.camera.cursor = event.pos
                     self.context.camera.zoom += 0.05
-            elif self.context.is_mouse_over() and event.button == 5:
-                if self.context.camera.zoom > 0.1:
+                elif event.button == 5 and self.context.camera.zoom > 0.1:
+                    self.context.camera.cursor = event.pos
                     self.context.camera.zoom -= 0.05
     
     def on_mouseup(self, event):

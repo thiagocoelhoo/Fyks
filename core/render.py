@@ -56,7 +56,7 @@ class Render:
     
     def draw_grid(self, surface):
         color = core.theme["context-grid"]
-        space = int(20 * self.camera.zoom)
+        space = int(50 * self.camera.zoom)
         
         cstart = -self.camera.centerx / space
         cmiddle = min((self.camera.size[0], self.camera.centerx)) / space
@@ -66,23 +66,25 @@ class Render:
         rmiddle = min((self.camera.size[1], self.camera.centery)) / space
         rend = self.camera.size[1] / space - rmiddle
 
-        for c in range(int(cstart), int(cend)):
+        for c in range(int(cstart), int(cend) + 1):
             x = int(c * space + self.camera.centerx)
             y1 = 0
             y2 = self.camera.h
             pygame.gfxdraw.vline(surface, x, y1, y2, color)
     
-        for r in range(int(rstart), int(rend)):
+        for r in range(int(rstart), int(rend) + 1):
             x1 = 0
             x2 = self.camera.w
             y = int(r * space + self.camera.centery)
             pygame.gfxdraw.hline(surface, x1, x2, y, color)
     
     def draw_axes(self, surface):
-        # pygame.gfxdraw.line(surface, -self.camera.x, 0, -self.camera.x, self.camera.size[1], (50, 255, 50))
-        # pygame.gfxdraw.line(surface, 0, -self.camera.y, self.camera.size[0], -self.camera.y, (255, 50, 50))
-        pygame.gfxdraw.line(surface, -self.camera.left, 0, -self.camera.left, self.camera.size[1], (50, 255, 50))
-        pygame.gfxdraw.line(surface, 0, -self.camera.top, self.camera.size[0], -self.camera.top, (255, 50, 50))
+        pygame.gfxdraw.hline(surface, 0, self.camera.w, int(self.camera.centery), (255, 50, 50))
+        pygame.gfxdraw.vline(surface, int(self.camera.centerx), 0, self.camera.h, (50, 255, 50))
+        # pygame.gfxdraw.line(surface, 20, 720, 20, 680, (50, 255, 50))
+        # pygame.gfxdraw.line(surface, 20, 720, 60, 720, (255, 50, 50))
+        draw_vector(surface, (40, 700), 40, 0, (255, 50, 50))
+        draw_vector(surface, (40, 700), 40, -math.pi/2, (50, 255, 50))
         
     def draw_vector_mesh(self, surface, mesh):
         if self.show_vector_mesh:
