@@ -1,6 +1,7 @@
 import weakref
 
 import pygame
+import pygame.gfxdraw
 
 import core
 from core import rigidbody
@@ -22,9 +23,14 @@ mouse = core.get_mouse()
 class ObjectDataFrame(Frame):
     def __init__(self, position, obj):
         super().__init__(position, (230, 200))
-        self.bg_color = (220, 220, 220)
+        self.bg_color = (45, 45, 45)
         self.target = obj
         self.setup_ui()
+
+    def render(self):
+        super().render()
+        rect = (0, 0, self.w, self.h)
+        pygame.gfxdraw.rectangle(self.surface, rect, (20, 20, 20))
     
     def setup_ui(self):
         obj = self.target()

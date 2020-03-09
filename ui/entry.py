@@ -20,7 +20,7 @@ class Entry(Widget):
 
         self.cursor = len(text)
         self.label = Label(name, (position[0], position[1]-20))
-        self.label.color = (80, 80, 80)
+        self.label.color = (180, 180, 180)
 
         self.content_label = Label('', text_pos)
         self.content_label.color = (50, 50, 50)

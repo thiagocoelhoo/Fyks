@@ -21,7 +21,7 @@
         "button-hover-color": [82, 165, 171],
         "button-border-color": [50, 50, 50],
         "label-color": [255, 255, 255],
-        "frame-background-color": [240, 240, 240],
+        "frame-background-color": [40, 40, 40],
         "frame-background-color-error": [250, 150, 150],
         "context-background": [30, 30, 30],
         "context-grid": [40, 40, 40],

@@ -154,8 +154,8 @@ class ContextFrame:
         for obj in self.context.objects:
             if self.context.camera.collide(obj):
                 if self.selection_box is not None:
-                    objx = obj.x + self.context.camera.centerx
-                    objy = obj.y + self.context.camera.centery
+                    objx = obj.x*self.context.camera.zoom + self.context.camera.centerx
+                    objy = obj.y*self.context.camera.zoom + self.context.camera.centery
 
                     selection_box = (
                         self.selection_box.x,
