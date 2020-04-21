@@ -24,7 +24,7 @@ class MainViewFrame(Frame):
         options_frame = Frame((1166, 0), (200, 738))
         options_frame.master = self
         
-        options_frame['run_time_entry'] = Entry('time', (20, 35), (160, 25))
+        options_frame['run_time_entry'] = Entry('Time', (20, 35), (160, 25))
         options_frame['run_pause_bt'] = Button((20, 85), (100, 25), text='run/pause', func=self.pause_run)
         
         self.widgets['options_frame'] = options_frame
