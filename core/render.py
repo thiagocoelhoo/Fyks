@@ -5,7 +5,7 @@ import pygame.gfxdraw
 
 import core
 import render_engine
-from core.rigidbody import RigidBody, ForceField
+from core.rigidbody import RigidBody
 
 
 def rot(x, y, ang):
@@ -102,7 +102,7 @@ class Render:
                         draw_vector(surface, pos, 50, ang, color)
 
     def draw_paths(self, surface, paths):
-        for x, y in paths[::20]:
+        for x, y in paths:
             pcolor = core.theme["path-color"]
             px = int(x * self.camera.zoom + self.camera.centerx)
             py = int(y * self.camera.zoom + self.camera.centery)
@@ -129,6 +129,7 @@ class Render:
                         color = (100, 100, 100)
                     draw_vector(surface, (x1, y1), tsize, ang, color)
 
+            '''
             for force in obj.temp_forces:
                 if force.fx != 0 or force.fy != 0:
                     x1 = int(obj.x * self.camera.zoom + self.camera.centerx)
@@ -143,7 +144,7 @@ class Render:
                     else:
                         color = (50, 50, 50)
                     draw_vector(surface, (x1, y1), tsize, ang, color)
-
+            '''
             if obj.vx or obj.vy:
                 x1 = int(obj.x * self.camera.zoom + self.camera.centerx)
                 y1 = int(obj.y * self.camera.zoom + self.camera.centery)
@@ -167,11 +168,8 @@ class Render:
                 draw_vector(surface, (x1, y1), tsize, ang, color)
         
         if obj.selected:
-            pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.camera.zoom), (50, 100, 100, 50))
-            pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.camera.zoom), (50, 255, 100))
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.camera.zoom), (50, 100, 100, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.camera.zoom), (50, 255, 100))
         else:
-            pygame.gfxdraw.filled_circle(surface, objx, objy, int(obj.r*self.camera.zoom), (255, 0, 0, 50))
-            pygame.gfxdraw.aacircle(surface, objx, objy, int(obj.r*self.camera.zoom), obj.color)
-
-
-        # pygame.gfxdraw.rectangle(surface, (self.size[0]/4, self.size[1]/4, self.camera.area.w, self.camera.area.h), (0, 255, 100))
+            pygame.gfxdraw.filled_circle(surface, objx, objy, int(20*self.camera.zoom), (255, 0, 0, 50))
+            pygame.gfxdraw.aacircle(surface, objx, objy, int(20*self.camera.zoom), obj.color)

@@ -171,3 +171,8 @@ class SplitedFrame(Frame):
 
 class ScroolingBar(Widget):
     pass
+
+
+class MenuBar(Widget):
+    def __init__(self, master):
+        super().__init__((0, 0), (master.size[0], 20))

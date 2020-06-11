@@ -3,7 +3,7 @@ import numpy as np
 
 import core
 core.init()
-from application.contextframe import ContextFrame
+from application.applicationframe import ApplicationFrame
 from application.base import App
 
 width = 1366
@@ -16,7 +16,7 @@ core.set_theme("aqua-copper")
 if __name__ == "__main__":
     app = App(width, height)
 
-    mframe = ContextFrame(None, (0, 0), (1366, 738))
+    mframe = ApplicationFrame(None, (0, 0), (1366, 738))
     mframe.interface.setup_ui()
     
     app.views['main'] = mframe

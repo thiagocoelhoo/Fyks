@@ -6,4 +6,4 @@ from ui.entry import Entry
 from ui.itemlist import ItemList
 from ui.optionslist import OptionsList
 from ui.layout import Layout
-from ui.widgets import  SubWindow, GraphicFrame
+from ui.widgets import  SubWindow, GraphicFrame, MenuBar

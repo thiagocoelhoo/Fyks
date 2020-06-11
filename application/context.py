@@ -51,34 +51,16 @@ class Context(Frame):
                 self.render.render(self.surface, obj)
     
     def update(self, dt):
-        # self.mesh = np.zeros(self.mesh.shape)
-
         for obj in self.objects:
             if not self.paused:
                 obj.update(dt)
 
                 if type(obj) == RigidBody and self.timer >= self.path_step:
-                    obj_position = (obj.x, obj.y)
-                    if not obj_position in self.paths:
-                        self.paths.append(obj_position)
-
-            '''
-            # atualizar malha de mostragem de campo
-            if self.show:
-                for x in range(self.mesh.shape[0]):
-                    for y in range(self.mesh.shape[1]):
-                        px = self.cam.x + x * 40
-                        py = self.cam.y + y * 40
-                        dx = px - obj.x
-                        dy = py - obj.y
-                        d = (dx**2 + dy**2)**0.5
-                        try:
-                            self.mesh[x, y, 0] += 9e9 * obj.charge * dx / d**3 # k*q/d**2 * dx/d
-                            self.mesh[x, y, 1] += 9e9 * obj.charge * dy / d**3
-                            self.mesh[x, y, 2] += 9e9 * obj.charge / d**2
-                        except:
-                            pass
-            '''
+                    offset = obj.off_x * obj.off_x + obj.off_y * obj.off_y
+                    if offset > 100:
+                        self.paths.append((obj.x, obj.y))
+                        obj.off_x = 0
+                        obj.off_y = 0
         
         if not self.paused:
             self.timer += dt

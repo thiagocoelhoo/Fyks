@@ -5,21 +5,21 @@ import pygame
 import pygame.gfxdraw
 
 import core
-from core.rigidbody import RigidBody, ForceField, Force
+from core.rigidbody import RigidBody, Force
 from core.collisions import collide
 from application.context import Context
-from application.contextinterface import ContextInterface, ObjectDataFrame
+from application.applicationinterface import ApplicationInterface, ObjectDataFrame
 
 mouse = core.get_mouse()
 
 
-class ContextFrame:
+class ApplicationFrame:
     def __init__(self, master, position, size):
         self.context = Context((size[0] - 200, size[1]))
         self.mode = 'none'
         self.endtime = 0
 
-        self.interface = ContextInterface(position, size, self)
+        self.interface = ApplicationInterface(position, size, self)
         self.interface.autoclear = False
         self.interface.master = master
 
@@ -164,7 +164,7 @@ class ContextFrame:
                         self.selection_box.h
                     )
 
-                    collision = collide(selection_box, (objx, objy, obj.r, obj.r))
+                    collision = collide(selection_box, (objx, objy, 20, 20))
                     
                     if obj not in self.selection:    
                         if collision:

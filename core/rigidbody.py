@@ -27,14 +27,18 @@ class RigidBody(Component):
     def __init__(self, position, velocity, acceleration, mass, charge):
         super().__init__()
         self.id = RigidBody.__id
+
         self.x, self.y = position
         self.vx, self.vy = velocity
         self.ax, self.ay = acceleration
+        self.off_x, self.off_y = 0, 0
+        
         self.mass = mass
         self.charge = charge
         self.forces = [Force(0, 0, None), Force(0, 0, None)]
-        self.temp_forces = []
-        self.r = 20
+        # self.temp_forces = []
+        
+        
         self.color = (255, 0, 0)
         self.selected = False
         
@@ -62,74 +66,28 @@ class RigidBody(Component):
         self.forces.remove(force)
 
     def update_(self, dt):
-        self.x += self.vx * dt
-        self.y += self.vy * dt
+        off_x = self.vx * dt + self.ax * dt * dt / 2
+        off_y = self.vy * dt + self.ay * dt * dt / 2
+
         self.vx += self.ax * dt
         self.vy += self.ay * dt
+        self.x += off_x
+        self.y += off_y
+        self.off_x += off_x
+        self.off_y += off_y
     
     def update(self, dt):
         self.ax = 0.0
         self.ay = 0.0
-        self.temp_forces.clear()
-
-        '''
-        # força de campos
-        for field in ForceField.get_all():
-            dx = (field.x - self.x)
-            dy = (field.y - self.y)
-            d = (dx**2 + dy**2)**0.5
-            f = field.value * self.mass / d**2
-            if d < field.size:
-                force = Force(dx / d * f, dy / d * f, self)
-                self.temp_forces.append(force)
-        
-        # força elétrica
-        for obj in self.__instances:
-            if obj != self:
-                kqq = 9e9 * self.charge * obj.charge
-                dx = (self.x - obj.x)
-                dy = (self.y - obj.y)
-                d = (dx**2 + dy**2) ** 0.5
-                fx = kqq / d**3 * dx
-                fy = kqq / d**3 * dy
-                force = Force(fx, fy, self)
-                self.temp_forces.append(force)
-        '''
+        #self.temp_forces.clear()
         
         # aplicação das forças geradas
-        for force in self.forces + self.temp_forces:
+        
+        # for force in self.forces + self.temp_forces:
+        for force in self.forces:
             self.apply_force(force)
         
         self.update_(dt)
      
     def draw(self, screen):
-        '''
-        pygame.gfxdraw.circle(screen, int(self.x+width/2), int(height/2 - self.y), 20, (255, 0, 0))
-        x1 = int(width/2 + self.x)
-        y1 = int(height/2 - self.y)
-        x2 = int(width/2 + self.x + self.vx)
-        y2 = int(height/2 - (self.y + self.vy))
-        pygame.gfxdraw.line(screen, x1, y1, x2, y2, (0, 255, 0))
-        '''
-
-
-class ForceField:
-    __instances = []
-
-    def __init__(self, position, size, value):
-        self.x, self.y = position
-        self.size = size
-        self.value = value
-        self.selected = False
-
-        ForceField.__instances.append(self)
-    
-    @classmethod
-    def get_all(cls):
-        return cls.__instances
-
-    def get_rect(self):
-        return [self.x, self.y, 10, 10]
-
-    def update(self, dt):
         pass
