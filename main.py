@@ -12,7 +12,6 @@ height = 738
 os.environ['SDL_VIDEO_WINDOW_POS'] = '0, 30'
 core.set_theme("aqua-copper")
 
-
 if __name__ == "__main__":
     app = App(width, height)
 
