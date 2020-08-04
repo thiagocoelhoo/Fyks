@@ -1,0 +1,12 @@
+body {
+    background-color: #eee;
+    color: #333;
+}
+
+.descricao {
+    color: #eee;
+    background-color: #151a2240;
+    padding: 12px;
+    border-radius: 3px;
+    border: 1px dashed #238aff;
+}

@@ -1,25 +1,29 @@
 import pygame
 import pygame.gfxdraw
 
-from .widget import Widget
-from .label import Label
-from .button import Button
-from .frame import Frame
-from .entry import Entry
-from render_engine import aa_round_rect, _aa_render_region
 import core
+from render_engine import aa_round_rect, _aa_render_region
+from ui import (
+    Widget,
+    Label,
+    Button,
+    Frame,
+    Entry
+)
 
 mouse = core.get_mouse()
 eventhandler = core.get_eventhandler()
 
 
 class SubWindow(Frame):
-    def __init__(self, position, width, height, title='-'):
+    def __init__(self, position, width, height, title='-', resizable=True):
         super().__init__(position, (width, height + 30))
         self.surface = pygame.Surface((width, height + 30))
+        self.resizable = resizable
         self.autoclear = False
         self.active = False
         self.moving = False
+        self.mode = "null"
         self.rel = [0, 0]
         
         self.color = (50, 50, 50)
@@ -29,16 +33,44 @@ class SubWindow(Frame):
         self.title_label = Label(title, (8, 8))        
         
         eventhandler.add_handler(pygame.MOUSEBUTTONDOWN, self.on_mousedown)
+        eventhandler.add_handler(pygame.MOUSEBUTTONUP, self.on_mouseup)
+        eventhandler.add_handler(pygame.MOUSEMOTION, self.on_mousemove)
 
+    def resize(self, width, height):
+        self.surface = pygame.Surface((width, height))
+        self.w = width
+        self.h = height
+    
     def on_mousedown(self, event):
         if event.button == 1:
             if self.is_mouse_over():
                 self.active = True
+                
+                if self.resizable:
+                    x, y = event.pos
+                    if self.x + self.w - 10 <= x <= self.x + self.w and\
+                        self.y + self.h - 10 <= y <= self.y + self.h:
+                        self.mode = "resizing"
+                
                 if self.hover_controler_bar(event.pos[0], event.pos[1]):
-                    self.moving = True
+                    self.mode = "moving"
                     self.rel = [mouse.pos[0] - self.pos[0], mouse.pos[1] - self.pos[1]]
             else:
                 self.active = False
+
+    def on_mouseup(self, event):
+        if event.button == 1:
+            if self.mode == "moving" or self.mode == "resizing":
+                self.mode = "null"
+
+    def on_mousemove(self, event):
+        if self.mode == "moving":
+            self.pos[0] = mouse.pos[0] - self.rel[0]
+            self.pos[1] = mouse.pos[1] - self.rel[1]
+        elif self.mode == "resizing":
+            n_width = max(event.pos[0] - self.x, 100)
+            n_height = max(event.pos[1] - self.y, 40)
+            self.resize(n_width, n_height)
 
     def hover_controler_bar(self, x, y):
         gx, gy = self.global_pos
@@ -50,12 +82,6 @@ class SubWindow(Frame):
     def update(self, dt):
         if self.active:
             super().update(dt)
-            if self.moving:
-                self.pos[0] = mouse.pos[0] - self.rel[0]
-                self.pos[1] = mouse.pos[1] - self.rel[1]
-            
-            if not mouse.pressed[0] and self.moving:
-                self.moving = False
 
     def draw(self, surface):
         super().draw(surface)
@@ -145,3 +171,8 @@ class SplitedFrame(Frame):
 
 class ScroolingBar(Widget):
     pass
+
+
+class MenuBar(Widget):
+    def __init__(self, master):
+        super().__init__((0, 0), (master.size[0], 20))

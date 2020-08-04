@@ -1,7 +1,8 @@
 import json
 
-from .eventhandler import EventHandler
-from .mouse import Mouse
+from core.eventhandler import EventHandler
+from core.mouse import Mouse
+
 
 _eventhandler = None
 _mouse = None
@@ -27,3 +28,16 @@ def init():
     _eventhandler = EventHandler()
     _mouse = Mouse()
     set_theme("white")
+
+
+class handler:
+    def __init__(self, event):
+        self.event = event
+    
+    def __call__(self, func):
+        return self.handler_decorator(func)
+    
+    def handler_decorator(self, func):
+        _eventhandler.add_handler(self.event, func)
+        return func
+

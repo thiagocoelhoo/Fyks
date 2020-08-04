@@ -1,6 +1,6 @@
 import pygame
 
-from .widget import Widget
+from ui.widget import Widget
 import core
 
 
@@ -12,7 +12,7 @@ class Label(Widget):
         self.font = pygame.font.SysFont('consolas', 14)
         self.text = text
         self.color = core.theme['label-color']
-    
+
     def draw(self, surface, limit=0):
         if limit and len(self.text) > limit:
             text = self.text[-limit:]
