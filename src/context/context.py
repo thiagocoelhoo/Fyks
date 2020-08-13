@@ -27,6 +27,11 @@ class Context(Widget):
                 if x1 < x < x2 and y1 < y < y2:
                     self.selected.append(obj)
 
+    def delete_selected(self):
+        while self.selected:
+            obj = self.selected.pop()
+            self.objects.remove(obj)
+    
     def draw_overlayer(self):
         zoom = self.camera.zoom
         for obj in self.selected:
