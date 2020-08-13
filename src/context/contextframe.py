@@ -2,9 +2,8 @@ import pyglet
 from pyglet.window import mouse, key
 
 from context.context import Context
-from context.utils import ctx_add
+from context.context_widgets import ContextOptionsMenu, ToolBox
 from ui import Frame, Button, Entry
-from app.context_widgets import ContextOptionsMenu, ToolBox
 
 mx = 0
 my = 0
@@ -18,6 +17,13 @@ class ContextFrame(Frame):
         
         self.build_options()
         
+        self.KEYMAP = {
+            (key.MOD_SHIFT, key.A): 'options',
+            (0, key.HOME): 'home',
+            (0, key.DELETE): 'delete',
+            (0, key.SPACE): 'pause',
+        }
+    
     def build_options(self):
         self.toolbox = ToolBox(self)
         self.opt = ContextOptionsMenu(self)
@@ -28,6 +34,9 @@ class ContextFrame(Frame):
         opt.y = my - opt.h
         opt.display = True
 
+    def pause(self):
+        self.running = not self.running
+    
     def on_mouse_motion(self, x, y, dx, dy):
         global mx, my
         mx = x
@@ -64,16 +73,17 @@ class ContextFrame(Frame):
         
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
+        command = self.KEYMAP.get((modifiers, symbol))
         
-        if symbol == key.A and modifiers & key.MOD_SHIFT:
+        if command == 'options':
             self.show_options()
-        if symbol == key.HOME:
-            self.context.camera.zoom = 1
-            self.context.camera.x = 0
-            self.context.camera.y = 0
-        elif symbol == key.SPACE:
-            self.running = not self.running
-
+        elif command == 'home':
+            self.context.camera.to_home()
+        elif command == 'delete':
+            self.context.delete_selected()
+        elif command == 'pause':
+            self.pause()
+        
     def draw(self, offset_x=0, offset_y=0):
         self.context.draw()
         self.draw_content(offset_x, offset_y)
