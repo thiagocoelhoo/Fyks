@@ -1,8 +1,8 @@
 from pyglet.window import mouse, key
 
 from context.context import Context
-from context.context_widgets import ContextOptionsMenu, ToolBox
-from ui import Frame, Button, Entry
+from ui import Frame, Button
+from app.context_widgets import ContextOptionsMenu, ToolBox
 
 mx = 0
 my = 0

@@ -2,7 +2,8 @@ import warnings
 
 import pyglet
 
-from ui import Frame, Button, Entry, Label
+from ui import Frame, Button, Entry, Label, Subwindow
+from graphicutils import graphicutils
 from core.rigidbody import RigidBody
 
 
@@ -126,7 +127,6 @@ class ToolBox(Frame):
         self.add_bt.null_color = (0.05, 0.05, 0.15, 0.4)
         self.add_bt.color = (0.05, 0.05, 0.15, 0.4)
         self.add_bt.border_color = (0.3, 0.3, 0.8, 0.5)
-        self.add_bt.border_radius = 0
         self.add_bt.top = 20
 
         self.force_bt = Button(
@@ -140,7 +140,6 @@ class ToolBox(Frame):
         self.force_bt.null_color = (0.05, 0.05, 0.15, 0.4)
         self.force_bt.color = (0.05, 0.05, 0.15, 0.4)
         self.force_bt.border_color = (0.3, 0.3, 0.8, 0.5)
-        self.force_bt.border_radius = 0
         self.force_bt.top = 70
 
         self.add_force_menu = AddForceMenu(self.parent)
