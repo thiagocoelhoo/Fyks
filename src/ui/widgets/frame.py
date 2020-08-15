@@ -1,6 +1,6 @@
 from pyglet.gl import *
 
-from ui.widget import Widget
+from ui import Widget
 from graphicutils import graphicutils
 
 
