@@ -4,7 +4,6 @@ import pyglet
 
 from ui import Frame, Button, Entry, Label, Subwindow
 from graphicutils import graphicutils
-from context.utils import ctx_add
 from core.rigidbody import RigidBody
 
 

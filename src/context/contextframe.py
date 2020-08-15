@@ -85,16 +85,17 @@ class ContextFrame(Frame):
     
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
+        command = self.KEYMAP.get((modifiers, symbol))
         
-        if symbol == key.A and modifiers & key.MOD_SHIFT:
+        if command == 'options':
             self.show_options()
-        if symbol == key.HOME:
-            self.context.camera.zoom = 1
-            self.context.camera.x = 0
-            self.context.camera.y = 0
-        elif symbol == key.SPACE:
-            self.running = not self.running
-
+        elif command == 'home':
+            self.context.camera.to_home()
+        elif command == 'delete':
+            self.context.delete_selected()
+        elif command == 'pause':
+            self.pause()
+        
     def draw(self, offset_x=0, offset_y=0):
         self.context.draw()
         self.draw_content(offset_x, offset_y)
