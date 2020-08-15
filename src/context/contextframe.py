@@ -1,7 +1,12 @@
 from pyglet.window import mouse, key
 
 from context.context import Context
+from context.context_widgets import ContextOptionsMenu, ToolBox
 from ui import Frame, Button, Entry
+
+mx = 0
+my = 0
+
 
 class ContextFrame(Frame):
     def __init__(self, *args, **kwargs):
