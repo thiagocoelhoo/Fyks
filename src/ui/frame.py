@@ -1,7 +1,7 @@
-from ui.widget import Widget
-import core
+from pyglet.gl import *
 
-import random
+from ui.widget import Widget
+from graphicutils import graphicutils
 
 
 class Frame(Widget):
@@ -39,19 +39,18 @@ class Frame(Widget):
                 )
     
     def on_mouse_press(self, x, y, button, modifiers):
-        over = super().on_mouse_press(x, y, button, modifiers)
-        if over:
+        super().on_mouse_press(x, y, button, modifiers)
+        if self.activated == 1 :
             for widget in self.content:
                 if widget.display:
-                    widget_over = widget.on_mouse_press(
+                    widget.on_mouse_press(
                         x=x - self.x,
                         y=y - self.y,
                         button=button,
                         modifiers=modifiers
                     )
-                    if widget_over:
-                        self.activated = False
-        return over
+                    if widget.activated > 0:
+                        self.activated += 1
     
     def on_mouse_motion(self, x, y, dx, dy):
         for widget in self.content:
@@ -79,5 +78,11 @@ class Frame(Widget):
                 )
 
     def draw(self, offset_x=0, offset_y=0):
-        self.fill_background(self.color)
+        glColor4f(*self.color)
+        graphicutils.draw_rect(
+            self.x + offset_x,
+            self.y + offset_y,
+            self.w, self.h,
+            GL_QUADS
+        )
         self.draw_content(offset_x, offset_y)

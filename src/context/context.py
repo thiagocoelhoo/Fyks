@@ -1,7 +1,9 @@
 import pyglet
+from pyglet.gl import *
 
 from core.camera import Camera
 from core.render import Render, draw_circle
+from graphicutils import graphicutils
 from ui import Widget
 
 
@@ -38,7 +40,7 @@ class Context(Widget):
                     objy, 
                     25 * self.camera.zoom,
                     (1, 0.2, 0.2, 0.3),
-                    mode=pyglet.gl.GL_POLYGON
+                    mode=GL_POLYGON
                 )
                 draw_circle(
                     objx,
@@ -49,20 +51,26 @@ class Context(Widget):
         
         if self.selection is not None:
             x1, y1, x2, y2 = self.selection
-            pyglet.gl.glColor4f(0.1, 0.1, 0.3, 0.2)
+            glColor4f(0.1, 0.1, 0.3, 0.2)
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
             pyglet.graphics.draw(
-                4, pyglet.gl.GL_QUADS,
+                4, GL_QUADS,
                 ('v2f', rect)
             )
-            pyglet.gl.glColor4f(0.3, 0.3, 0.8, 0.5)
+            glColor4f(0.3, 0.3, 0.8, 0.5)
             pyglet.graphics.draw(
-                4, pyglet.gl.GL_LINE_LOOP,
+                4, GL_LINE_LOOP,
                 ('v2f', rect)
             )
 
     def draw(self, offset_x=0, offset_y=0):
-        self.fill_background((0.2, 0.2, 0.2, 1))
+        glColor4f(0.2, 0.2, 0.2, 1)
+        graphicutils.draw_rect(
+            self.x + offset_x,
+            self.y + offset_y,
+            self.w, self.h,
+            GL_QUADS
+        )
         self.context_render.draw_grid()
         self.context_render.draw_axes()
         
