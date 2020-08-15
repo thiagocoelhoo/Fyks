@@ -56,7 +56,6 @@ class ContextFrame(Frame):
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-        
         if self.activated == 1:
             if buttons == mouse.LEFT:
                 self.context.camera.x -= dx
