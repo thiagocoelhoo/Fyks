@@ -1,11 +1,13 @@
 import pyglet
 
+from graphicutils import graphicutils
+
 
 class Widget:
     def __init__(self, x, y, w, h, parent=None):
         self.parent = parent
         self.display = True
-        self.activated = False
+        self.activated = 0
         
         self._x = x
         self._y = y
@@ -103,10 +105,9 @@ class Widget:
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.x < x < self._right and self.y < y < self._top:
-            self.activated = True
-            return True
-        self.activated = False
-        return False
+            self.activated = 1
+        else:
+            self.activated = 0
     
     def on_mouse_motion(self, x, y, dx, dy):
         pass
@@ -116,18 +117,6 @@ class Widget:
 
     def on_key_press(self, symbol, modifiers):
         pass
-        
-    def fill_background(self, color):
-        pyglet.gl.glColor4f(*color)
-        rect = (
-            self.x, self.y,
-            self.x + self.w, self.y,
-            self.x + self.w, self.y + self.h,
-            self.x, self.y + self.h
-        )
-        pyglet.graphics.draw(4, pyglet.gl.GL_QUADS,
-                             ('v2f', rect)
-                             )
 
     def draw(self, offset_x=0, offset_y=0):
         pass

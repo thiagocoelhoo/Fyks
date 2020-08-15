@@ -1,13 +1,7 @@
-import pyglet
 from pyglet.window import mouse, key
 
 from context.context import Context
-from context.context_widgets import ContextOptionsMenu, ToolBox
 from ui import Frame, Button, Entry
-
-mx = 0
-my = 0
-
 
 class ContextFrame(Frame):
     def __init__(self, *args, **kwargs):
@@ -43,7 +37,7 @@ class ContextFrame(Frame):
         my = y
         
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        if self.activated:
+        if self.activated == 1:
             if scroll_y < 0:
                 if self.context.camera.zoom > 0.05:
                     self.context.camera.zoom -= 0.05
@@ -52,18 +46,20 @@ class ContextFrame(Frame):
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
-        if self.activated:
+        if self.activated == 1:
             if button == mouse.RIGHT:
                 self.context.selection = [x, y, x, y]
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        if buttons == mouse.LEFT:
-            self.context.camera.x -= dx
-            self.context.camera.y -= dy
-        elif buttons == mouse.RIGHT:
-            if self.context.selection is not None:
-                self.context.selection[2] = x
-                self.context.selection[3] = y
+        super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+        if self.activated == 1:
+            if buttons == mouse.LEFT:
+                self.context.camera.x -= dx
+                self.context.camera.y -= dy
+            elif buttons == mouse.RIGHT:
+                if self.context.selection is not None:
+                    self.context.selection[2] = x
+                    self.context.selection[3] = y
 
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
