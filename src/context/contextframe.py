@@ -1,35 +1,44 @@
 from pyglet.window import mouse, key
 
+from ui import Frame, Button, CustomMouseHandler
 from context.context import Context
-from ui import Frame, Button
-from app.context_widgets import ContextOptionsMenu, ToolBox
-
-mx = 0
-my = 0
+from context.context_widgets import (
+    ContextOptionsMenu,
+    ToolBox,
+    RigidbodyIndoWindow
+)
 
 
 class ContextFrame(Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.context = Context(0, 0, self.w, self.h)
+        self.mouse_handler = CustomMouseHandler()
+        self.mouse_handler.on_double_click = self.on_double_click
         self.running = True
-        
-        self.build_options()
-        
-    def build_options(self):
+
+        self.build()
+
+        self.KEYMAP = {
+            (key.MOD_SHIFT, key.A): 'options',
+            (0, key.HOME): 'home',
+            (0, key.DELETE): 'delete',
+            (0, key.SPACE): 'pause',
+        }
+    
+    def build(self):
         self.toolbox = ToolBox(self)
         self.opt = ContextOptionsMenu(self)
+        self.rbinfo = RigidbodyIndoWindow(self)
     
     def show_options(self):
         opt = self.opt
-        opt.x = mx
-        opt.y = my - opt.h
+        opt.x = self.mouse_handler.x
+        opt.y = self.mouse_handler.y - opt.h
         opt.display = True
 
-    def on_mouse_motion(self, x, y, dx, dy):
-        global mx, my
-        mx = x
-        my = y
+    def pause(self):
+        self.running = not self.running
         
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.activated == 1:
@@ -47,6 +56,7 @@ class ContextFrame(Frame):
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+        
         if self.activated == 1:
             if buttons == mouse.LEFT:
                 self.context.camera.x -= dx
@@ -58,10 +68,21 @@ class ContextFrame(Frame):
 
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
+        self.mouse_handler.on_mouse_release(x, y, button, modifiers)
         if button == mouse.RIGHT:
             self.context.select()
             self.context.selection = None
-        
+    
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.mouse_handler.on_mouse_motion(x, y, dx, dy)
+    
+    def on_double_click(self, x, y, button, modifiers):
+        self.context.select_closer(x, y)
+        if self.context.selected:
+            self.rbinfo.x = x
+            self.rbinfo.y = y
+            self.rbinfo.display = True
+    
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
         
@@ -81,3 +102,4 @@ class ContextFrame(Frame):
     def update(self, dt):
         if self.running:
             self.context.update(dt)
+

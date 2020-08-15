@@ -114,10 +114,11 @@ class Widget:
     
     def on_mouse_release(self, x, y, button, modifiers):
         pass
-
+    
     def on_key_press(self, symbol, modifiers):
         pass
 
+    
     def draw(self, offset_x=0, offset_y=0):
         pass
 

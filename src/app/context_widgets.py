@@ -110,6 +110,40 @@ class AddForceMenu(Subwindow):
         self.display = False
 
 
+class RigidbodyIndoWindow(Subwindow):
+    def __init__(self, parent):
+        super().__init__(0, 0, 200, 155, parent=parent)
+        self.build()
+
+    def build(self):
+        label_x = Label(20, 0, 0, 0, parent=self.frame)
+        label_x.top = 40
+        label_x.lab.color = (190, 190, 190, 255)
+        label_x.text = 'x'
+        self.entry_x = Entry(40, 0, 140, 30, self.frame)
+        self.entry_x.text = '0.0'
+        self.entry_x.top = 20
+
+        label_y = Label(20, 0, 0, 0, parent=self.frame)
+        label_y.top = 80
+        label_y.lab.color = (190, 190, 190, 255)
+        label_y.text = 'y'
+        self.entry_y = Entry(40, 0, 140, 30, self.frame)
+        self.entry_y.top = 60
+        self.entry_y.text = '0.0'
+
+        self.submit_bt = Button(
+            x=20,
+            y=20,
+            w=160,
+            h=30,
+            parent=self.frame,
+            text='Ok'
+        )
+
+        self.display = False
+
+
 class ToolBox(Frame):
     def __init__(self, parent):
         super().__init__(0, 0, 80, parent.context.h, parent)

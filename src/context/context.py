@@ -1,5 +1,6 @@
 import pyglet
 from pyglet.gl import *
+import math
 
 from core.camera import Camera
 from core.render import Render, draw_circle
@@ -29,6 +30,30 @@ class Context(Widget):
                 if x1 < x < x2 and y1 < y < y2:
                     self.selected.append(obj)
 
+    def select_closer(self, x, y):
+        if self.selection is not None:
+            self.selection.clear()
+
+        point_x = (x - self.camera.centerx) / self.camera.zoom
+        point_y = (y - self.camera.centery) / self.camera.zoom
+        
+        min_dist = 20 * self.camera.zoom
+        closer = None
+
+        for obj in self.objects:
+            dist = math.hypot(obj.x - point_x, obj.y - point_y)
+            if dist < min_dist:
+                min_dist = dist
+                closer = obj
+        
+        if closer is not None:
+            self.selected = [closer]
+    
+    def delete_selected(self):
+        while self.selected:
+            obj = self.selected.pop()
+            self.objects.remove(obj)
+    
     def draw_overlayer(self):
         zoom = self.camera.zoom
         for obj in self.selected:
