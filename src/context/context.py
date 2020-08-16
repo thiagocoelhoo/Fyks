@@ -1,6 +1,7 @@
+import math
+
 import pyglet
 from pyglet.gl import *
-import math
 
 from core.camera import Camera
 from core.render import Render, draw_circle

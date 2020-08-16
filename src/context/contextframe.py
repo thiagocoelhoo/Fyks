@@ -1,3 +1,5 @@
+import pickle
+
 from pyglet.window import mouse, key
 
 from ui import Frame, Button, CustomMouseHandler
@@ -39,7 +41,16 @@ class ContextFrame(Frame):
 
     def pause(self):
         self.running = not self.running
-        
+
+    def save(self):
+        with open('context.fyks', 'wb') as f:
+            pickle.dump(self.context, f)
+
+    def load(self):
+        with open('context.fyks', 'rb') as f:
+            ctx = pickle.load(f)
+            self.context = ctx
+
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.activated == 1:
             if scroll_y < 0:
@@ -102,4 +113,3 @@ class ContextFrame(Frame):
     def update(self, dt):
         if self.running:
             self.context.update(dt)
-
