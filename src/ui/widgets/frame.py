@@ -8,6 +8,7 @@ class Frame(Widget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.color = (0.9, 0.9, 0.9, 1)
+        self.border_color = (0.7, 0.7, 0.7, 1)
         self.content = []
 
     def add(self, widget):
@@ -84,5 +85,12 @@ class Frame(Widget):
             self.y + offset_y,
             self.w, self.h,
             GL_QUADS
+        )
+        glColor4f(*self.border_color)
+        graphicutils.draw_rect(
+            self.x + offset_x,
+            self.y + offset_y,
+            self.w, self.h,
+            GL_LINE_LOOP
         )
         self.draw_content(offset_x, offset_y)

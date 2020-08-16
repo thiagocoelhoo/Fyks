@@ -5,7 +5,7 @@ from context.context import Context
 from context.context_widgets import (
     ContextOptionsMenu,
     ToolBox,
-    RigidbodyIndoWindow
+    RigidbodyInfoWindow
 )
 
 
@@ -29,7 +29,7 @@ class ContextFrame(Frame):
     def build(self):
         self.toolbox = ToolBox(self)
         self.opt = ContextOptionsMenu(self)
-        self.rbinfo = RigidbodyIndoWindow(self)
+        self.rbinfo = RigidbodyInfoWindow(self)
     
     def show_options(self):
         opt = self.opt

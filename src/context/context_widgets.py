@@ -9,7 +9,8 @@ from core.rigidbody import RigidBody
 
 class ContextOptionsMenu(Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155, parent=parent)
+        super().__init__(0, 0, 200, 155,
+            title='Add rb', parent=parent)
         self.build()
 
     def build(self):
@@ -63,7 +64,8 @@ class ContextOptionsMenu(Subwindow):
 
 class AddForceMenu(Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155, parent=parent)
+        super().__init__(0, 0, 200, 155, 
+            title='Add force', parent=parent)
         self.build()
 
     def build(self):
@@ -109,9 +111,10 @@ class AddForceMenu(Subwindow):
         self.display = False
 
 
-class RigidbodyIndoWindow(Subwindow):
+class RigidbodyInfoWindow(Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155, parent=parent)
+        super().__init__(0, 0, 200, 155,
+        title='Rb info', parent=parent)
         self.build()
 
     def build(self):
@@ -145,37 +148,32 @@ class RigidbodyIndoWindow(Subwindow):
 
 class ToolBox(Frame):
     def __init__(self, parent):
-        super().__init__(0, 0, 80, parent.context.h, parent)
-        self.color = (0.05, 0.05, 0.15, 0.4)
+        super().__init__(1, 0, 80, parent.context.h, parent)
         self.build()
 
+    def add_button(self, name, command):
+        h = 30
+        margin = 8
+
+        top = margin + len(self.content)*(h + margin)
+        
+        bt = Button(
+            x=4, y=0,
+            w=60, h=h,
+            parent=self,
+            text=name,
+            command=command)
+        bt.top = top
+        bt.null_color = (0.05, 0.05, 0.15, 0.4)
+        bt.color = (0.05, 0.05, 0.15, 0.4)
+        bt.border_color = (0.3, 0.3, 0.8, 0.5)
+
+        return bt
+    
     def build(self):
-        self.add_bt = Button(
-            x=10,
-            y=0,
-            w=60,
-            h=40,
-            parent=self,
-            text='Add',
-            command=self.add_bt_function)
-        self.add_bt.null_color = (0.05, 0.05, 0.15, 0.4)
-        self.add_bt.color = (0.05, 0.05, 0.15, 0.4)
-        self.add_bt.border_color = (0.3, 0.3, 0.8, 0.5)
-        self.add_bt.top = 20
-
-        self.force_bt = Button(
-            x=10,
-            y=0,
-            w=60,
-            h=40,
-            parent=self,
-            text='Force',
-            command=self.force_bt_function)
-        self.force_bt.null_color = (0.05, 0.05, 0.15, 0.4)
-        self.force_bt.color = (0.05, 0.05, 0.15, 0.4)
-        self.force_bt.border_color = (0.3, 0.3, 0.8, 0.5)
-        self.force_bt.top = 70
-
+        self.bt = self.add_button('Add', self.add_bt_function)
+        self.bt = self.add_button('Force', self.force_bt_function)
+        
         self.add_force_menu = AddForceMenu(self.parent)
         self.add_force_menu.display = False
         self.add_force_menu.x = 80
@@ -186,11 +184,6 @@ class ToolBox(Frame):
 
     def force_bt_function(self):
         self.add_force_menu.display = True
-
-    def draw(self, offset_x, offset_y):
-        super().draw(offset_x, offset_y)
-        pyglet.gl.glColor4f(0.3, 0.3, 0.8, 0.5)
-        graphicutils.draw_rect(
-            1, 1, 80, self.h - 2,
-            pyglet.gl.GL_LINE_LOOP
-        )
+    
+    def draw(self, offset_x=0, offset_y=0):
+        self.draw_content(self.x + offset_x, self.y + offset_y)
