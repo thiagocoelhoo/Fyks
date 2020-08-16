@@ -1,22 +1,34 @@
 from pyglet.gl import *
 
-from ui import Widget, Frame, Button
+from ui import Frame, Button, Label
 from graphicutils import graphicutils
 
 
 class Subwindow(Frame):
-    def __init__(self, x, y, w, h, parent):
-        super().__init__(x, y, w, h + 22, parent)
+    def __init__(self, x, y, w, h, title, parent):
+        self._bar_height = 20
+        super().__init__(
+            x=x, y=y, 
+            w=w, h=h + 22,
+            parent=parent
+        )
+        
         self.frame = Frame(0, 0, w, h)
         self.close_bt = Button(
-            x=w - 21,
-            y=h + 1,
-            w=20,
-            h=20,
+            x=w - 18,
+            y=h + 4,
+            w=16,
+            h=16,
             text='',
             command=self.close
         )
         self.content = [self.frame, self.close_bt]
+        self.title_label = Label(
+            x=4, y=self._top - 16,
+            w=self.w-21, h=16)
+        self.title_label.font_size = 14
+        self.title_label.text = title
+        self.title_label.lab.color = (130, 130, 130, 255)
         self.move = False
 
     def on_mouse_press(self, x, y, button, modifiers):
@@ -47,10 +59,11 @@ class Subwindow(Frame):
             self.w, bar_height,
             GL_QUADS
         )
-        self.close_bt.draw(offset_x=x, offset_y=y)
-
+        self.close_bt.draw(x, y)
+        self.title_label.draw(x, y)
+    
         # Draw window content
-        self.frame.draw(offset_x=x, offset_y=y)
-
+        self.frame.draw(x, y)
+    
     def update(self, dt):
         self.frame.update(dt)

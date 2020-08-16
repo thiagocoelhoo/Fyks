@@ -97,7 +97,7 @@ class Render:
             objx,
             objy, 
             20 * self.camera.zoom,
-            (0.2, 1, 0.2, 0.3),
+            (0.2, 1, 0.2, 0.5),
             mode=pyglet.gl.GL_POLYGON
         )
         draw_circle(

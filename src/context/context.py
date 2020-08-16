@@ -61,14 +61,7 @@ class Context(Widget):
                     objx,
                     objy, 
                     25 * self.camera.zoom,
-                    (1, 0.2, 0.2, 0.3),
-                    mode=GL_POLYGON
-                )
-                draw_circle(
-                    objx,
-                    objy, 
-                    25 * self.camera.zoom,
-                    (1, 0.2, 0.2, 0.5),
+                    (1, 0.2, 0.2, 1),
                 )
         
         if self.selection is not None:
@@ -86,7 +79,7 @@ class Context(Widget):
             )
 
     def draw(self, offset_x=0, offset_y=0):
-        glColor4f(0.2, 0.2, 0.2, 1)
+        glColor4f(0.05, 0.05, 0.05, 1)
         graphicutils.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
