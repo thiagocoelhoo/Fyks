@@ -34,7 +34,7 @@ class Context(Widget):
     def select_closer(self, x, y):
         point_x = (x - self.camera.centerx) / self.camera.zoom
         point_y = (y - self.camera.centery) / self.camera.zoom
-        min_dist = 25 * self.camera.zoom
+        min_dist = 20 * self.camera.zoom
         closer = None
         
         for obj in self.objects:
@@ -80,7 +80,7 @@ class Context(Widget):
             )
 
     def draw(self, offset_x=0, offset_y=0):
-        glColor4f(0.05, 0.05, 0.05, 1)
+        glColor4f(0.15, 0.15, 0.15, 1)
         graphicutils.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
@@ -91,8 +91,7 @@ class Context(Widget):
         self.context_render.draw_axes()
         
         for obj in self.objects:
-            if self.camera.collide(obj):
-                self.context_render.render(obj)
+            self.context_render.render(obj)
         
         self.draw_overlayer()
 

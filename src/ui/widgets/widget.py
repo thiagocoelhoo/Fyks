@@ -15,8 +15,8 @@ class Widget:
         self._h = h
         self._padding = 0
         self._margin = 0
-        self._border_radius = 4
-        self._background_color = (0, 0, 0, 1)
+        self.border_radius = 4
+        self.background_color = (0, 0, 0, 1)
 
         if parent is not None:
             parent.add(self)

@@ -8,12 +8,10 @@ class RigidBody:
         self.acceleration = np.array(acceleration, dtype=float)
         self.mass = mass
         self.charge = charge
-        
+        self.path = []
+
         self.offset = np.zeros(2)
         self.forces = []
-    
-    def get_rect(self):
-        return [self.x, self.y, self.r, self.r]
     
     def add_force(self, x, y):
         force = np.array((x, y))
@@ -30,3 +28,7 @@ class RigidBody:
         self.x += offset[0]
         self.y += offset[1]
         self.offset += offset
+        
+        if np.hypot(self.offset[0], self.offset[1]) > 10:
+            self.path.insert(0, (self.x, self.y))
+            self.offset = np.zeros(2)

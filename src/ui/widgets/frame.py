@@ -9,8 +9,12 @@ class Frame(Widget):
         super().__init__(*args, **kwargs)
         self.color = (0.9, 0.9, 0.9, 1)
         self.border_color = (0.7, 0.7, 0.7, 1)
+        self.border_radius = 0
         self.content = []
 
+    def toggle_display(self):
+        self.display = not self.display
+        
     def add(self, widget):
         widget.x += self.padding
         widget.y += self.padding
@@ -50,7 +54,8 @@ class Frame(Widget):
                         button=button,
                         modifiers=modifiers
                     )
-                    if widget.activated > 0:
+                    
+                    if widget.activated > 0: 
                         self.activated += 1
     
     def on_mouse_motion(self, x, y, dx, dy):
@@ -67,8 +72,8 @@ class Frame(Widget):
 
     def update(self, dt):
         for widget in self.content:
-            if widget.display:
-                widget.update(dt)
+            #if widget.display:
+            widget.update(dt)
 
     def draw_content(self, offset_x, offset_y):
         for widget in self.content:

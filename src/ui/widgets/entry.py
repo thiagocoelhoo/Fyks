@@ -14,6 +14,7 @@ class Entry(Widget):
         self.parent = parent
         self.text_label = Label(0, 0, 0, 0)
         self.text_label.text = 'Entry'
+        self.mask = string.printable
         self._padding = 8
 
         self.border_radius = 6
@@ -51,7 +52,7 @@ class Entry(Widget):
         if self.activated:
             k = chr(symbol)
             
-            if k in string.printable:
+            if k in self.mask:
                 self.text += k
             elif symbol == key.BACKSPACE:
                 self.text = self.text[:-1]

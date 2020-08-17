@@ -2,7 +2,6 @@ import pyglet
 
 from app.build import build_GUI
 
-
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
 
@@ -23,7 +22,7 @@ fps_label = pyglet.text.Label(
     color=(255, 255, 255, 50),
 )
 
- 
+
 @window.event
 def on_draw():
     window.clear()

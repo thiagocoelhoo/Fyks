@@ -2,7 +2,7 @@ import pickle
 
 from pyglet.window import mouse, key
 
-from ui import Frame, Button, CustomMouseHandler
+from ui import Frame, Button, CustomMouseHandler, Menu
 from context.context import Context
 from context.context_widgets import (
     ContextOptionsMenu,
@@ -90,7 +90,8 @@ class ContextFrame(Frame):
         self.context.select_closer(x, y)
         if self.context.selected:
             self.rbinfo.x = x
-            self.rbinfo.y = y
+            self.rbinfo.y = y - self.rbinfo.h
+            self.rbinfo.set_target(self.context.selected[0])
             self.rbinfo.display = True
     
     def on_key_press(self, symbol, modifiers):
@@ -111,5 +112,6 @@ class ContextFrame(Frame):
         self.draw_content(offset_x, offset_y)
 
     def update(self, dt):
+        super().update(dt)
         if self.running:
             self.context.update(dt)
