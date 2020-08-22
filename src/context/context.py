@@ -1,19 +1,13 @@
 import math
 
-import pyglet
-from pyglet.gl import *
-
 from core.camera import Camera
-from core.render import Render, draw_circle
-from graphicutils import graphicutils
-from ui import Widget
 
 
-class Context(Widget):
+class Context:
     def __init__(self, x, y, w, h):
-        super().__init__(x, y, w, h)
+        self.w = w
+        self.h = h
         self.camera = Camera(0, 0, w, h)
-        self.context_render = Render(self.camera)
         self.objects = []
         self.selection = None
         self.selected = []
@@ -51,49 +45,6 @@ class Context(Widget):
         while self.selected:
             obj = self.selected.pop()
             self.objects.remove(obj)
-    
-    def draw_overlayer(self):
-        zoom = self.camera.zoom
-        for obj in self.selected:
-            if self.camera.collide(obj):
-                objx = int(obj.x * zoom + self.camera.centerx)
-                objy = int(obj.y * zoom + self.camera.centery)
-                draw_circle(
-                    objx,
-                    objy, 
-                    25 * self.camera.zoom,
-                    (1, 0.2, 0.2, 1),
-                )
-        
-        if self.selection is not None:
-            x1, y1, x2, y2 = self.selection
-            glColor4f(0.1, 0.1, 0.3, 0.2)
-            rect = (x1, y1, x2, y1, x2, y2, x1, y2)
-            pyglet.graphics.draw(
-                4, GL_QUADS,
-                ('v2f', rect)
-            )
-            glColor4f(0.3, 0.3, 0.8, 0.5)
-            pyglet.graphics.draw(
-                4, GL_LINE_LOOP,
-                ('v2f', rect)
-            )
-
-    def draw(self, offset_x=0, offset_y=0):
-        glColor4f(0.15, 0.15, 0.15, 1)
-        graphicutils.draw_rect(
-            self.x + offset_x,
-            self.y + offset_y,
-            self.w, self.h,
-            GL_QUADS
-        )
-        self.context_render.draw_grid()
-        self.context_render.draw_axes()
-        
-        for obj in self.objects:
-            self.context_render.render(obj)
-        
-        self.draw_overlayer()
 
     def update(self, dt):
         for obj in self.objects:

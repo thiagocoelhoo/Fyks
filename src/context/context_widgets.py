@@ -1,17 +1,14 @@
-import warnings
 import string
 
 import pyglet
 
 from ui import Frame, Button, Entry, FloatEntry, Label, Subwindow
-from graphicutils import graphicutils
 from core.rigidbody import RigidBody
 
 
-class ContextOptionsMenu(Subwindow):
+class AddRigidbodyWindow(Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155,
-            title='Add rb', parent=parent)
+        super().__init__(0, 0, 200, 155, title='Add rb', parent=parent)
         self.build()
 
     def build(self):
@@ -39,7 +36,7 @@ class ContextOptionsMenu(Subwindow):
             text='Submit'
         )
 
-        self.display = False
+        self.is_visible = False
 
     def submit(self):
         x = self.entry_x.get_value()
@@ -53,10 +50,10 @@ class ContextOptionsMenu(Subwindow):
         )
         self.parent.context.objects.append(rb)
 
-        self.display = False
+        self.is_visible = False
 
 
-class AddForceMenu(Subwindow):
+class AddForceWindow(Subwindow):
     def __init__(self, parent):
         super().__init__(0, 0, 200, 155, 
             title='Add force', parent=parent)
@@ -87,7 +84,7 @@ class AddForceMenu(Subwindow):
             text='Apply'
         )
 
-        self.display = False
+        self.is_visible = False
 
     def submit(self):
         x = self.entry_x.get_value()
@@ -96,7 +93,7 @@ class AddForceMenu(Subwindow):
         for rb in self.parent.context.selected:
             rb.add_force(x, y)
 
-        self.display = False
+        self.is_visible = False
 
 
 class RigidbodyInfoWindow(Subwindow):
@@ -147,7 +144,7 @@ class RigidbodyInfoWindow(Subwindow):
             command=self.close,
             parent=self.frame)
 
-        self.display = False
+        self.is_visible = False
     
     def update(self, dt):
         if self.target is not None:
@@ -156,22 +153,22 @@ class RigidbodyInfoWindow(Subwindow):
             vel_x_str = str(self.target.velocity[0])
             vel_y_str = str(self.target.velocity[1])
 
-            if not self.entry_pos_x.activated:
+            if not self.entry_pos_x.pressed:
                 self.entry_pos_x.text = pos_x_str[:10]
             else:
                 self.target.x = self.entry_pos_x.get_value()
 
-            if not self.entry_pos_y.activated:
+            if not self.entry_pos_y.pressed:
                 self.entry_pos_y.text = pos_y_str[:10]
             else:
                 self.target.y = self.entry_pos_x.get_value()
 
-            if not self.entry_vel_x.activated:
+            if not self.entry_vel_x.pressed:
                 self.entry_vel_x.text = vel_x_str[:10]
             else:
                 self.target.velocity[0] = self.entry_vel_x.get_value()
 
-            if not self.entry_vel_y.activated:
+            if not self.entry_vel_y.pressed:
                 self.entry_vel_y.text = vel_y_str[:10]
             else:
                 self.target.velocity[1] = self.entry_vel_y.get_value()
@@ -185,8 +182,8 @@ class ToolBox(Frame):
     def add_button(self, name, command):
         h = 30
         margin = 8
-        top = margin + len(self.content)*(h + margin)
-        
+        top = margin + len(self.children)*(h + margin)
+
         bt = Button(
             x=4, y=0,
             w=60, h=h,
@@ -204,8 +201,8 @@ class ToolBox(Frame):
         self.bt = self.add_button('Add', self.add_bt_function)
         self.bt = self.add_button('Force', self.force_bt_function)
         
-        self.add_force_menu = AddForceMenu(self.parent)
-        self.add_force_menu.display = False
+        self.add_force_menu = AddForceWindow(self.parent)
+        self.add_force_menu.is_visible = False
         self.add_force_menu.x = 80
         self.add_force_menu.top = 70
 
@@ -213,7 +210,7 @@ class ToolBox(Frame):
         self.parent.show_options()
 
     def force_bt_function(self):
-        self.add_force_menu.display = True
+        self.add_force_menu.is_visible = True
     
     def draw(self, offset_x=0, offset_y=0):
-        self.draw_content(self.x + offset_x, self.y + offset_y)
+        self.draw_children(self.x + offset_x, self.y + offset_y)

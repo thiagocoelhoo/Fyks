@@ -12,7 +12,7 @@ class Menu(Frame):
     
     def add_button(self, name, command):
         bt = Button(
-            x=len(self.content) * 70, y=0,
+            x=len(self.children) * 70, y=0,
             w=70, h=28,
             text=name,
             command=command,
@@ -25,7 +25,7 @@ class Menu(Frame):
         bt.border_radius = 0
     
     def add_dropdown(self, name, options):
-        pos_x = len(self.content) * 70
+        pos_x = len(self.children) * 70
 
         dropdown_height = len(options) * 30
         dropdown = Frame(
@@ -34,7 +34,7 @@ class Menu(Frame):
             parent=self.parent
         )
         dropdown.top = 30
-        dropdown.display = False
+        dropdown.is_visible = False
         
         for i, (op_name, command) in enumerate(options):
             bt = Button(
@@ -53,7 +53,7 @@ class Menu(Frame):
             x=pos_x, y=0,
             w=70, h=28,
             text=name,
-            command=dropdown.toggle_display,
+            command=dropdown.toggle_is_visible,
             parent=self)
         
         main_bt.null_color = (0, 0, 0, 0)
