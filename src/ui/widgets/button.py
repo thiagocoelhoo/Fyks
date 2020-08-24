@@ -22,7 +22,6 @@ class Button(Widget):
     
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
-        self.pressed = self.activated > 0
         if self.pressed:
             self.color = self.pressed_color
             self.command()

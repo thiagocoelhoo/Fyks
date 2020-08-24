@@ -1,7 +1,6 @@
 import pyglet
 
-from app.build import build_GUI
-
+from app.build import build_main_frame
 
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
@@ -9,11 +8,11 @@ screen = display.get_default_screen()
 WIDTH = screen.width
 HEIGHT = screen.height - 25
 
-window = pyglet.window.Window(WIDTH, HEIGHT, "Fyks")
+window = pyglet.window.Window(WIDTH, HEIGHT, "Fyks", resizable=True, vsync=False)
 pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
 pyglet.gl.glBlendFunc(pyglet.gl.GL_SRC_ALPHA, pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
 
-frame = build_GUI(WIDTH, HEIGHT)
+frame = build_main_frame(WIDTH, HEIGHT)
 window.push_handlers(frame)
 
 fps_label = pyglet.text.Label(
@@ -23,7 +22,7 @@ fps_label = pyglet.text.Label(
     color=(255, 255, 255, 50),
 )
 
- 
+
 @window.event
 def on_draw():
     window.clear()

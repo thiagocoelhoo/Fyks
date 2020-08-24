@@ -10,16 +10,13 @@ from graphicutils import graphicutils
 class Entry(Widget):
     def __init__(self, x, y, w, h, parent=None):
         super().__init__(x, y, w, h, None)
-        
-        self.parent = parent
         self.text_label = Label(0, 0, 0, 0)
         self.text_label.text = 'Entry'
+        self.mask = string.printable
         self._padding = 8
 
         self.border_radius = 6
-
-        if parent is not None:
-            parent.add(self)
+        self.parent = parent
     
     @property
     def x(self):
@@ -48,16 +45,16 @@ class Entry(Widget):
         self.text_label.text = value
     
     def on_key_press(self, symbol, modifiers):
-        if self.activated:
+        if self.pressed:
             k = chr(symbol)
             
-            if k in string.printable:
+            if k in self.mask:
                 self.text += k
             elif symbol == key.BACKSPACE:
                 self.text = self.text[:-1]
     
     def draw(self, offset_x, offset_y):
-        if self.activated:
+        if self.pressed:
             pyglet.gl.glColor4f(0.95, 0.95, 0.95, 1)
         else:
             pyglet.gl.glColor4f(0.8, 0.8, 0.8, 1)

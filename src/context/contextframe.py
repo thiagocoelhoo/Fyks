@@ -1,11 +1,16 @@
-from pyglet.window import mouse, key
+import pickle
 
-from ui import Frame, Button, CustomMouseHandler
+from pyglet.window import mouse, key
+from pyglet.gl import *
+
+from ui import Frame, CustomMouseHandler
+from core.render import Render, draw_circle
+from graphicutils import graphicutils
 from context.context import Context
 from context.context_widgets import (
-    ContextOptionsMenu,
+    AddRigidbodyWindow,
+    RigidbodyInfoWindow,
     ToolBox,
-    RigidbodyInfoWindow
 )
 
 
@@ -13,6 +18,7 @@ class ContextFrame(Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.context = Context(0, 0, self.w, self.h)
+        self.context_render = Render(self.context.camera)
         self.mouse_handler = CustomMouseHandler()
         self.mouse_handler.on_double_click = self.on_double_click
         self.running = True
@@ -28,20 +34,23 @@ class ContextFrame(Frame):
     
     def build(self):
         self.toolbox = ToolBox(self)
-        self.opt = ContextOptionsMenu(self)
-        self.rbinfo = RigidbodyInfoWindow(self)
+        self.add_rb_win = AddRigidbodyWindow(self)
+        self.rb_info_win = RigidbodyInfoWindow(self)
+    
+    def on_resize(self, w, h):
+        self.context.camera.w = w
+        self.context.camera.h = h
     
     def show_options(self):
-        opt = self.opt
-        opt.x = self.mouse_handler.x
-        opt.y = self.mouse_handler.y - opt.h
-        opt.display = True
+        self.add_rb_win.x = self.mouse_handler.x
+        self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
+        self.add_rb_win.is_visible = True
 
     def pause(self):
         self.running = not self.running
-        
+    
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        if self.activated == 1:
+        if self.pressed:
             if scroll_y < 0:
                 if self.context.camera.zoom > 0.05:
                     self.context.camera.zoom -= 0.05
@@ -50,13 +59,13 @@ class ContextFrame(Frame):
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
-        if self.activated == 1:
-            if button == mouse.RIGHT:
-                self.context.selection = [x, y, x, y]
+        
+        if self.pressed and button == mouse.RIGHT:
+            self.context.selection = [x, y, x, y]
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-        if self.activated == 1:
+        if self.pressed:
             if buttons == mouse.LEFT:
                 self.context.camera.x -= dx
                 self.context.camera.y -= dy
@@ -78,9 +87,10 @@ class ContextFrame(Frame):
     def on_double_click(self, x, y, button, modifiers):
         self.context.select_closer(x, y)
         if self.context.selected:
-            self.rbinfo.x = x
-            self.rbinfo.y = y
-            self.rbinfo.display = True
+            self.rb_info_win.x = x
+            self.rb_info_win.y = y - self.rb_info_win.h
+            self.rb_info_win.set_target(self.context.selected[0])
+            self.rb_info_win.is_visible = True
     
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
@@ -94,12 +104,51 @@ class ContextFrame(Frame):
             self.context.delete_selected()
         elif command == 'pause':
             self.pause()
+                
+    def draw_overlayer(self):
+        zoom = self.context.camera.zoom
+        for obj in self.context.selected:
+            if self.context.camera.collide(obj):
+                objx = int(obj.x * zoom + self.context.camera.centerx)
+                objy = int(obj.y * zoom + self.context.camera.centery)
+                draw_circle(
+                    objx,
+                    objy, 
+                    25 * zoom,
+                    (1, 0.2, 0.2, 1),
+                )
         
+        if self.context.selection is not None:
+            x1, y1, x2, y2 = self.context.selection
+            glColor4f(0.1, 0.1, 0.3, 0.2)
+            rect = (x1, y1, x2, y1, x2, y2, x1, y2)
+            pyglet.graphics.draw(
+                4, GL_QUADS,
+                ('v2f', rect)
+            )
+            glColor4f(0.3, 0.3, 0.8, 0.5)
+            pyglet.graphics.draw(
+                4, GL_LINE_LOOP,
+                ('v2f', rect)
+            )
+
     def draw(self, offset_x=0, offset_y=0):
-        self.context.draw()
-        self.draw_content(offset_x, offset_y)
+        glColor4f(0.15, 0.15, 0.15, 1)
+        graphicutils.draw_rect(
+            self.x + offset_x,
+            self.y + offset_y,
+            self.w, self.h,
+            GL_QUADS)
+        
+        self.context_render.draw_grid()
+        self.context_render.draw_axes()
+        for obj in self.context.objects:
+            self.context_render.render(obj)
+        
+        self.draw_overlayer()
+        self.draw_children(offset_x, offset_y)
 
     def update(self, dt):
+        super().update(dt)
         if self.running:
             self.context.update(dt)
-
