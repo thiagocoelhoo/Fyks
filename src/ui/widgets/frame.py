@@ -72,17 +72,19 @@ class Frame(Widget):
 
     def draw(self, offset_x=0, offset_y=0):
         glColor4f(*self.color)
-        graphicutils.draw_rect(
+        graphicutils.draw_rounded_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
-            GL_QUADS
+            self.border_radius,
+            GL_POLYGON
         )
         glColor4f(*self.border_color)
-        graphicutils.draw_rect(
+        graphicutils.draw_rounded_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
+            self.border_radius,
             GL_LINE_LOOP
         )
         self.draw_children(offset_x, offset_y)

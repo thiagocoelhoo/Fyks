@@ -1,9 +1,7 @@
 from ui import Frame, Menu
 from context.contextframe import ContextFrame
-from app.fileswindow import FileManagerWindow
+from app.filemanagers import SaveWindow, LoadWindow
 
-def show_file_manager():
-    FileManagerWindow()
 
 def build_main_frame(width, height):
     frame = Frame(0, 0, width, height)
@@ -13,8 +11,8 @@ def build_main_frame(width, height):
     menu.add_dropdown(
         name='Arquivo',
         options=(
-            ('Salvar', show_file_manager),
-            ('Carregar', context.load),
+            ('Salvar', SaveWindow),
+            ('Carregar', LoadWindow),
         )
     )
     menu.add_button('Arquivo', None)

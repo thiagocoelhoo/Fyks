@@ -1,8 +1,6 @@
 import pyglet
 
 from app.build import build_main_frame
-from app.fileswindow import FileManagerWindow
-
 
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
@@ -37,5 +35,5 @@ def update(dt):
     fps_label.text = str(1 / dt)
 
 
-pyglet.clock.schedule_interval(update, 10e-10)
+pyglet.clock.schedule_interval(update, 1/500)
 pyglet.app.run()

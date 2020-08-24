@@ -48,17 +48,7 @@ class ContextFrame(Frame):
 
     def pause(self):
         self.running = not self.running
-
-    def save(self):
-        with open('context.fyks', 'wb') as f:
-            pickle.dump(self.context, f)
-        
-    def load(self):
-        with open('context.fyks', 'rb') as f:
-            ctx = pickle.load(f)
-            self.context = ctx
-            self.context_render.camera = self.context.camera
-
+    
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
             if scroll_y < 0:
@@ -148,16 +138,14 @@ class ContextFrame(Frame):
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
-            GL_QUADS
-        )
+            GL_QUADS)
+        
         self.context_render.draw_grid()
         self.context_render.draw_axes()
-        
         for obj in self.context.objects:
             self.context_render.render(obj)
         
         self.draw_overlayer()
-
         self.draw_children(offset_x, offset_y)
 
     def update(self, dt):

@@ -1,9 +1,19 @@
 import math
+from threading import Lock, Thread
 
 from core.camera import Camera
 
 
-class Context:
+class Singleton(type):
+    _instance = None
+
+    def __call__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__call__(*args, **kwargs)
+        return cls._instance
+
+
+class Context(metaclass=Singleton):
     def __init__(self, x, y, w, h):
         self.w = w
         self.h = h
