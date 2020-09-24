@@ -12,6 +12,7 @@ class Entry(Widget):
         super().__init__(x, y, w, h, None)
         self.text_label = Label(0, 0, 0, 0)
         self.text_label.text = 'Entry'
+        self.text_label.lab.color=(61, 85, 94, 255)
         self.mask = string.printable
         self._padding = 8
 

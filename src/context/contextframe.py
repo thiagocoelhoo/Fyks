@@ -6,8 +6,8 @@ from pyglet.gl import *
 from ui import Frame, CustomMouseHandler
 from core.render import Render, draw_circle
 from graphicutils import graphicutils
-from context.context import Context
-from context.context_widgets import (
+from .context import Context
+from .context_widgets import (
     AddRigidbodyWindow,
     RigidbodyInfoWindow,
     ToolBox,
@@ -27,9 +27,9 @@ class ContextFrame(Frame):
 
         self.KEYMAP = {
             (key.MOD_SHIFT, key.A): 'options',
-            (0, key.HOME): 'home',
-            (0, key.DELETE): 'delete',
-            (0, key.SPACE): 'pause',
+            (16, key.HOME): 'home',
+            (16, key.DELETE): 'delete',
+            (16, key.SPACE): 'pause',
         }
     
     def build(self):
@@ -94,8 +94,13 @@ class ContextFrame(Frame):
     
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
-        command = self.KEYMAP.get((modifiers, symbol))
-        
+        command = None
+
+        for mod, sym in self.KEYMAP.keys():
+            if modifiers & mod and symbol == sym:
+                command = self.KEYMAP[(mod, sym)]
+                break
+
         if command == 'options':
             self.show_options()
         elif command == 'home':
@@ -104,6 +109,7 @@ class ContextFrame(Frame):
             self.context.delete_selected()
         elif command == 'pause':
             self.pause()
+            
                 
     def draw_overlayer(self):
         zoom = self.context.camera.zoom

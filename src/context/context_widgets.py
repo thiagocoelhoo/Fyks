@@ -190,10 +190,11 @@ class ToolBox(Frame):
             parent=self,
             text=name,
             command=command)
+        bt.label.lab.color = (220, 220, 220, 255)
         bt.top = top
-        bt.null_color = (0.05, 0.05, 0.15, 0.4)
-        bt.color = (0.05, 0.05, 0.15, 0.4)
-        bt.border_color = (0.3, 0.3, 0.8, 0.5)
+        bt.null_color = (0.05, 0.05, 0.15, 0.8)
+        bt.color = (0.05, 0.05, 0.15, 0.8)
+        bt.border_color = (0.3, 0.3, 0.8, 0.9)
 
         return bt
     
