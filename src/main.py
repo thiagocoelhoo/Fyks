@@ -15,6 +15,7 @@ pyglet.gl.glBlendFunc(pyglet.gl.GL_SRC_ALPHA, pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
 frame = build_main_frame(WIDTH, HEIGHT)
 window.push_handlers(frame)
 
+
 @window.event
 def on_draw():
     window.clear()

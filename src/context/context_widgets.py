@@ -48,8 +48,7 @@ class AddRigidbodyWindow(Subwindow):
             mass=1,
             charge=0
         )
-        self.parent.context.objects.append(rb)
-
+        self.parent.context_wrapper.add_object(rb)
         self.is_visible = False
 
 
@@ -90,7 +89,7 @@ class AddForceWindow(Subwindow):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
 
-        for rb in self.parent.context.selected:
+        for rb in self.parent.context_wrapper.selected:
             rb.add_force(x, y)
 
         self.is_visible = False
@@ -176,7 +175,7 @@ class RigidbodyInfoWindow(Subwindow):
 
 class ToolBox(Frame):
     def __init__(self, parent):
-        super().__init__(1, 0, 80, parent.context.h, parent)
+        super().__init__(1, 0, 80, parent.h, parent)
         self.build()
 
     def add_button(self, name, command):
