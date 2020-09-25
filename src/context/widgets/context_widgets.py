@@ -1,7 +1,3 @@
-import string
-
-import pyglet
-
 from ui import Frame, Button, Entry, FloatEntry, Label, Subwindow
 from core.rigidbody import RigidBody
 
@@ -171,46 +167,3 @@ class RigidbodyInfoWindow(Subwindow):
                 self.entry_vel_y.text = vel_y_str[:10]
             else:
                 self.target.velocity[1] = self.entry_vel_y.get_value()
-
-
-class ToolBox(Frame):
-    def __init__(self, parent):
-        super().__init__(1, 0, 80, parent.h, parent)
-        self.build()
-
-    def add_button(self, name, command):
-        h = 30
-        margin = 8
-        top = margin + len(self.children)*(h + margin)
-
-        bt = Button(
-            x=4, y=0,
-            w=60, h=h,
-            parent=self,
-            text=name,
-            command=command)
-        bt.label.lab.color = (220, 220, 220, 255)
-        bt.top = top
-        bt.null_color = (0.05, 0.05, 0.15, 0.8)
-        bt.color = (0.05, 0.05, 0.15, 0.8)
-        bt.border_color = (0.3, 0.3, 0.8, 0.9)
-
-        return bt
-    
-    def build(self):
-        self.bt = self.add_button('Add', self.add_bt_function)
-        self.bt = self.add_button('Force', self.force_bt_function)
-        
-        self.add_force_menu = AddForceWindow(self.parent)
-        self.add_force_menu.is_visible = False
-        self.add_force_menu.x = 80
-        self.add_force_menu.top = 70
-
-    def add_bt_function(self):
-        self.parent.show_options()
-
-    def force_bt_function(self):
-        self.add_force_menu.is_visible = True
-    
-    def draw(self, offset_x=0, offset_y=0):
-        self.draw_children(self.x + offset_x, self.y + offset_y)

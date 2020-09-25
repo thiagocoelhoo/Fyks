@@ -24,10 +24,10 @@ class Render:
         self.show_vector_mesh = False
     
     def draw_grid(self):
-        color = (0.2, 0.2, 0.2)
+        color = (0.20, 0.22, 0.25)
         cam_x = int(self.camera.centerx)
         cam_y = int(self.camera.centery)
-        size = int(20 * self.camera.zoom)
+        size = int(30 * self.camera.zoom)
         if size > 0:
             glColor3f(*color)
             graphicutils.draw_grid(self.camera.w, self.camera.h, cam_x, cam_y, size)

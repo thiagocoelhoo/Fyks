@@ -1,15 +1,11 @@
 from pyglet.window import mouse, key
-from pyglet.gl import *
+from pyglet import gl
 
 from ui import Frame, CustomMouseHandler
 from core.render import Render, draw_circle
 from graphicutils import graphicutils
 from .context_wrapper import ContextWrapper
-from .context_widgets import (
-    AddRigidbodyWindow,
-    RigidbodyInfoWindow,
-    ToolBox,
-)
+from context import widgets
 
 
 class ContextFrame(Frame):
@@ -30,15 +26,16 @@ class ContextFrame(Frame):
         }
     
     def build(self):
-        self.toolbox = ToolBox(self)
-        self.add_rb_win = AddRigidbodyWindow(self)
-        self.rb_info_win = RigidbodyInfoWindow(self)
-    
+        self.toolbox = widgets.toolbox.ToolBox(self)
+        # self.add_rb_win = widget.AddRigidbodyWindow(self)
+        # self.rb_info_win = RigidbodyInfoWindow(self)
+
     def show_options(self):
-        self.add_rb_win.x = self.mouse_handler.x
-        self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
-        self.add_rb_win.is_visible = True
-    
+        # self.add_rb_win.x = self.mouse_handler.x
+        # self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
+        # self.add_rb_win.is_visible = True
+        pass
+
     def on_resize(self, w, h):
         self.context_wrapper.resize(w, h)
 
@@ -91,12 +88,12 @@ class ContextFrame(Frame):
             self.context_wrapper.toggle_pause()
     
     def draw(self, offset_x=0, offset_y=0):
-        glColor4f(0.15, 0.15, 0.15, 1)
+        gl.glColor4f(0.14, 0.16, 0.18, 1)
         graphicutils.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
-            GL_QUADS)
+            gl.GL_QUADS)
         self.context_wrapper.draw()
         self.draw_children(offset_x, offset_y)
 
