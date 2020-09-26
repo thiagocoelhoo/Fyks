@@ -6,6 +6,7 @@ from core.render import Render, draw_circle
 from graphicutils import graphicutils
 from .context_wrapper import ContextWrapper
 from context import widgets
+from app import colors 
 
 
 class ContextFrame(Frame):
@@ -17,7 +18,6 @@ class ContextFrame(Frame):
         self.running = True
 
         self.build()
-
         self.KEYMAP = {
             (key.MOD_SHIFT, key.A): 'options',
             (16, key.HOME): 'home',
@@ -88,7 +88,7 @@ class ContextFrame(Frame):
             self.context_wrapper.toggle_pause()
     
     def draw(self, offset_x=0, offset_y=0):
-        gl.glColor4f(0.14, 0.16, 0.18, 1)
+        gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
         graphicutils.draw_rect(
             self.x + offset_x,
             self.y + offset_y,

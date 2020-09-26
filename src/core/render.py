@@ -2,7 +2,7 @@ import pyglet
 from pyglet.gl import *
 
 from graphicutils import graphicutils
-
+from app import colors
 
 def draw_lines(vertices, color):
     glColor3f(*color)
@@ -24,12 +24,11 @@ class Render:
         self.show_vector_mesh = False
     
     def draw_grid(self):
-        color = (0.20, 0.22, 0.25)
         cam_x = int(self.camera.centerx)
         cam_y = int(self.camera.centery)
         size = int(30 * self.camera.zoom)
         if size > 0:
-            glColor3f(*color)
+            glColor3f(*colors.CONTEXT_GRID_COLOR)
             graphicutils.draw_grid(self.camera.w, self.camera.h, cam_x, cam_y, size)
 
     def draw_axes(self):

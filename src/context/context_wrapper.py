@@ -6,6 +6,7 @@ from core.camera import Camera
 from core.render import Render, draw_circle
 from graphicutils import graphicutils
 from .context import Context
+from core.rigidbody import RigidBody
 
 
 class ContextWrapper:
@@ -63,7 +64,8 @@ class ContextWrapper:
                 if x1 < x < x2 and y1 < y < y2:
                     self.__selected.append(obj)
     
-    def add_object(self, obj):
+    def add_object(self, *args, **kwargs):
+        obj = RigidBody(*args, **kwargs)
         self.__context.objects.append(obj)
     
     def delete_selected(self):
