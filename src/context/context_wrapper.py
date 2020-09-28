@@ -6,6 +6,7 @@ from core.camera import Camera
 from core.render import Render, draw_circle
 from graphicutils import graphicutils
 from .context import Context
+from core.rigidbody import RigidBody
 
 
 class ContextWrapper:
@@ -63,7 +64,8 @@ class ContextWrapper:
                 if x1 < x < x2 and y1 < y < y2:
                     self.__selected.append(obj)
     
-    def add_object(self, obj):
+    def add_object(self, *args, **kwargs):
+        obj = RigidBody(*args, **kwargs)
         self.__context.objects.append(obj)
     
     def delete_selected(self):
@@ -112,13 +114,13 @@ class ContextWrapper:
         
         if self.__selection:
             x1, y1, x2, y2 = self.__selection
-            gl.glColor4f(0.1, 0.1, 0.3, 0.2)
+            gl.glColor4f(0.1, 0.2, 0.3, 0.2)
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
             pyglet.graphics.draw(
                 4, gl.GL_QUADS,
                 ('v2f', rect)
             )
-            gl.glColor4f(0.3, 0.3, 0.8, 0.5)
+            gl.glColor4f(0.3, 0.5, 0.8, 0.5)
             pyglet.graphics.draw(
                 4, gl.GL_LINE_LOOP,
                 ('v2f', rect)

@@ -1,15 +1,12 @@
 from pyglet.window import mouse, key
-from pyglet.gl import *
+from pyglet import gl
 
 from ui import Frame, CustomMouseHandler
 from core.render import Render, draw_circle
 from graphicutils import graphicutils
 from .context_wrapper import ContextWrapper
-from .context_widgets import (
-    AddRigidbodyWindow,
-    RigidbodyInfoWindow,
-    ToolBox,
-)
+from context import widgets
+from app import colors 
 
 
 class ContextFrame(Frame):
@@ -21,7 +18,6 @@ class ContextFrame(Frame):
         self.running = True
 
         self.build()
-
         self.KEYMAP = {
             (key.MOD_SHIFT, key.A): 'options',
             (16, key.HOME): 'home',
@@ -30,15 +26,16 @@ class ContextFrame(Frame):
         }
     
     def build(self):
-        self.toolbox = ToolBox(self)
-        self.add_rb_win = AddRigidbodyWindow(self)
-        self.rb_info_win = RigidbodyInfoWindow(self)
-    
+        self.toolbox = widgets.ToolBox(self)
+        self.add_rb_win = widgets.AddRigidbodyWindow(self)
+        self.edit_rb_win = widgets.EditRigidbodyWindow(self)
+        self.timeline = widgets.Timeline(self)
+
     def show_options(self):
         self.add_rb_win.x = self.mouse_handler.x
         self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
         self.add_rb_win.is_visible = True
-    
+
     def on_resize(self, w, h):
         self.context_wrapper.resize(w, h)
 
@@ -67,17 +64,16 @@ class ContextFrame(Frame):
     def on_double_click(self, x, y, button, modifiers):
         self.context_wrapper.select_closer(x, y)
         if self.context_wrapper.selected:
-            self.rb_info_win.x = x
-            self.rb_info_win.y = y - self.rb_info_win.h
-            self.rb_info_win.set_target(self.context_wrapper.selected[0])
-            self.rb_info_win.is_visible = True
+            self.edit_rb_win.x = x
+            self.edit_rb_win.y = y - self.edit_rb_win.h
+            self.edit_rb_win.set_target(self.context_wrapper.selected[0])
+            self.edit_rb_win.is_visible = True
 
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
         command = None
-
         for mod, sym in self.KEYMAP.keys():
-            if modifiers & mod and symbol == sym:
+            if symbol == sym and modifiers & mod:
                 command = self.KEYMAP[(mod, sym)]
                 break
 
@@ -91,12 +87,12 @@ class ContextFrame(Frame):
             self.context_wrapper.toggle_pause()
     
     def draw(self, offset_x=0, offset_y=0):
-        glColor4f(0.15, 0.15, 0.15, 1)
+        gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
         graphicutils.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
-            GL_QUADS)
+            gl.GL_QUADS)
         self.context_wrapper.draw()
         self.draw_children(offset_x, offset_y)
 

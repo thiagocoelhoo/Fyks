@@ -2,7 +2,7 @@ import pyglet
 from pyglet.gl import *
 
 from graphicutils import graphicutils
-
+from app import colors
 
 def draw_lines(vertices, color):
     glColor3f(*color)
@@ -24,25 +24,23 @@ class Render:
         self.show_vector_mesh = False
     
     def draw_grid(self):
-        color = (0.2, 0.2, 0.2)
         cam_x = int(self.camera.centerx)
         cam_y = int(self.camera.centery)
-        size = int(20 * self.camera.zoom)
+        size = int(30 * self.camera.zoom)
         if size > 0:
-            glColor3f(*color)
+            glColor3f(*colors.CONTEXT_GRID_COLOR)
             graphicutils.draw_grid(self.camera.w, self.camera.h, cam_x, cam_y, size)
 
     def draw_axes(self):
         center_x = self.camera.centerx
         center_y = self.camera.centery
 
-        glColor3f(1, 0.2, 0.2)
+        glColor3f(1, 0, 0)
         graphicutils.draw_arrow(20, 20, 40, 0)
-        draw_lines((0, center_y, self.camera.w, center_y), (1, 0.2, 0.2))
-        
-        glColor3f(0.2, 1, 0.2)
+        draw_lines((0, center_y, self.camera.w, center_y), (1, 0, 0))
+        glColor3f(0, 1, 0)
         graphicutils.draw_arrow(20, 20, 0, 40)
-        draw_lines((center_x, 0, center_x, self.camera.h), (0.2, 1, 0.2))
+        draw_lines((center_x, 0, center_x, self.camera.h), (0, 1, 0))
     
     def draw_vector_mesh(self, mesh):
         if self.show_vector_mesh:
@@ -100,12 +98,12 @@ class Render:
             objx,
             objy, 
             20 * self.camera.zoom,
-            (0.2, 1, 0.2, 0.5),
+            (0.2, 1, 0.2, 0.1),
             mode=GL_POLYGON
         )
         draw_circle(
             objx,
             objy,
             20 * self.camera.zoom,
-            (0, 0, 0, 0.5)
+            (0, 1, 0, 0.5)
         )

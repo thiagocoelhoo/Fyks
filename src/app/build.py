@@ -6,7 +6,7 @@ from app.filemanagers import SaveWindow, LoadWindow
 def build_main_frame(width, height):
     frame = Frame(0, 0, width, height)
 
-    context = ContextFrame(0, 0, width, height-30, parent=frame)
+    context_frame = ContextFrame(0, 0, width, height-30, parent=frame)
     menu = Menu(frame)
     menu.add_dropdown(
         name='Arquivo',

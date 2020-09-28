@@ -4,8 +4,9 @@ from ui import Frame, Button
 class Menu(Frame):
     def __init__(self, parent):
         super().__init__(0, 0, 0, 0, parent=parent)
-        self.color = (0.05, 0.05, 0.05, 1)
-        self.border_color = (0, 0, 0, 0.8)
+        # self.color = (0.05, 0.05, 0.05, 1)
+        self.color = (0.12, 0.14, 0.15, 1)
+        self.border_color = (0, 0, 0, 0.2)
         self.w = parent.w
         self.h = 30
         self.top = 0
@@ -18,7 +19,7 @@ class Menu(Frame):
             command=command,
             parent=self
         )
-        
+        bt.label.lab.color = (255, 255, 255, 150)
         bt.null_color = (0, 0, 0, 0)
         bt.color = (0, 0, 0, 0)
         bt.border_color = (0, 0, 0, 0)
@@ -48,14 +49,14 @@ class Menu(Frame):
             bt.color = (0, 0, 0, 0)
             bt.border_color = (0, 0, 0, 0)
             bt.border_radius = 0
-
+            
         main_bt = Button(
             x=pos_x, y=0,
             w=70, h=28,
             text=name,
             command=dropdown.toggle_is_visible,
             parent=self)
-        
+        main_bt.label.lab.color = (255, 255, 255, 150)
         main_bt.null_color = (0, 0, 0, 0)
         main_bt.color = (0, 0, 0, 0)
         main_bt.border_color = (0, 0, 0, 0)
