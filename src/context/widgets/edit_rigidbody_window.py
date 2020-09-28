@@ -48,7 +48,7 @@ class EditRigidbodyWindow(Subwindow):
             text='Ok',
             command=self.close,
             parent=self.frame)
-
+        self.submit_bt.label.lab.color = (50, 50, 50, 255)
         self.is_visible = False
     
     def update(self, dt):

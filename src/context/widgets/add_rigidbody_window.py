@@ -30,7 +30,7 @@ class AddRigidbodyWindow(Subwindow):
             command=self.submit,
             text='Submit'
         )
-
+        self.submit_bt.label.lab.color = (50, 50, 50, 255)
         self.is_visible = False
 
     def submit(self):

@@ -35,13 +35,12 @@ class Render:
         center_x = self.camera.centerx
         center_y = self.camera.centery
 
-        glColor3f(1, 0.2, 0.2)
+        glColor3f(1, 0, 0)
         graphicutils.draw_arrow(20, 20, 40, 0)
-        draw_lines((0, center_y, self.camera.w, center_y), (1, 0.2, 0.2))
-        
-        glColor3f(0.2, 1, 0.2)
+        draw_lines((0, center_y, self.camera.w, center_y), (1, 0, 0))
+        glColor3f(0, 1, 0)
         graphicutils.draw_arrow(20, 20, 0, 40)
-        draw_lines((center_x, 0, center_x, self.camera.h), (0.2, 1, 0.2))
+        draw_lines((center_x, 0, center_x, self.camera.h), (0, 1, 0))
     
     def draw_vector_mesh(self, mesh):
         if self.show_vector_mesh:
@@ -99,12 +98,12 @@ class Render:
             objx,
             objy, 
             20 * self.camera.zoom,
-            (0.2, 1, 0.2, 0.5),
+            (0.2, 1, 0.2, 0.1),
             mode=GL_POLYGON
         )
         draw_circle(
             objx,
             objy,
             20 * self.camera.zoom,
-            (0, 0, 0, 0.5)
+            (0, 1, 0, 0.5)
         )

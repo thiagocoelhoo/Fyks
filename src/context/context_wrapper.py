@@ -114,13 +114,13 @@ class ContextWrapper:
         
         if self.__selection:
             x1, y1, x2, y2 = self.__selection
-            gl.glColor4f(0.1, 0.1, 0.3, 0.2)
+            gl.glColor4f(0.1, 0.2, 0.3, 0.2)
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
             pyglet.graphics.draw(
                 4, gl.GL_QUADS,
                 ('v2f', rect)
             )
-            gl.glColor4f(0.3, 0.3, 0.8, 0.5)
+            gl.glColor4f(0.3, 0.5, 0.8, 0.5)
             pyglet.graphics.draw(
                 4, gl.GL_LINE_LOOP,
                 ('v2f', rect)
