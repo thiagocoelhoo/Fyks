@@ -4,6 +4,7 @@ from ui import Frame, Button, Label
 from graphicutils import graphicutils
 from app import colors
 
+
 class Subwindow(Frame):
     def __init__(self, x, y, w, h, title, parent):        
         super().__init__(x=x, y=y, w=w, h=h + 22, parent=parent)

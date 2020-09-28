@@ -26,15 +26,15 @@ class ContextFrame(Frame):
         }
     
     def build(self):
-        self.toolbox = widgets.toolbox.ToolBox(self)
-        # self.add_rb_win = widget.AddRigidbodyWindow(self)
-        # self.rb_info_win = RigidbodyInfoWindow(self)
+        self.toolbox = widgets.ToolBox(self)
+        self.add_rb_win = widgets.AddRigidbodyWindow(self)
+        self.edit_rb_win = widgets.EditRigidbodyWindow(self)
+        self.timeline = widgets.Timeline(self)
 
     def show_options(self):
-        # self.add_rb_win.x = self.mouse_handler.x
-        # self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
-        # self.add_rb_win.is_visible = True
-        pass
+        self.add_rb_win.x = self.mouse_handler.x
+        self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
+        self.add_rb_win.is_visible = True
 
     def on_resize(self, w, h):
         self.context_wrapper.resize(w, h)
@@ -64,17 +64,16 @@ class ContextFrame(Frame):
     def on_double_click(self, x, y, button, modifiers):
         self.context_wrapper.select_closer(x, y)
         if self.context_wrapper.selected:
-            self.rb_info_win.x = x
-            self.rb_info_win.y = y - self.rb_info_win.h
-            self.rb_info_win.set_target(self.context_wrapper.selected[0])
-            self.rb_info_win.is_visible = True
+            self.edit_rb_win.x = x
+            self.edit_rb_win.y = y - self.edit_rb_win.h
+            self.edit_rb_win.set_target(self.context_wrapper.selected[0])
+            self.edit_rb_win.is_visible = True
 
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
         command = None
-
         for mod, sym in self.KEYMAP.keys():
-            if modifiers & mod and symbol == sym:
+            if symbol == sym and modifiers & mod:
                 command = self.KEYMAP[(mod, sym)]
                 break
 
