@@ -1,8 +1,9 @@
 from pyglet import gl
+import numpy as np
 
 from ui.widgets.widget import Widget
-from graphicutils import graphicutils as gu
 from app import colors
+import graphicutils as gu
 
 
 class Timeline(Widget):
@@ -14,14 +15,21 @@ class Timeline(Widget):
             h=16, 
             parent=parent
         )
-    
+        self.value = 0
+
     def update(self, dt):
-        pass
+        self.value += 0.0001
+        self.value %= 1
 
     def draw(self, offset_x, offset_y):
         x = self.x + offset_x
         y = self.y + offset_y
+
         gl.glColor4f(*colors.TIMELINE_BACKGROUND_COLOR)
         gu.draw_rounded_rect(x, y, self.w, self.h, 3, gl.GL_POLYGON)
-        gl.glColor3f(0.3, 0.5, 0.7)
+
+        gl.glColor4f(0.5,0.8, 1, 0.05)
         gu.draw_rounded_rect(x + 5, y + 5, self.w - 10, 6, 3, gl.GL_POLYGON)
+
+        gl.glColor3f(0.3, 0.5, 0.7)
+        gu.draw_rounded_rect(x + 5, y + 5, int(self.value * (self.w - 10)), 6, 3, gl.GL_POLYGON)

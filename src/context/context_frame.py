@@ -3,7 +3,7 @@ from pyglet import gl
 
 from ui import Frame, CustomMouseHandler
 from core.render import Render, draw_circle
-from graphicutils import graphicutils
+import graphicutils
 from .context_wrapper import ContextWrapper
 from context import widgets
 from app import colors 

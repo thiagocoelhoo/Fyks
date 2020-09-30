@@ -4,7 +4,7 @@ from pyglet.window import mouse
 
 from core.camera import Camera
 from core.render import Render, draw_circle
-from graphicutils import graphicutils
+import graphicutils
 from .context import Context
 from core.rigidbody import RigidBody
 
@@ -114,8 +114,9 @@ class ContextWrapper:
         
         if self.__selection:
             x1, y1, x2, y2 = self.__selection
-            gl.glColor4f(0.1, 0.2, 0.3, 0.2)
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
+
+            gl.glColor4f(0.1, 0.2, 0.3, 0.2)
             pyglet.graphics.draw(
                 4, gl.GL_QUADS,
                 ('v2f', rect)

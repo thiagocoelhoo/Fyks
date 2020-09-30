@@ -1,7 +1,7 @@
 import pyglet
 from pyglet.gl import *
 
-from graphicutils import graphicutils
+import graphicutils as gu
 from app import colors
 
 def draw_lines(vertices, color):
@@ -15,7 +15,7 @@ def draw_lines(vertices, color):
 
 def draw_circle(x, y, r, color, mode=pyglet.gl.GL_LINE_LOOP, resolution=16):
     glColor4f(*color)
-    graphicutils.draw_circle(int(x), int(y), int(r), resolution, mode)
+    gu.draw_circle(int(x), int(y), int(r), resolution, mode)
 
 
 class Render:
@@ -29,17 +29,17 @@ class Render:
         size = int(30 * self.camera.zoom)
         if size > 0:
             glColor3f(*colors.CONTEXT_GRID_COLOR)
-            graphicutils.draw_grid(self.camera.w, self.camera.h, cam_x, cam_y, size)
+            gu.draw_grid(self.camera.w, self.camera.h, cam_x, cam_y, size)
 
     def draw_axes(self):
         center_x = self.camera.centerx
         center_y = self.camera.centery
 
         glColor3f(1, 0, 0)
-        graphicutils.draw_arrow(20, 20, 40, 0)
+        gu.draw_arrow(20, 20, 40, 0)
         draw_lines((0, center_y, self.camera.w, center_y), (1, 0, 0))
         glColor3f(0, 1, 0)
-        graphicutils.draw_arrow(20, 20, 0, 40)
+        gu.draw_arrow(20, 20, 0, 40)
         draw_lines((center_x, 0, center_x, self.camera.h), (0, 1, 0))
     
     def draw_vector_mesh(self, mesh):
@@ -78,21 +78,21 @@ class Render:
             if any(force):
                 w = int(force[0] * self.camera.zoom)
                 h = int(force[1] * self.camera.zoom)
-                graphicutils.draw_arrow(objx, objy, w, h)
+                gu.draw_arrow(objx, objy, w, h)
 
         glColor4f(0, 0, 1, 1)
 
         if any(obj.velocity):
             w = int(obj.velocity[0] * self.camera.zoom)
             h = int(obj.velocity[1] * self.camera.zoom)
-            graphicutils.draw_arrow(objx, objy, w, h)
+            gu.draw_arrow(objx, objy, w, h)
 
         glColor4f(1, 0, 0, 1)
 
         if any(obj.acceleration):
             w = int(obj.acceleration[0] * self.camera.zoom)
             h = int(obj.acceleration[1] * self.camera.zoom)
-            graphicutils.draw_arrow(objx, objy, w, h)
+            gu.draw_arrow(objx, objy, w, h)
         
         draw_circle(
             objx,
