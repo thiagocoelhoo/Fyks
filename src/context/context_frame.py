@@ -2,11 +2,10 @@ from pyglet.window import mouse, key
 from pyglet import gl
 
 from ui import Frame, CustomMouseHandler
-from core.render import Render, draw_circle
-import graphicutils
 from .context_wrapper import ContextWrapper
 from context import widgets
-from app import colors 
+from app import colors
+import graphicutils as gu
 
 
 class ContextFrame(Frame):
@@ -88,12 +87,12 @@ class ContextFrame(Frame):
     
     def draw(self, offset_x=0, offset_y=0):
         gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
-        graphicutils.draw_rect(
+        gu.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
             gl.GL_QUADS)
-        self.context_wrapper.draw()
+        self.context_wrapper.draw(50, 0)
         self.draw_children(offset_x, offset_y)
 
     def update(self, dt):

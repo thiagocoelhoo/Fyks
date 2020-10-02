@@ -33,12 +33,14 @@ PyObject* graphicutils_draw_grid(PyObject* self, PyObject* args) {
     int cam_x;
     int cam_y;
     int size;
+    int pos_x;
+    int pos_y;
 
-    if (!PyArg_ParseTuple(args, "iiiii", &width, &height, &cam_x, &cam_y, &size)) {
+    if (!PyArg_ParseTuple(args, "iiiiiii", &width, &height, &cam_x, &cam_y, &size, &pos_x, &pos_y)) {
         return NULL;
     }
 
-    draw_grid(width, height, cam_x, cam_y, size);
+    draw_grid(width, height, cam_x, cam_y, size, pos_x, pos_y);
     Py_RETURN_NONE;
 }
 

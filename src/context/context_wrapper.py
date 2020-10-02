@@ -4,90 +4,90 @@ from pyglet.window import mouse
 
 from core.camera import Camera
 from core.render import Render, draw_circle
-import graphicutils
 from .context import Context
 from core.rigidbody import RigidBody
 
 
-class ContextWrapper:
+class ContextWrapper(Context):
     def __init__(self, w, h):
-        self.__context = Context(0, 0, w, h)
-        self.__camera = Camera(0, 0, w, h)
-        self.__render = Render(self.__camera)
-        self.__running = True
-        self.__selection = []
-        self.__selected = []
+        super().__init__()
+        self._camera = Camera(0, 0, w, h)
+        self._render = Render(self._camera)
+        self._running = True
+        self._selection = []
+        self._selected = []
     
     @property
     def selected(self):
-        return tuple(self.__selected)
+        return tuple(self._selected)
     
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == mouse.LEFT:
-            self.__camera.x -= dx
-            self.__camera.y -= dy
+            self._camera.x -= dx
+            self._camera.y -= dy
         elif buttons == mouse.RIGHT:
-            if self.__selection:
-                self.__selection[2] = x
-                self.__selection[3] = y
+            if self._selection:
+                self._selection[2] = x
+                self._selection[3] = y
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if scroll_y < 0:
-            if self.__camera.zoom > 0.05:
-                self.__camera.zoom -= 0.05
+            if self._camera.zoom > 0.05:
+                self._camera.zoom -= 0.05
+                self._set_frame(self._frame - 120)
         elif scroll_y > 0:
-            self.__camera.zoom += 0.05
+            self._camera.zoom += 0.05
     
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.RIGHT:
-            self.__selection = [x, y, x, y]
+            self._selection = [x, y, x, y]
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.RIGHT:
             self.select()
-            self.__selection = []
+            self._selection = []
     
     def resize(self, w, h):
-        self.__camera.w = w
-        self.__camera.h = h
+        self._camera.w = w
+        self._camera.h = h
 
     def select(self):
-        if self.__selection:
-            self.__selected.clear()
-            x1, y1, x2, y2 = self.__selection
+        if self._selection:
+            self._selected.clear()
+            x1, y1, x2, y2 = self._selection
             x1, x2 = sorted((x1, x2))
             y1, y2 = sorted((y1, y2))
-            zoom = self.__camera.zoom
-            for obj in self.__context.objects:
-                x = obj.x * zoom + self.__camera.centerx
-                y = obj.y * zoom + self.__camera.centery
+            zoom = self._camera.zoom
+            for obj in self._objects:
+                x = obj.x * zoom + self._camera.centerx
+                y = obj.y * zoom + self._camera.centery
                 if x1 < x < x2 and y1 < y < y2:
-                    self.__selected.append(obj)
+                    self._selected.append(obj)
     
     def add_object(self, *args, **kwargs):
         obj = RigidBody(*args, **kwargs)
-        self.__context.objects.append(obj)
+        self._objects.append(obj)
     
     def delete_selected(self):
-        while self.__selected:
-            obj = self.__selected.pop()
-            self.__context.objects.remove(obj)
+        while self._selected:
+            obj = self._selected.pop()
+            self._objects.remove(obj)
     
     def select_closer(self, x, y):
-        point_x = (x - self.__camera.centerx) / self.__camera.zoom
-        point_y = (y - self.__camera.centery) / self.__camera.zoom
-        min_dist = 20 * self.__camera.zoom
+        point_x = (x - self._camera.centerx) / self._camera.zoom
+        point_y = (y - self._camera.centery) / self._camera.zoom
+        min_dist = 20 * self._camera.zoom
         closer = None
         
-        for obj in self.__context.objects:
+        for obj in self._objects:
             dist = ((point_x - obj.x)**2 + (point_y - obj.y)**2)**0.5
             if dist < min_dist:
                 min_dist = dist
                 closer = obj
         
-        self.__selected.clear()
+        self._selected.clear()
         if closer is not None:
-            self.__selected = [closer]
+            self._selected = [closer]
     
     def move_camera(self, x, y):
         pass
@@ -96,15 +96,18 @@ class ContextWrapper:
         pass
 
     def toggle_pause(self):
-        self.__running = not self.__running
+        self._running = not self._running
     
-    def draw_overlayer(self):
-        zoom = self.__camera.zoom
+    def set_frame(self, frame):
+        self._set_frame(frame)
+    
+    def draw_overlayer(self, x, y):
+        zoom = self._camera.zoom
 
-        for obj in self.__selected:
-            if self.__camera.collide(obj):
-                objx = int(obj.x * zoom + self.__camera.centerx)
-                objy = int(obj.y * zoom + self.__camera.centery)
+        for obj in self._selected:
+            if self._camera.collide(obj):
+                objx = int(obj.x * zoom + self._camera.centerx) + x
+                objy = int(obj.y * zoom + self._camera.centery) + y
                 draw_circle(
                     objx,
                     objy, 
@@ -112,8 +115,8 @@ class ContextWrapper:
                     (1, 0.2, 0.2, 1),
                 )
         
-        if self.__selection:
-            x1, y1, x2, y2 = self.__selection
+        if self._selection:
+            x1, y1, x2, y2 = self._selection
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
 
             gl.glColor4f(0.1, 0.2, 0.3, 0.2)
@@ -127,14 +130,14 @@ class ContextWrapper:
                 ('v2f', rect)
             )
     
-    def draw(self):
-        self.__render.draw_grid()
-        self.__render.draw_axes()
-        for obj in self.__context.objects:
-            self.__render.render(obj)
-        self.draw_overlayer()
+    def draw(self, x, y):
+        self._render.draw_grid(x, y)
+        self._render.draw_axes(x, y)
+        for obj in self._objects:
+            self._render.draw_object(obj, offset_x=x, offset_y=y)
+        self.draw_overlayer(x, y)
     
     def update(self, dt):
-        if self.__running:
-            self.__context.update(dt)
+        if self._running:
+            self._update(dt)
     

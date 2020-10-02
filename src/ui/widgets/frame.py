@@ -23,7 +23,7 @@ class Frame(Widget):
         if self.hover:
             for widget in self.children:
                 if widget.is_visible:
-                    widget_over = widget.on_mouse_scroll(
+                    widget.on_mouse_scroll(
                         x=x - self.x,
                         y=y - self.y,
                         scroll_x=scroll_x,
@@ -33,7 +33,7 @@ class Frame(Widget):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         for widget in self.children:
             if widget.is_visible:
-                widget_over = widget.on_mouse_drag(
+                widget.on_mouse_drag(
                     x=x - self.x,
                     y=y - self.y,
                     dx=dx,
@@ -79,7 +79,7 @@ class Frame(Widget):
             self.border_radius,
             gl.GL_POLYGON
         )
-        glColor4f(*self.border_color)
+        gl.glColor4f(*self.border_color)
         gu.draw_rounded_rect(
             self.x + offset_x,
             self.y + offset_y,

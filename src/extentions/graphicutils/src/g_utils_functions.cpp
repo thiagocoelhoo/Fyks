@@ -18,24 +18,27 @@ void draw_circle(const int x, const int y, const int r, const int vertices, cons
     glEnd();
 }
 
-void draw_grid(const int width, const int height, const int cam_x, const int cam_y, const int size)
-{
-    int origin_x = MIN(width, cam_x);
-    int origin_y = MIN(height, cam_y);
+void draw_grid(const int width, const int height, const int cam_x, const int cam_y, const int size, const int pos_x, const int pos_y)
+{   
+    // center of the grid coords
+    int origin_x = MIN(width, cam_x);   
+    int origin_y = MIN(height, cam_y);  
+    int top = pos_y + height;
+    int right = pos_x + width;
 
     glBegin(GL_LINES);
-    for (int i = -cam_x / size; i < (width - origin_x) / size; i++)
+    for (int i = -cam_x / size; i < (width - origin_x) / size; ++i)
     {
         int x = i * size + cam_x;
-        glVertex2d(x, 0);
-        glVertex2d(x, height);
+        glVertex2d(x, pos_y);
+        glVertex2d(x, top);
     }
     
-    for (int i = -cam_y / size; i < (height - origin_y) / size; i++)
+    for (int i = -cam_y / size; i < (height - origin_y) / size; ++i)
     {
         int y = i * size + cam_y;
-        glVertex2d(0, y);
-        glVertex2d(width, y);
+        glVertex2d(pos_x, y);
+        glVertex2d(right, y);
     }
     glEnd();
 }
@@ -61,7 +64,7 @@ void draw_arrow(const int x, const int y, const int w, const int h)
 
 void draw_arc(const int x, const int y, const int r, const float start_ang, const float ang, const int vertices)
 {
-    for (int i = 0; i < vertices; i++) 
+    for (int i = 0; i < vertices; ++i) 
     {
         float n = start_ang + ang * i / vertices;
         glVertex2d(x + r * cos(n), y + r * sin(n));
