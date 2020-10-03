@@ -8,8 +8,7 @@ class Label(Widget):
         super().__init__(*args, **kwargs)
         self.lab = pyglet.text.Label(
             font_name='verdana',
-            
-            color=(255, 255, 255, 255)
+            color=(80, 80, 80, 240)
             )
         self.font_size = 14
     
