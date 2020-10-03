@@ -34,7 +34,6 @@ class ContextWrapper(Context):
         if scroll_y < 0:
             if self._camera.zoom > 0.05:
                 self._camera.zoom -= 0.05
-                self._set_frame(self._frame - 120)
         elif scroll_y > 0:
             self._camera.zoom += 0.05
     
