@@ -23,8 +23,8 @@ class Render:
         self.camera = camera
     
     def draw_grid(self, x, y):
-        cam_x = int(self.camera.centerx)
-        cam_y = int(self.camera.centery)
+        cam_x = int(self.camera.centerx) + x
+        cam_y = int(self.camera.centery) + y
         size = int(30 * self.camera.zoom)
         if size > 0:
             gl.glColor3f(*colors.CONTEXT_GRID_COLOR)
@@ -37,7 +37,7 @@ class Render:
                 x,
                 y
             )
-
+    
     def draw_axes(self, x, y):
         center_x = self.camera.centerx + x
         center_y = self.camera.centery + y
