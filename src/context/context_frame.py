@@ -2,11 +2,10 @@ from pyglet.window import mouse, key
 from pyglet import gl
 
 from ui import Frame, CustomMouseHandler
-from core.render import Render, draw_circle
-from graphicutils import graphicutils
 from .context_wrapper import ContextWrapper
 from context import widgets
-from app import colors 
+from app import colors
+import graphicutils as gu
 
 
 class ContextFrame(Frame):
@@ -29,7 +28,7 @@ class ContextFrame(Frame):
         self.toolbox = widgets.ToolBox(self)
         self.add_rb_win = widgets.AddRigidbodyWindow(self)
         self.edit_rb_win = widgets.EditRigidbodyWindow(self)
-        self.timeline = widgets.Timeline(self)
+        self.timeline = widgets.Timeline(x=70, y=10, parent=self)
 
     def show_options(self):
         self.add_rb_win.x = self.mouse_handler.x
@@ -62,7 +61,7 @@ class ContextFrame(Frame):
         self.mouse_handler.on_mouse_motion(x, y, dx, dy)
     
     def on_double_click(self, x, y, button, modifiers):
-        self.context_wrapper.select_closer(x, y)
+        self.context_wrapper.select_closer(x - 60, y)
         if self.context_wrapper.selected:
             self.edit_rb_win.x = x
             self.edit_rb_win.y = y - self.edit_rb_win.h
@@ -88,12 +87,12 @@ class ContextFrame(Frame):
     
     def draw(self, offset_x=0, offset_y=0):
         gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
-        graphicutils.draw_rect(
+        gu.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
             gl.GL_QUADS)
-        self.context_wrapper.draw()
+        self.context_wrapper.draw(60, 0)
         self.draw_children(offset_x, offset_y)
 
     def update(self, dt):

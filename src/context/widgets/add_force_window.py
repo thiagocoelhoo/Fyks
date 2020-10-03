@@ -1,4 +1,7 @@
 import ui
+from context import context_wrapper
+
+wrapper = context_wrapper.ContextWrapper(0, 0)
 
 
 class AddForceWindow(ui.Subwindow):
@@ -37,7 +40,7 @@ class AddForceWindow(ui.Subwindow):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
 
-        for rb in self.parent.context_wrapper.selected:
+        for rb in wrapper.selected:
             rb.add_force(x, y)
 
         self.is_visible = False

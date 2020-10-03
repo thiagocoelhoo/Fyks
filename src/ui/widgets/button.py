@@ -1,7 +1,7 @@
 from pyglet.gl import *
 
 from ui import Widget, Label
-from graphicutils import graphicutils
+import graphicutils as gu
 
 
 class Button(Widget):
@@ -33,7 +33,7 @@ class Button(Widget):
     
     def draw(self, offset_x=0, offset_y=0):
         glColor4f(*self.color)
-        graphicutils.draw_rounded_rect(
+        gu.draw_rounded_rect(
             self.x + offset_x, 
             self.y + offset_y,
             self.w,
@@ -43,7 +43,7 @@ class Button(Widget):
         )
 
         glColor4f(*self.border_color)
-        graphicutils.draw_rounded_rect(
+        gu.draw_rounded_rect(
             self.x + offset_x, 
             self.y + offset_y,
             self.w,

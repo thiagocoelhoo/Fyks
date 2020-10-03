@@ -1,10 +1,10 @@
 import string
 
-import pyglet
+from pyglet import gl
 from pyglet.window import key
 
 from ui import Widget, Label
-from graphicutils import graphicutils
+import graphicutils as gu
 
 
 class Entry(Widget):
@@ -56,29 +56,27 @@ class Entry(Widget):
     
     def draw(self, offset_x, offset_y):
         if self.pressed:
-            pyglet.gl.glColor4f(0.95, 0.95, 0.95, 1)
+            gl.glColor4f(0.95, 0.95, 0.95, 1)
         else:
-            pyglet.gl.glColor4f(0.8, 0.8, 0.8, 1)
+            gl.glColor4f(0.8, 0.8, 0.8, 1)
         
-        graphicutils.draw_rounded_rect(
+        gu.draw_rounded_rect(
             self.x + offset_x, 
             self.y + offset_y,
             self.w,
             self.h,
             self.border_radius,
-            pyglet.gl.GL_POLYGON
+            gl.GL_POLYGON
         )
-
-        pyglet.gl.glColor4f(0.4, 0.4, 0.4, 1)
-        graphicutils.draw_rounded_rect(
+        gl.glColor4f(0.4, 0.4, 0.4, 1)
+        gu.draw_rounded_rect(
             self.x + offset_x, 
             self.y + offset_y,
             self.w,
             self.h,
             self.border_radius,
-            pyglet.gl.GL_LINE_LOOP
+            gl.GL_LINE_LOOP
         )
-        
         self.text_label.draw(
             offset_x + self.padding,
             offset_y + self.padding

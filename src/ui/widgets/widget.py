@@ -1,8 +1,3 @@
-import pyglet
-
-from graphicutils import graphicutils
-
-
 class Widget:
     def __init__(self, x, y, w, h, parent=None):
         self._x = x

@@ -1,7 +1,7 @@
 from pyglet import gl
 
 from ui import Frame, Button, Label
-from graphicutils import graphicutils
+import graphicutils as gu
 from app import colors
 
 
@@ -57,7 +57,7 @@ class Subwindow(Frame):
 
         # Draw top bar
         gl.glColor4f(*self.bar_color)
-        graphicutils.draw_rect(
+        gu.draw_rect(
             x, y + self.h - bar_height,
             self.w, bar_height,
             gl.GL_QUADS

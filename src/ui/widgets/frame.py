@@ -1,7 +1,7 @@
-from pyglet.gl import *
+from pyglet import gl
 
 from ui import Widget
-from graphicutils import graphicutils
+import graphicutils as gu
 
 
 class Frame(Widget):
@@ -23,7 +23,7 @@ class Frame(Widget):
         if self.hover:
             for widget in self.children:
                 if widget.is_visible:
-                    widget_over = widget.on_mouse_scroll(
+                    widget.on_mouse_scroll(
                         x=x - self.x,
                         y=y - self.y,
                         scroll_x=scroll_x,
@@ -33,7 +33,7 @@ class Frame(Widget):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         for widget in self.children:
             if widget.is_visible:
-                widget_over = widget.on_mouse_drag(
+                widget.on_mouse_drag(
                     x=x - self.x,
                     y=y - self.y,
                     dx=dx,
@@ -71,20 +71,20 @@ class Frame(Widget):
                 )
 
     def draw(self, offset_x=0, offset_y=0):
-        glColor4f(*self.color)
-        graphicutils.draw_rounded_rect(
+        gl.glColor4f(*self.color)
+        gu.draw_rounded_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
             self.border_radius,
-            GL_POLYGON
+            gl.GL_POLYGON
         )
-        glColor4f(*self.border_color)
-        graphicutils.draw_rounded_rect(
+        gl.glColor4f(*self.border_color)
+        gu.draw_rounded_rect(
             self.x + offset_x,
             self.y + offset_y,
             self.w, self.h,
             self.border_radius,
-            GL_LINE_LOOP
+            gl.GL_LINE_LOOP
         )
         self.draw_children(offset_x, offset_y)
