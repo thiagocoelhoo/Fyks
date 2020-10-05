@@ -7,7 +7,7 @@ screen = display.get_default_screen()
 
 WIDTH = screen.width
 HEIGHT = screen.height - 25
-FPS = 120
+FPS = 200
 DELTA = 1/FPS
 
 config = pyglet.gl.Config(sample_buffers=1, samples=4)
@@ -23,7 +23,6 @@ window.push_handlers(frame)
 def on_draw():
     window.clear()
     frame.draw()
-
 
 def update(dt):
     frame.update(DELTA)

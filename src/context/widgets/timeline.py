@@ -22,8 +22,7 @@ wrapper = ContextWrapper(0, 0)
 
 class Timeline(Widget):
     def __init__(self, x, y, parent):
-        super().__init__(x, y, w=parent.w - 104, h=16, parent=parent)
-        self.value = 0
+        super().__init__(x, y, w=parent.w - 104, h=24, parent=parent)
         self.mode = PAUSE
         
         self.pause_bt = Iconbutton(
@@ -32,8 +31,13 @@ class Timeline(Widget):
             parent=self,
             command=wrapper.toggle_pause
         )
-        
-        self.slidebar = Slidebar(x + 20, y, parent.w - 104, 16, self)
+        self.rec_bt = Iconbutton(
+            x=x + 20, y=y, w=16, h=16,
+            image=rec_icon,
+            parent=self,
+            command=self.rec
+        )
+        self.slidebar = Slidebar(x + 40, y, parent.w - 104, 16, self)
         self.slidebar.background_color = colors.TIMELINE_BACKGROUND_COLOR
         self.slidebar.inside_color = colors.TIMELINE_COLOR
         self.slidebar.value = 0
@@ -49,7 +53,8 @@ class Timeline(Widget):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.slidebar.pressed = self.pressed
         self.slidebar.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-    
+        self.set_time(self.slidebar.value + dx/self.slidebar.w)
+        
     def on_key_press(self, symbol, modifiers):
         if symbol == key.G:
             if self.mode == REC:
@@ -59,7 +64,14 @@ class Timeline(Widget):
                 self.mode = REC
                 wrapper._running = True
     
-    def update(self, dt):    
+    def set_time(self, t):
+        # wrapper.frame * t
+        pass
+    
+    def rec(self):
+        self.mode = REC
+
+    def update(self, dt):
         if wrapper._running:
             self.value = 1
             if self.mode == REC:
@@ -74,3 +86,4 @@ class Timeline(Widget):
         
         self.slidebar.draw(offset_x, offset_y)
         self.pause_bt.draw(offset_x, offset_y)
+        self.rec_bt.draw(offset_x, offset_y)
