@@ -1,6 +1,7 @@
 import pyglet
 import pyglet.gl as gl
-from pyglet.window import mouse
+from pyglet.window import mouse, key
+import numpy as np
 
 from core.camera import Camera
 from core.render import Render, draw_circle
@@ -8,27 +9,55 @@ from .context import Context
 from core.rigidbody import RigidBody
 
 
+SELECT_MODE = 0
+MOVE_MODE = 1
+
+
 class ContextWrapper(Context):
     def __init__(self, w, h):
         super().__init__()
         self._camera = Camera(0, 0, w, h)
         self._render = Render(self._camera)
-        self._running = True
+        self._running = False
         self._selection = []
         self._selected = []
+        self._mode = None
+
+        self.mode = SELECT_MODE
     
     @property
     def selected(self):
         return tuple(self._selected)
     
+    @property
+    def mode(self):
+        return self._mode
+    
+    @mode.setter
+    def mode(self, value):
+        if value == SELECT_MODE:
+            self._render.colors['rigidbodycolor'] = (0.2, 1, 0.2, 0.1)
+            self._render.colors['rigidbodybordercolor'] = (0, 1, 0, 0.5)
+        elif value == MOVE_MODE:
+            self._render.colors['rigidbodycolor'] = (1, 0.8, 0.3, 0.5)
+            self._render.colors['rigidbodybordercolor'] = (1, 0.5, 0.2, 1)
+        self._mode = value
+
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        if buttons == mouse.LEFT:
+        if buttons == mouse.RIGHT:
             self._camera.x -= dx
             self._camera.y -= dy
-        elif buttons == mouse.RIGHT:
-            if self._selection:
-                self._selection[2] = x
-                self._selection[3] = y
+        elif buttons == mouse.LEFT:
+            if self.mode == SELECT_MODE:
+                if self._selection:
+                    self._selection[2] = x
+                    self._selection[3] = y
+                    self.select()
+            elif self.mode == MOVE_MODE:
+                self.move_selected(
+                    x=dx / self._camera.zoom, 
+                    y=dy / self._camera.zoom
+                )
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if scroll_y < 0:
@@ -38,13 +67,20 @@ class ContextWrapper(Context):
             self._camera.zoom += 0.05
     
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.RIGHT:
+        if button == mouse.LEFT:
             self._selection = [x, y, x, y]
 
     def on_mouse_release(self, x, y, button, modifiers):
-        if button == mouse.RIGHT:
-            self.select()
-            self._selection = []
+        if button == mouse.LEFT:
+            if self.mode == SELECT_MODE:
+                self.select()
+                self._selection = []
+            elif self.mode == MOVE_MODE:
+                self.mode = SELECT_MODE
+    
+    def on_key_press(self, symbol, modifiers):
+        if symbol == key.M:
+            self.mode = MOVE_MODE
     
     def resize(self, w, h):
         self._camera.w = w
@@ -58,12 +94,13 @@ class ContextWrapper(Context):
             y1, y2 = sorted((y1, y2))
             zoom = self._camera.zoom
             for obj in self._objects:
-                x = obj.x * zoom + self._camera.centerx
+                x = obj.x * zoom + self._camera.centerx + 60
                 y = obj.y * zoom + self._camera.centery
                 if x1 < x < x2 and y1 < y < y2:
                     self._selected.append(obj)
     
     def add_object(self, *args, **kwargs):
+        kwargs['charge'] = np.random.random() * 500 - 250
         obj = RigidBody(*args, **kwargs)
         self._objects.append(obj)
     
@@ -91,11 +128,19 @@ class ContextWrapper(Context):
     def move_camera(self, x, y):
         pass
 
+    def move_selected(self, x, y):
+        for obj in self.selected:
+            obj.x += x
+            obj.y += y
+
     def select_area(self, x1, y1, x2, y2):
         pass
 
     def toggle_pause(self):
         self._running = not self._running
+    
+    def camera_to_home(self):
+        self._camera.to_home()
     
     def set_frame(self, frame):
         self._set_frame(frame)
@@ -139,4 +184,3 @@ class ContextWrapper(Context):
     def update(self, dt):
         if self._running:
             self._update(dt)
-    

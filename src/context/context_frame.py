@@ -79,11 +79,12 @@ class ContextFrame(Frame):
         if command == 'options':
             self.show_options()
         elif command == 'home':
-            self.context_wrapper.camera.to_home()
+            self.context_wrapper.camera_to_home()
         elif command == 'delete':
             self.context_wrapper.delete_selected()
         elif command == 'pause':
             self.context_wrapper.toggle_pause()
+        self.context_wrapper.on_key_press(symbol, modifiers)
     
     def draw(self, offset_x=0, offset_y=0):
         gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)

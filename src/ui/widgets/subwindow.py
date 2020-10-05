@@ -49,6 +49,8 @@ class Subwindow(Frame):
 
     def close(self):
         self.is_visible = False
+        for widget in self.children:
+            widget.pressed = False
     
     def draw(self, offset_x=0, offset_y=0):
         x = self.x + offset_x

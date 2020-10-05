@@ -15,7 +15,6 @@ def build_main_frame(width, height):
             ('Carregar', LoadWindow),
         )
     )
-    menu.add_button('Arquivo', None)
     menu.add_button('Editar', None)
     menu.add_button('Ajuda', None)
 
