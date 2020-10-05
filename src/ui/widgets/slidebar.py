@@ -13,10 +13,10 @@ class Slidebar(Widget):
         self.inside_color = (0.2, 0.5, 1, 0.5)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        # if self.pressed:
-        self.value += dx / self.w
-        self.value = min(1, self.value)
-        self.value = max(0, self.value)
+        if self.pressed:
+            self.value += dx / self.w
+            self.value = min(1, self.value)
+            self.value = max(0, self.value)
 
     def draw(self, offset_x, offset_y):
         x = self.x + offset_x
