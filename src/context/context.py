@@ -16,7 +16,7 @@ class Context(metaclass=Singleton):
         self._objects = []
         self._frames = []
         self._frame = 0
-    
+        
     def _set_frame(self, frame):
         self._frame = frame
         self._frames = self._frames[:frame + 1]
@@ -44,4 +44,3 @@ class Context(metaclass=Singleton):
     def _update(self, dt):
         for obj in self._objects:
             obj.update(dt)
-        self._write_frame()

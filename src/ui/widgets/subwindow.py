@@ -35,6 +35,10 @@ class Subwindow(Frame):
         self.title_label.lab.color = (130, 130, 130, 255)
         self.move = False
     
+    def show(self):
+        self.close()
+        self.is_visible = True
+
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
         if self.x < x < self._right and self._top - 30 < y < self._top:
