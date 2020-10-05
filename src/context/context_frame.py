@@ -63,6 +63,7 @@ class ContextFrame(Frame):
     def on_double_click(self, x, y, button, modifiers):
         self.context_wrapper.select_closer(x - 60, y)
         if self.context_wrapper.selected:
+            self.edit_rb_win.close()
             self.edit_rb_win.x = x
             self.edit_rb_win.y = y - self.edit_rb_win.h
             self.edit_rb_win.set_target(self.context_wrapper.selected[0])

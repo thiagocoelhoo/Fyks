@@ -6,7 +6,7 @@ from app import colors
 
 
 class Subwindow(Frame):
-    def __init__(self, x, y, w, h, title, parent):        
+    def __init__(self, x, y, w, h, title, parent):
         super().__init__(x=x, y=y, w=w, h=h + 22, parent=parent)
         
         self._bar_height = 20
@@ -25,6 +25,7 @@ class Subwindow(Frame):
             command=self.close
         )
         self.children = [self.frame, self.close_bt]
+        
         self.title_label = Label(
             x=4, y=self._top - 16,
             w=self.w-21, h=16)
@@ -50,6 +51,8 @@ class Subwindow(Frame):
     def close(self):
         self.is_visible = False
         for widget in self.children:
+            widget.pressed = False
+        for widget in self.frame.children:
             widget.pressed = False
     
     def draw(self, offset_x=0, offset_y=0):

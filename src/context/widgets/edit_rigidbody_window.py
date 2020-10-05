@@ -66,7 +66,7 @@ class EditRigidbodyWindow(Subwindow):
             if not self.entry_pos_y.pressed:
                 self.entry_pos_y.text = pos_y_str[:10]
             else:
-                self.target.y = self.entry_pos_x.get_value()
+                self.target.y = self.entry_pos_y.get_value()
 
             if not self.entry_vel_x.pressed:
                 self.entry_vel_x.text = vel_x_str[:10]
@@ -77,3 +77,4 @@ class EditRigidbodyWindow(Subwindow):
                 self.entry_vel_y.text = vel_y_str[:10]
             else:
                 self.target.velocity[1] = self.entry_vel_y.get_value()
+        
