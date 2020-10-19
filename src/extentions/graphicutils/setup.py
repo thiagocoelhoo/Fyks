@@ -5,7 +5,8 @@ module = Extension(
     name="graphicutils",
     sources=["src/graphicutils.cpp", "src/g_utils_functions.cpp"],
     include_dirs=[os.getcwd() + "/include/"],
-    libraries=["glut", "GLU", "GL"],
+    library_dirs=[os.getcwd() + "/lib/"],
+    libraries=["freeglut"],
 )
 
 setup(
