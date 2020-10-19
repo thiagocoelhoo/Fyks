@@ -40,10 +40,23 @@ class Subwindow(Frame):
         self.is_visible = True
 
     def on_mouse_press(self, x, y, button, modifiers):
+        """
+        Event handler
+        """
+
         super().on_mouse_press(x, y, button, modifiers)
         if self.x < x < self._right and self._top - 30 < y < self._top:
             self.move = True
         else:
+            self.move = False
+    
+    def on_mouse_release(self, x, y, button, modifiers):
+        """
+        Event handler
+        """
+        
+        super().on_mouse_release(x, y, button, modifiers)
+        if self.move:
             self.move = False
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
