@@ -1,6 +1,6 @@
 # Fyks
 O projeto Fyks é um software desenvolvido com foco em simulação de fenômenos físicos para sala de aula.
-## Dependencias 
+## Dependências 
 - numpy
 - pyglet
 ## Build (Windows)
