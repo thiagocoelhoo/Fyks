@@ -4,7 +4,7 @@ O projeto Fyks é um software desenvolvido com foco em simulação de fenômenos
 - numpy
 - pyglet
 ## Build (Windows)
-1. Primeiro é necessário criar um clone do repositório.
+1. Primeiro é necessário criar um clone do repositório. Clique no botão verde escrito "code" e baixe o arquivo .zip.
 2. O segundo passo é instalar as dependencias do projeto. Para isto, execute o seguinte comando:
   ```
   pip install -r requirements.txt
