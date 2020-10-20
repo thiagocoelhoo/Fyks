@@ -24,7 +24,7 @@ class Timeline(Widget):
     def __init__(self, x, y, parent):
         super().__init__(x, y, w=parent.w - 104, h=24, parent=parent)
         self.mode = PAUSE
-        
+
         self.pause_bt = Iconbutton(
             x=x, y=y, w=16, h=16, 
             image=pause_icon, 
@@ -44,16 +44,17 @@ class Timeline(Widget):
 
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
+        self.slidebar.on_mouse_press(x, y, button, modifiers)
         self.pause_bt.on_mouse_press(x, y, button, modifiers)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
+        self.slidebar.on_mouse_release(x, y, button, modifiers)
         self.pause_bt.on_mouse_release(x, y, button, modifiers)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        self.slidebar.pressed = self.pressed
         self.slidebar.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-        self.set_time(self.slidebar.value + dx/self.slidebar.w)
+        # self.set_time(self.slidebar.value + dx/self.slidebar.w)
         
     def on_key_press(self, symbol, modifiers):
         if symbol == key.G:
@@ -63,7 +64,7 @@ class Timeline(Widget):
             else:
                 self.mode = REC
                 wrapper._running = True
-    
+
     def set_time(self, t):
         # wrapper.frame * t
         pass
@@ -78,7 +79,6 @@ class Timeline(Widget):
                 wrapper._write_frame()
     
     def draw(self, offset_x, offset_y):
-
         if wrapper._running:
             self.pause_bt.image = pause_icon
         else:
