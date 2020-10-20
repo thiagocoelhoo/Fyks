@@ -1,3 +1,4 @@
+#! ./venv/bin/python
 import pyglet
 
 from app.build import build_main_frame
