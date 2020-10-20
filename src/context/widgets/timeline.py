@@ -46,11 +46,13 @@ class Timeline(Widget):
         super().on_mouse_press(x, y, button, modifiers)
         self.slidebar.on_mouse_press(x, y, button, modifiers)
         self.pause_bt.on_mouse_press(x, y, button, modifiers)
+        self.rec_bt.on_mouse_press(x, y, button, modifiers)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
         self.slidebar.on_mouse_release(x, y, button, modifiers)
         self.pause_bt.on_mouse_release(x, y, button, modifiers)
+        self.rec_bt.on_mouse_release(x, y, button, modifiers)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.slidebar.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
@@ -64,7 +66,7 @@ class Timeline(Widget):
             else:
                 self.mode = REC
                 wrapper._running = True
-
+    
     def set_time(self, t):
         # wrapper.frame * t
         pass
