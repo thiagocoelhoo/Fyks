@@ -17,43 +17,50 @@ pause_icon = pyglet.image.load('assets/pause_icon.png')
 play_icon = pyglet.image.load('assets/play_icon.png')
 rec_icon = pyglet.image.load('assets/rec_icon.png')
 
-wrapper = ContextWrapper(0, 0)
+ctx_wrapper = ContextWrapper(0, 0)
 
 
 class Timeline(Widget):
     def __init__(self, x, y, parent):
         super().__init__(x, y, w=parent.w - 104, h=24, parent=parent)
         self.mode = PAUSE
-        
+
         self.pause_bt = Iconbutton(
             x=x, y=y, w=16, h=16, 
             image=pause_icon, 
             parent=self,
-            command=wrapper.toggle_pause
+            command=ctx_wrapper.toggle_pause
         )
         self.rec_bt = Iconbutton(
             x=x + 20, y=y, w=16, h=16,
             image=rec_icon,
             parent=self,
-            command=self.rec
+            command=self.toggle_rec
         )
-        self.slidebar = Slidebar(x + 40, y, parent.w - 104, 16, self)
+        self.slidebar = Slidebar(x + 40, y, parent.w - 118, 16, self)
         self.slidebar.background_color = colors.TIMELINE_BACKGROUND_COLOR
         self.slidebar.inside_color = colors.TIMELINE_COLOR
         self.slidebar.value = 0
+        self.frame = 0
+        self.frames = []
 
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
+        self.slidebar.on_mouse_press(x, y, button, modifiers)
         self.pause_bt.on_mouse_press(x, y, button, modifiers)
+        self.rec_bt.on_mouse_press(x, y, button, modifiers)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
+        self.slidebar.on_mouse_release(x, y, button, modifiers)
         self.pause_bt.on_mouse_release(x, y, button, modifiers)
+        self.rec_bt.on_mouse_release(x, y, button, modifiers)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        self.slidebar.pressed = self.pressed
-        self.slidebar.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-        self.set_time(self.slidebar.value + dx/self.slidebar.w)
+        if self.slidebar.pressed:
+            self.slidebar.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+            frame = int(self.slidebar.value * len(self.frames))
+            self.set_frame(frame)
         
     def on_key_press(self, symbol, modifiers):
         if symbol == key.G:
@@ -64,22 +71,31 @@ class Timeline(Widget):
                 self.mode = REC
                 wrapper._running = True
     
-    def set_time(self, t):
-        # wrapper.frame * t
-        pass
+    def toggle_rec(self):
+        if self.mode != REC:
+            self.mode = REC
+            self.frames = self.frames[:self.frame]
+            self.slidebar.value = 1
+        else:
+            self.mode = PAUSE
+        ctx_wrapper.toggle_pause()
     
-    def rec(self):
-        self.mode = REC
-
+    def set_frame(self, frame):
+        if -1 < frame < len(self.frames):
+            self.frame = frame
+            ctx_wrapper._set_objects_data(self.frames[frame])
+    
+    def write_frame(self):
+        self.frames.append(tuple(ctx_wrapper._get_objects_data()))
+    
     def update(self, dt):
-        if wrapper._running:
-            self.value = 1
-            if self.mode == REC:
-                wrapper._write_frame()
+        if self.mode == REC:
+            self.write_frame()
+        elif self.mode == PLAY and self.frames:
+            self.slidebar.value = self.frame / len(self.frames)
     
     def draw(self, offset_x, offset_y):
-
-        if wrapper._running:
+        if ctx_wrapper._running:
             self.pause_bt.image = pause_icon
         else:
             self.pause_bt.image = play_icon

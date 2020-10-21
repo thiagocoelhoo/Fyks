@@ -18,6 +18,10 @@ class Slidebar(Widget):
             self.value = min(1, self.value)
             self.value = max(0, self.value)
 
+    def on_mouse_release(self, x, y, button, modifiers):
+        if self.pressed:
+            self.pressed = False
+    
     def draw(self, offset_x, offset_y):
         x = self.x + offset_x
         y = self.y + offset_y
@@ -25,9 +29,6 @@ class Slidebar(Widget):
         gl.glColor4f(*self.background_color)
         gu.draw_rounded_rect(x, y, self.w, self.h, 3, gl.GL_POLYGON)
 
-        gl.glColor4f(0.5, 0.8, 1, 0.05)
-        gu.draw_rounded_rect(x + 5, y + 5, self.w - 10, 6, 3, gl.GL_POLYGON)
-
         gl.glColor4f(*self.inside_color)
-        gu.draw_rounded_rect(x + 5, y + 5, 
-            int(self.value * (self.w - 10)), 6, 3, gl.GL_POLYGON)
+        w = max(6, int(self.value * (self.w - 4)))
+        gu.draw_rounded_rect(x + 2, y + 2, w, 12, 3, gl.GL_POLYGON)
