@@ -1,6 +1,7 @@
 from ui import Frame, Menu
 from context.context_frame import ContextFrame
 from utils.filedialog import FileDialog
+from app import colors
 
 file_dialog = FileDialog()
 
@@ -10,6 +11,7 @@ def init_ui(width, height):
 
     context_frame = ContextFrame(0, 0, width, height-30, parent=frame)
     menu = Menu(frame)
+    menu.color = colors.MENU_BACKGROUND_COLOR
     menu.add_dropdown(
         name='Arquivo',
         options=(
