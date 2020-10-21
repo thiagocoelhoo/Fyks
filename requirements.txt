@@ -1,2 +1,4 @@
 numpy==1.19.2
 pyglet==1.5.8
+PyQt5==5.15.1
+PyQt5-sip==12.8.1
