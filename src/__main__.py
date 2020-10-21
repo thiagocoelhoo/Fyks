@@ -1,7 +1,7 @@
 #! ./venv/bin/python
 import pyglet
 
-from app.build import build_main_frame
+from app.init import init_ui
 
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
@@ -17,7 +17,7 @@ def main():
     pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
     pyglet.gl.glBlendFunc(pyglet.gl.GL_SRC_ALPHA, pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
 
-    frame = build_main_frame(WIDTH, HEIGHT)
+    frame = init_ui(WIDTH, HEIGHT)
     window.push_handlers(frame)
 
 

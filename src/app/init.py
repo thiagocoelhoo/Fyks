@@ -1,9 +1,11 @@
 from ui import Frame, Menu
 from context.context_frame import ContextFrame
-from app.filemanagers import SaveWindow, LoadWindow
+from utils.filedialog import FileDialog
+
+file_dialog = FileDialog()
 
 
-def build_main_frame(width, height):
+def init_ui(width, height):
     frame = Frame(0, 0, width, height)
 
     context_frame = ContextFrame(0, 0, width, height-30, parent=frame)
@@ -11,8 +13,8 @@ def build_main_frame(width, height):
     menu.add_dropdown(
         name='Arquivo',
         options=(
-            ('Salvar', SaveWindow),
-            ('Carregar', LoadWindow),
+            ('Salvar', file_dialog.save_file_dialog),
+            ('Carregar', file_dialog.open_file_dialog),
         )
     )
     menu.add_button('Editar', None)
