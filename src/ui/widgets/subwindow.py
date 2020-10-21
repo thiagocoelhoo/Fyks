@@ -1,8 +1,11 @@
+import pyglet
 from pyglet import gl
 
-from ui import Frame, Button, Label
+from ui import Frame, Button, Iconbutton, Label
 import graphicutils as gu
 from app import colors
+
+close_icon = pyglet.image.load('assets/close_icon.png')
 
 
 class Subwindow(Frame):
@@ -16,12 +19,12 @@ class Subwindow(Frame):
         self.frame = Frame(0, 0, w, h)
         self.frame.color = self.background_color
         self.frame.border_color = (0, 0, 0, 0.5)
-        self.close_bt = Button(
+        self.close_bt = Iconbutton(
             x=w - 18,
             y=h + 4,
             w=16,
             h=16,
-            text='',
+            image=close_icon,
             command=self.close
         )
         self.children = [self.frame, self.close_bt]
