@@ -55,7 +55,7 @@ class Render:
         draw_lines((center_x, y, center_x, self.camera.h + y))
 
     def draw_path(self, obj, offset_x, offset_y):
-        gl.glColor4f(0.8, 0.8, 0.8, 0.4)
+        gl.glColor4f(0.8, 0.8, 0.8, 1)
         gl.glBegin(gl.GL_LINES)
         for x, y in obj.path[:100]:
             pos_x = int(x * self.camera.zoom + self.camera.centerx) + offset_x
@@ -65,41 +65,40 @@ class Render:
     
     def draw_object(self, obj, offset_x, offset_y):
         self.draw_path(obj, offset_x, offset_y)
-        objx = int(obj.x * self.camera.zoom + self.camera.centerx + offset_x)
-        objy = int(obj.y * self.camera.zoom + self.camera.centery + offset_y)
         
+        pos = (obj.position * self.camera.zoom)
+        x = int(pos[0] + offset_x + self.camera.centerx)
+        y = int(pos[1] + offset_y + self.camera.centery)
+
         gl.glColor4f(0, 1, 0, 1)
-        
         for force in obj.forces:
             if any(force):
                 w = int(force[0] * self.camera.zoom)
                 h = int(force[1] * self.camera.zoom)
-                gu.draw_arrow(objx, objy, w, h)
+                gu.draw_arrow(x, y, w, h)
 
         gl.glColor4f(0, 0, 1, 1)
-
         if any(obj.velocity):
             w = int(obj.velocity[0] * self.camera.zoom)
             h = int(obj.velocity[1] * self.camera.zoom)
-            gu.draw_arrow(objx, objy, w, h)
+            gu.draw_arrow(x, y, w, h)
 
         gl.glColor4f(1, 0, 0, 1)
-
         if any(obj.acceleration):
             w = int(obj.acceleration[0] * self.camera.zoom)
             h = int(obj.acceleration[1] * self.camera.zoom)
-            gu.draw_arrow(objx, objy, w, h)
+            gu.draw_arrow(x, y, w, h)
         
         draw_circle(
-            objx,
-            objy, 
+            x,
+            y, 
             20 * self.camera.zoom,
             self.colors['rigidbodycolor'],
             mode=gl.GL_POLYGON
         )
         draw_circle(
-            objx,
-            objy,
+            x,
+            y,
             20 * self.camera.zoom,
             self.colors['rigidbodybordercolor'],
         )

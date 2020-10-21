@@ -53,20 +53,20 @@ class EditRigidbodyWindow(Subwindow):
     
     def update(self, dt):
         if self.target is not None:
-            pos_x_str = str(self.target.x)
-            pos_y_str = str(self.target.y)
+            pos_x_str = str(self.target.position[0])
+            pos_y_str = str(self.target.position[1])
             vel_x_str = str(self.target.velocity[0])
             vel_y_str = str(self.target.velocity[1])
 
             if not self.entry_pos_x.pressed:
                 self.entry_pos_x.text = pos_x_str[:10]
             else:
-                self.target.x = self.entry_pos_x.get_value()
+                self.target.position[0] = self.entry_pos_x.get_value()
 
             if not self.entry_pos_y.pressed:
                 self.entry_pos_y.text = pos_y_str[:10]
             else:
-                self.target.y = self.entry_pos_y.get_value()
+                self.target.position[1] = self.entry_pos_y.get_value()
 
             if not self.entry_vel_x.pressed:
                 self.entry_vel_x.text = vel_x_str[:10]

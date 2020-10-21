@@ -14,32 +14,22 @@ class Singleton(type):
 class Context(metaclass=Singleton):
     def __init__(self):
         self._objects = []
-        self._frames = []
-        self._frame = 0
-        
-    def _set_frame(self, frame):
-        self._frame = frame
-        self._frames = self._frames[:frame + 1]
-        self._objects.clear()
-        for obj in self._frames[frame]:
-            rb = RigidBody(obj[0], obj[1], (0, 0), 1, 0)
-            self._objects.append(rb)
-            for fx, fy in obj[3:]:
-                rb.add_force(fx, fy)
-        
-    def _write_frame(self):
-        frame = []
+    
+    def _get_objects_data(self):
         for obj in self._objects:
-            frame.append(
-                [
-                    np.array((obj.x, obj.y)),
-                    obj.velocity,
-                    obj.mass,
-                    *obj.forces
-                ]
-            )
-        self._frames.append(np.array(frame))
-        self._frame += 1
+            position = np.array(obj.position, dtype=float)
+            velocity = tuple(obj.velocity)
+            acceleration = tuple(obj.acceleration)
+            forces = np.array(obj.forces, dtype=float)
+            yield (position, velocity, acceleration, forces)
+
+    def _set_objects_data(self, data):
+        self._objects = []
+        for position, velocity, acceleration, forces in data:
+            rb = RigidBody(position, velocity, acceleration, 1, 0)
+            for force in forces:
+                rb.add_force(force[0], force[1])
+            self._objects.append(rb)
 
     def _update(self, dt):
         for obj in self._objects:

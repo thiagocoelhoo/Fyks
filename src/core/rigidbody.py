@@ -3,7 +3,7 @@ import numpy as np
 
 class RigidBody:
     def __init__(self, position, velocity, acceleration, mass, charge):
-        self.x, self.y = position
+        self.position = np.array(position, dtype=float)
         self.velocity = np.array(velocity, dtype=float)
         self.acceleration = np.array(acceleration, dtype=float)
         self.mass = mass
@@ -25,10 +25,9 @@ class RigidBody:
 
         offset = self.velocity * dt + self.acceleration * dt / 2
         self.velocity += self.acceleration * dt
-        self.x += offset[0]
-        self.y += offset[1]
+        self.position += offset
         self.offset += offset
         
         if np.hypot(self.offset[0], self.offset[1]) > 10:
-            self.path.insert(0, (self.x, self.y))
+            self.path.insert(0, tuple(self.position))
             self.offset = np.zeros(2)

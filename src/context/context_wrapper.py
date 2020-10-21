@@ -8,7 +8,6 @@ from core.render import Render, draw_circle
 from .context import Context
 from core.rigidbody import RigidBody
 
-
 SELECT_MODE = 0
 MOVE_MODE = 1
 
@@ -22,6 +21,7 @@ class ContextWrapper(Context):
         self._selection = []
         self._selected = []
         self._mode = None
+        self._frames = []
 
         self.mode = SELECT_MODE
     
@@ -94,8 +94,9 @@ class ContextWrapper(Context):
             y1, y2 = sorted((y1, y2))
             zoom = self._camera.zoom
             for obj in self._objects:
-                x = obj.x * zoom + self._camera.centerx + 60
-                y = obj.y * zoom + self._camera.centery
+                pos = obj.position * zoom
+                x = pos[0] + self._camera.centerx + 60
+                y = pos[1] + self._camera.centery
                 if x1 < x < x2 and y1 < y < y2:
                     self._selected.append(obj)
     
@@ -116,7 +117,10 @@ class ContextWrapper(Context):
         closer = None
         
         for obj in self._objects:
-            dist = ((point_x - obj.x)**2 + (point_y - obj.y)**2)**0.5
+            dist_x = point_x - obj.position[0]
+            dist_y = point_y - obj.position[1]
+            dist = (dist_x*dist_x + dist_y*dist_y)**0.5
+
             if dist < min_dist:
                 min_dist = dist
                 closer = obj
@@ -130,8 +134,7 @@ class ContextWrapper(Context):
 
     def move_selected(self, x, y):
         for obj in self.selected:
-            obj.x += x
-            obj.y += y
+            obj.position += (x, y)
 
     def select_area(self, x1, y1, x2, y2):
         pass
@@ -141,23 +144,16 @@ class ContextWrapper(Context):
     
     def camera_to_home(self):
         self._camera.to_home()
-    
-    def set_frame(self, frame):
-        self._set_frame(frame)
-    
+
     def draw_overlayer(self, x, y):
         zoom = self._camera.zoom
 
         for obj in self._selected:
             if self._camera.collide(obj):
-                objx = int(obj.x * zoom + self._camera.centerx) + x
-                objy = int(obj.y * zoom + self._camera.centery) + y
-                draw_circle(
-                    objx,
-                    objy, 
-                    25 * zoom,
-                    (1, 0.2, 0.2, 1),
-                )
+                pos = obj.position * zoom
+                objx = int(pos[0] + self._camera.centerx) + x
+                objy = int(pos[1] + self._camera.centery) + y
+                draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
         
         if self._selection:
             x1, y1, x2, y2 = self._selection

@@ -50,6 +50,5 @@ class Camera:
         self.y += dy
     
     def collide(self, obj):
-        objx = obj.x * self.scale
-        objy = obj.y * self.scale
-        return self.left <= objx <= self.right and self.top <= objy <= self.bottom
+        x, y = obj.position * self.scale
+        return self.left <= x <= self.right and self.top <= y <= self.bottom

@@ -14,8 +14,7 @@ class Iconbutton(Button):
         self.pressed = False
 
         self.null_color = (1, 1, 1, 0.5)
-        self.pressed_color = (0, 0, 0, 0)
-        self.border_color = (0, 0, 0, 0)
+        self.pressed_color = (0, 0, 0, 0.3)
         self.color = self.null_color
 
     def draw(self, offset_x=0, offset_y=0):
