@@ -74,7 +74,7 @@ class Entry(Widget):
             self.y + offset_y,
             self.w,
             self.h,
-            self.border_radius,
+            self.border_radius + 1,
             gl.GL_LINE_LOOP
         )
         self.text_label.draw(
