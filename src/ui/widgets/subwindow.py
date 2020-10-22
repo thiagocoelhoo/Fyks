@@ -76,6 +76,13 @@ class Subwindow(Frame):
         self.frame.border_color = (0, 0, 0, 0)
         self.children = [self.bar, self.frame]
     
+    def resize(self, w, h):
+        self.w = w
+        self.h = h + self.bar_height
+        self.frame.h = h
+        self.frame.w = w
+        self.bar.w = w
+    
     def show(self):
         self.close()
         self.is_visible = True
