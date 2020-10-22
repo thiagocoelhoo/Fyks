@@ -6,7 +6,7 @@ class EditRigidbodyWindow(Subwindow):
         super().__init__(
             x=0, y=0, 
             w=380, h=250,
-            caption='Edit object', 
+            caption='Editar objeto', 
             parent=parent
         )
         self.target = None
@@ -18,28 +18,28 @@ class EditRigidbodyWindow(Subwindow):
         label_pos_x = Label(12, 0, 0, 0, parent=self.frame)
         label_pos_x.top = 20
         label_pos_x.lab.color = (200, 200, 200, 255)
-        label_pos_x.text = 'Posição x'
+        label_pos_x.text = 'Posição X:'
         self.entry_pos_x = FloatEntry(12, 0, 160, 30, self.frame)
         self.entry_pos_x.top = 28
 
         label_pos_y = Label(200, 0, 0, 0, parent=self.frame)
         label_pos_y.top = 20
         label_pos_y.lab.color = (200, 200, 200, 255)
-        label_pos_y.text = 'Posição y'
+        label_pos_y.text = 'Posição Y:'
         self.entry_pos_y = FloatEntry(200, 0, 160, 30, self.frame)
         self.entry_pos_y.top = 28
 
         label_vel_x = Label(12, 0, 0, 0, parent=self.frame)
         label_vel_x.top = 74
         label_vel_x.lab.color = (200, 200, 200, 255)
-        label_vel_x.text = 'Velocidade x'
+        label_vel_x.text = 'Velocidade X:'
         self.entry_vel_x = FloatEntry(12, 0, 160, 30, self.frame)
         self.entry_vel_x.top = 82
 
         label_vel_y = Label(200, 0, 0, 0, parent=self.frame)
         label_vel_y.top = 74
         label_vel_y.lab.color = (200, 200, 200, 255)
-        label_vel_y.text = 'Velocidade y'
+        label_vel_y.text = 'Velocidade Y:'
         self.entry_vel_y = FloatEntry(200, 0, 160, 30, self.frame)
         self.entry_vel_y.top = 82
 
@@ -48,7 +48,7 @@ class EditRigidbodyWindow(Subwindow):
             y=20,
             w=260,
             h=30,
-            text='Ok',
+            text='Confirmar',
             command=self.close,
             parent=self.frame)
         self.submit_bt.label.lab.color = (50, 50, 50, 255)
