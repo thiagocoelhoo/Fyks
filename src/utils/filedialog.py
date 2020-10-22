@@ -14,11 +14,13 @@ class FileDialog(QApplication):
         
     def open_file_dialog(self, filter=None):
         path, _ = QFileDialog.getOpenFileName(self.widget, filter=filter)
-        load(path)
+        if path:
+            load(path)
     
     def save_file_dialog(self, filter=None):
         path, _ = QFileDialog.getSaveFileName(self.widget, filter=filter)
-        save(path)
+        if path:
+            save(path)
 
 
 if __name__ == '__main__':

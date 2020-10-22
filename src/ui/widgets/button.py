@@ -24,12 +24,12 @@ class Button(Widget):
         super().on_mouse_press(x, y, button, modifiers)
         if self.pressed:
             self.color = self.pressed_color
-            self.command()
-    
+            
     def on_mouse_release(self, x, y, button, modifiers):
         if self.pressed:
             self.color = self.null_color
             self.pressed = False
+            self.command()
     
     def draw(self, offset_x=0, offset_y=0):
         glColor4f(*self.color)
@@ -48,7 +48,7 @@ class Button(Widget):
             self.y + offset_y,
             self.w,
             self.h,
-            self.border_radius,
+            self.border_radius + 1, 
             GL_LINE_LOOP
         )
 

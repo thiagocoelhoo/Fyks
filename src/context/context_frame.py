@@ -7,6 +7,8 @@ from context import widgets
 from app import colors
 import graphicutils as gu
 
+RULER_MODE = 2
+
 
 class ContextFrame(Frame):
     def __init__(self, *args, **kwargs):
@@ -16,18 +18,20 @@ class ContextFrame(Frame):
         self.mouse_handler.on_double_click = self.on_double_click
         self.running = True
 
-        self.build()
         self.KEYMAP = {
             (key.MOD_SHIFT, key.A): 'options',
-            (16, key.HOME): 'home',
-            (16, key.DELETE): 'delete',
-            (16, key.SPACE): 'pause',
+            (None, key.HOME): 'home',
+            (None, key.DELETE): 'delete',
+            (None, key.SPACE): 'pause',
         }
+
+        self.init_ui()
     
-    def build(self):
+    def init_ui(self):
         self.toolbox = widgets.ToolBox(self)
         self.add_rb_win = widgets.AddRigidbodyWindow(self)
         self.edit_rb_win = widgets.EditRigidbodyWindow(self)
+        self.edit_forces_window = widgets.EditForcesWindow(self)
         self.timeline = widgets.Timeline(x=70, y=10, parent=self)
 
     def show_options(self):
@@ -35,6 +39,9 @@ class ContextFrame(Frame):
         self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
         self.add_rb_win.is_visible = True
 
+    def set_ruler_mode(self):
+        self.context_wrapper.mode = RULER_MODE
+    
     def on_resize(self, w, h):
         self.context_wrapper.resize(w, h)
 
@@ -72,9 +79,10 @@ class ContextFrame(Frame):
         super().on_key_press(symbol, modifiers)
         command = None
         for mod, sym in self.KEYMAP.keys():
-            if symbol == sym and modifiers & mod:
-                command = self.KEYMAP[(mod, sym)]
-                break
+            if symbol == sym:
+                if mod is None or modifiers & mod:
+                    command = self.KEYMAP[(mod, sym)]
+                    break
 
         if command == 'options':
             self.show_options()

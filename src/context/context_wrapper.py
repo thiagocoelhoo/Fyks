@@ -10,6 +10,7 @@ from core.rigidbody import RigidBody
 
 SELECT_MODE = 0
 MOVE_MODE = 1
+RULER_MODE = 2
 
 
 class ContextWrapper(Context):
@@ -129,15 +130,15 @@ class ContextWrapper(Context):
         if closer is not None:
             self._selected = [closer]
     
+    def select_area(self, x1, y1, x2, y2):
+        pass
+
     def move_camera(self, x, y):
         pass
 
     def move_selected(self, x, y):
         for obj in self.selected:
             obj.position += (x, y)
-
-    def select_area(self, x1, y1, x2, y2):
-        pass
 
     def toggle_pause(self):
         self._running = not self._running

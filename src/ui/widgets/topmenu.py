@@ -4,7 +4,6 @@ from ui import Frame, Button
 class Menu(Frame):
     def __init__(self, parent):
         super().__init__(0, 0, 0, 0, parent=parent)
-        # self.color = (0.05, 0.05, 0.05, 1)
         self.color = (0.12, 0.14, 0.15, 1)
         self.border_color = (0, 0, 0, 0.2)
         self.w = parent.w

@@ -55,7 +55,7 @@ class Render:
         draw_lines((center_x, y, center_x, self.camera.h + y))
 
     def draw_path(self, obj, offset_x, offset_y):
-        gl.glColor4f(0.8, 0.8, 0.8, 1)
+        gl.glColor4f(1, 0.76, 0.12, 0.8)
         gl.glBegin(gl.GL_LINES)
         for x, y in obj.path[:100]:
             pos_x = int(x * self.camera.zoom + self.camera.centerx) + offset_x
@@ -77,13 +77,13 @@ class Render:
                 h = int(force[1] * self.camera.zoom)
                 gu.draw_arrow(x, y, w, h)
 
-        gl.glColor4f(0, 0, 1, 1)
+        gl.glColor4f(0.2, 0.5, 1, 1)
         if any(obj.velocity):
             w = int(obj.velocity[0] * self.camera.zoom)
             h = int(obj.velocity[1] * self.camera.zoom)
             gu.draw_arrow(x, y, w, h)
 
-        gl.glColor4f(1, 0, 0, 1)
+        gl.glColor4f(0.9, 0.29, 0.58, 1)
         if any(obj.acceleration):
             w = int(obj.acceleration[0] * self.camera.zoom)
             h = int(obj.acceleration[1] * self.camera.zoom)
