@@ -16,18 +16,20 @@ class ContextFrame(Frame):
         self.mouse_handler.on_double_click = self.on_double_click
         self.running = True
 
-        self.build()
         self.KEYMAP = {
             (key.MOD_SHIFT, key.A): 'options',
-            (16, key.HOME): 'home',
-            (16, key.DELETE): 'delete',
-            (16, key.SPACE): 'pause',
+            (None, key.HOME): 'home',
+            (None, key.DELETE): 'delete',
+            (None, key.SPACE): 'pause',
         }
+
+        self.init_ui()
     
-    def build(self):
+    def init_ui(self):
         self.toolbox = widgets.ToolBox(self)
         self.add_rb_win = widgets.AddRigidbodyWindow(self)
         self.edit_rb_win = widgets.EditRigidbodyWindow(self)
+        self.edit_forces_window = widgets.EditForcesWindow(self)
         self.timeline = widgets.Timeline(x=70, y=10, parent=self)
 
     def show_options(self):
@@ -72,9 +74,10 @@ class ContextFrame(Frame):
         super().on_key_press(symbol, modifiers)
         command = None
         for mod, sym in self.KEYMAP.keys():
-            if symbol == sym and modifiers & mod:
-                command = self.KEYMAP[(mod, sym)]
-                break
+            if symbol == sym:
+                if mod is None or modifiers & mod:
+                    command = self.KEYMAP[(mod, sym)]
+                    break
 
         if command == 'options':
             self.show_options()
