@@ -3,10 +3,17 @@ from ui import Button, FloatEntry, Label, Subwindow
 
 class AddRigidbodyWindow(Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155, title='Add rb', parent=parent)
-        self.build()
+        super().__init__(
+            x=0, y=0,
+            w=200, h=155,
+            caption='Add object', 
+            parent=parent
+        )
+        self.init_ui()
 
-    def build(self):
+    def init_ui(self):
+        super().init_ui()
+        
         label_x = Label(20, 0, 0, 0, parent=self.frame)
         label_x.top = 40
         label_x.lab.color = (120, 120, 120, 255)

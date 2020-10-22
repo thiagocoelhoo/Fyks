@@ -6,7 +6,7 @@ wrapper = context_wrapper.ContextWrapper(0, 0)
 
 class AddForceWindow(ui.Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155, title='Add force', parent=parent)
+        super().__init__(0, 0, 200, 155, caption='Add force', parent=parent)
         self.build()
 
     def build(self):

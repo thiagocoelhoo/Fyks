@@ -1,70 +1,88 @@
 import pyglet
 from pyglet import gl
 
-from ui import Frame, Button, Iconbutton, Label
+from ui import Frame, Button, Iconbutton, Label, Widget
 import graphicutils as gu
 from app import colors
 
 close_icon = pyglet.image.load('assets/close_icon.png')
 
 
-class Subwindow(Frame):
-    def __init__(self, x, y, w, h, title, parent):
-        super().__init__(x=x, y=y, w=w, h=h + 22, parent=parent)
+class Bar(Widget):
+    def __init__(self, x, y, w, h, parent, caption):
+        super().__init__(x=x, y=y, w=w, h=h, parent=parent)
+        self.background_color = colors.SUBWINDOW_BAR_COLOR
+        self.caption = caption
+        self.init_ui()
+    
+    def init_ui(self):
+        """
+        Set widgets
+        """
+
+        # Caption label
+        self.caption_label = Label(x=4, y=2, w=0, h=0)
+        self.caption_label.font_size = 14
+        self.caption_label.text = self.caption
+        self.caption_label.lab.color = (130, 130, 130, 255)
         
-        self._bar_height = 20
+        # Close button
+        self.close_bt = Iconbutton(
+            x=self.w - 18, y=2,
+            w=16, h=16,
+            image=close_icon,
+            parent=self,
+            command=self.parent.close
+        )
+    
+    def on_mouse_release(self, x, y, button, modifiers):
+        self.close_bt.on_mouse_release(x, y, button, modifiers)
+        if self.pressed:
+            self.pressed = False
+    
+    def draw(self, offset_x, offset_y):
+        x = self.x + offset_x
+        y = self.y + offset_y
+
+        gl.glColor4f(*self.background_color)
+        gu.draw_rect(x, y,self.w, self.h, gl.GL_QUADS)
+        
+        self.caption_label.draw(x, y)
+        self.close_bt.draw(x, y)
+
+
+class Subwindow(Frame):
+    def __init__(self, x, y, w, h, caption, parent):
+        super().__init__(x=x, y=y, w=w, h=h + 20, parent=parent)
+        self.caption = caption
+        self.bar_height = 20
         self.bar_color = colors.SUBWINDOW_BAR_COLOR
         self.background_color = colors.SUBWINDOW_BACKGROUND_COLOR
-
-        self.frame = Frame(0, 0, w, h)
-        self.frame.color = self.background_color
-        self.frame.border_color = (0, 0, 0, 0.5)
-        self.close_bt = Iconbutton(
-            x=w - 18,
-            y=h + 4,
-            w=16,
-            h=16,
-            image=close_icon,
-            command=self.close
-        )
-        self.children = [self.frame, self.close_bt]
-        
-        self.title_label = Label(
-            x=4, y=self._top - 16,
-            w=self.w-21, h=16)
-
-        self.title_label.font_size = 14
-        self.title_label.text = title
-        self.title_label.lab.color = (130, 130, 130, 255)
+        self.border_color = (0, 0, 0, 0.5)
         self.move = False
+        
+        self.init_ui()
+
+    def init_ui(self):
+        self.bar = Bar(
+            x=0, y=self.h - self.bar_height, 
+            w=self.w, 
+            h=self.bar_height, 
+            parent=self, 
+            caption=self.caption
+        )
+        self.frame = Frame(0, 0, self.w, self.h - self.bar_height)
+        self.frame.color = self.background_color
+        self.frame.border_color = (0, 0, 0, 0)
+        self.children = [self.bar, self.frame]
     
     def show(self):
         self.close()
         self.is_visible = True
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        """
-        Event handler
-        """
-
-        super().on_mouse_press(x, y, button, modifiers)
-        if self.x < x < self._right and self._top - 30 < y < self._top:
-            self.move = True
-        else:
-            self.move = False
-    
-    def on_mouse_release(self, x, y, button, modifiers):
-        """
-        Event handler
-        """
-        
-        super().on_mouse_release(x, y, button, modifiers)
-        if self.move:
-            self.move = False
-
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-        if self.move:
+        if self.bar.pressed:
             self.x += dx
             self.y += dy
 
@@ -78,20 +96,10 @@ class Subwindow(Frame):
     def draw(self, offset_x=0, offset_y=0):
         x = self.x + offset_x
         y = self.y + offset_y
-        bar_height = 22
-
-        # Draw top bar
-        gl.glColor4f(*self.bar_color)
-        gu.draw_rect(
-            x, y + self.h - bar_height,
-            self.w, bar_height,
-            gl.GL_QUADS
-        )
-        self.close_bt.draw(x, y)
-        self.title_label.draw(x, y)
-
-        # Draw window children
+        self.bar.draw(x, y)
         self.frame.draw(x, y)
+        gl.glColor4f(*self.border_color)
+        gu.draw_rect(x, y, self.w, self.h, gl.GL_LINE_LOOP)
 
     def update(self, dt):
         self.frame.update(dt)
