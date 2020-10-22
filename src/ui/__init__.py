@@ -7,4 +7,5 @@ from ui.widgets.float_entry import FloatEntry
 from ui.widgets.frame import Frame
 from ui.widgets.subwindow import Subwindow
 from ui.widgets.topmenu import Menu
+from ui.widgets.list_viewer import List
 from ui.eventhandlers.mousehandler import CustomMouseHandler
