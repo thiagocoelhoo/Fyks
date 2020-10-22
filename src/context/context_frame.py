@@ -7,6 +7,8 @@ from context import widgets
 from app import colors
 import graphicutils as gu
 
+RULER_MODE = 2
+
 
 class ContextFrame(Frame):
     def __init__(self, *args, **kwargs):
@@ -37,6 +39,9 @@ class ContextFrame(Frame):
         self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
         self.add_rb_win.is_visible = True
 
+    def set_ruler_mode(self):
+        self.context_wrapper.mode = RULER_MODE
+    
     def on_resize(self, w, h):
         self.context_wrapper.resize(w, h)
 

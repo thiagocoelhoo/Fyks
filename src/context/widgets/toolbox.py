@@ -12,7 +12,6 @@ add_force_icon = pyglet.image.load('assets/add_force_icon.png')
 ruler_icon = pyglet.image.load('assets/ruler_icon.png')
 
 
-
 class ToolBox(ui.Frame):
     def __init__(self, parent):
         super().__init__(0, 0, 60, parent.h, parent)
@@ -47,6 +46,9 @@ class ToolBox(ui.Frame):
 
     def force_bt_function(self):
         self.add_force_window.is_visible = True
+    
+    def set_ruler_mode(self):
+        self.parent.context_wrapper.mode = 2
     
     def draw(self, offset_x=0, offset_y=0):
         super().draw(offset_x, offset_y)
