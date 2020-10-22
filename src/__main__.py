@@ -8,7 +8,7 @@ screen = display.get_default_screen()
 
 WIDTH = screen.width
 HEIGHT = screen.height - 25
-FPS = 200
+FPS = 120
 DELTA = 1/FPS
 
 
