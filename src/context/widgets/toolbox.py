@@ -3,9 +3,7 @@ import pyglet
 import ui
 from core.rigidbody import RigidBody
 from app import colors
-
-from .add_force_window import AddForceWindow
-from .add_rigidbody_window import AddRigidbodyWindow
+from constants import *
 
 add_object_icon = pyglet.image.load('assets/add_object_icon.png')
 add_force_icon = pyglet.image.load('assets/add_force_icon.png')
@@ -17,38 +15,45 @@ class ToolBox(ui.Frame):
         super().__init__(0, 0, 60, parent.h, parent)
         self.color = colors.TOOLBOX_COLOR
         self.border_color = (0, 0, 0, 0.2)
-        self.build()
+        self.button_size = 48
+        self.button_margin = 6
+        self.init_ui()
     
-    def add_icon_button(self, icon, command):
-        h = 48
-        margin = 6
-        top = margin + len(self.children)*(h + margin)
-        bt = ui.Iconbutton(
-            x=6, y=0,
-            w=48, h=h,
-            parent=self,
-            image=icon,
-            command=command
-        )
-        bt.top = top
+    def init_ui(self):
+        tool_list = [
+            (add_object_icon, self.add_bt_function),
+            (add_force_icon, self.force_bt_function),
+            (ruler_icon, self.ruler_bt_function),
+        ]
+        tool_buttons = list(self.set_tools(tool_list))
+        self.add_bt = tool_buttons[0]
+        self.force_bt = tool_buttons[1]
+        self.ruler_bt = tool_buttons[2]
     
-    def build(self):
-        self.add_bt = self.add_icon_button(add_object_icon, self.add_bt_function)
-        self.force_bt = self.add_icon_button(add_force_icon, self.force_bt_function)
-        self.ruler_bt = self.add_icon_button(ruler_icon, self.force_bt_function)
-        self.add_force_window = AddForceWindow(self.parent)
-        self.add_force_window.is_visible = False
-        self.add_force_window.x = 80
-        self.add_force_window.top = 70
+    def set_tools(self, tools):
+        self.children.clear()
+        cursor = self.button_margin
 
+        for icon, command in tools:    
+            bt = ui.Iconbutton(
+                x=self.button_margin, y=0,
+                w=self.button_size, h=self.button_size,
+                parent=self,
+                image=icon,
+                command=command)
+            bt.top = cursor
+            cursor += self.button_margin + self.button_size
+            yield bt
+    
     def add_bt_function(self):
-        self.parent.show_options()
+        self.parent.add_object_window.show()
 
     def force_bt_function(self):
-        self.add_force_window.is_visible = True
+        self.parent.add_force_window.show()
     
-    def set_ruler_mode(self):
-        self.parent.context_wrapper.mode = 2
+    def ruler_bt_function(self):
+        # self.parent.context_wrapper.mode = RULER_MODE
+        pass
     
     def draw(self, offset_x=0, offset_y=0):
         super().draw(offset_x, offset_y)

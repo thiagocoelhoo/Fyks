@@ -7,10 +7,7 @@ from core.camera import Camera
 from core.render import Render, draw_circle
 from .context import Context
 from core.rigidbody import RigidBody
-
-SELECT_MODE = 0
-MOVE_MODE = 1
-RULER_MODE = 2
+from constants import *
 
 
 class ContextWrapper(Context):
@@ -46,8 +43,7 @@ class ContextWrapper(Context):
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == mouse.RIGHT:
-            self._camera.x -= dx
-            self._camera.y -= dy
+            self.move_camera(-dx, -dy)
         elif buttons == mouse.LEFT:
             if self.mode == SELECT_MODE:
                 if self._selection:
@@ -68,7 +64,7 @@ class ContextWrapper(Context):
             self._camera.zoom += 0.05
     
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
+        if self.mode == SELECT_MODE and button == mouse.LEFT:
             self._selection = [x, y, x, y]
 
     def on_mouse_release(self, x, y, button, modifiers):
@@ -78,10 +74,6 @@ class ContextWrapper(Context):
                 self._selection = []
             elif self.mode == MOVE_MODE:
                 self.mode = SELECT_MODE
-    
-    def on_key_press(self, symbol, modifiers):
-        if symbol == key.M:
-            self.mode = MOVE_MODE
     
     def resize(self, w, h):
         self._camera.w = w
@@ -133,8 +125,9 @@ class ContextWrapper(Context):
     def select_area(self, x1, y1, x2, y2):
         pass
 
-    def move_camera(self, x, y):
-        pass
+    def move_camera(self, dx, dy):
+        self._camera.x += dx
+        self._camera.y += dy
 
     def move_selected(self, x, y):
         for obj in self.selected:
