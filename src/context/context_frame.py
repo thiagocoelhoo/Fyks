@@ -1,13 +1,12 @@
 from pyglet.window import mouse, key
 from pyglet import gl
 
+import graphicutils as gu
+from app import colors
 from ui import Frame, CustomMouseHandler
 from .context_wrapper import ContextWrapper
 from context import widgets
-from app import colors
-import graphicutils as gu
-
-RULER_MODE = 2
+from constants import *
 
 
 class ContextFrame(Frame):
@@ -16,28 +15,25 @@ class ContextFrame(Frame):
         self.context_wrapper = ContextWrapper(self.w, self.h)
         self.mouse_handler = CustomMouseHandler()
         self.mouse_handler.on_double_click = self.on_double_click
-        self.running = True
 
         self.KEYMAP = {
-            (key.MOD_SHIFT, key.A): 'options',
+            (key.MOD_SHIFT, key.A): 'add object',
+            (key.MOD_SHIFT, key.F): 'add force',
+            (key.MOD_SHIFT, key.M): 'move object',
             (None, key.HOME): 'home',
             (None, key.DELETE): 'delete',
-            (None, key.SPACE): 'pause',
-        }
+            (None, key.SPACE): 'pause'}
 
         self.init_ui()
     
     def init_ui(self):
-        self.toolbox = widgets.ToolBox(self)
-        self.add_rb_win = widgets.AddRigidbodyWindow(self)
-        self.edit_rb_win = widgets.EditRigidbodyWindow(self)
-        self.edit_forces_window = widgets.EditForcesWindow(self)
         self.timeline = widgets.Timeline(x=70, y=10, parent=self)
+        self.toolbox = widgets.ToolBox(self)
 
-    def show_options(self):
-        self.add_rb_win.x = self.mouse_handler.x
-        self.add_rb_win.y = self.mouse_handler.y - self.add_rb_win.h
-        self.add_rb_win.is_visible = True
+        self.add_object_window = widgets.AddRigidbodyWindow(self)
+        self.add_force_window = widgets.AddForceWindow(self)
+        self.edit_object_window = widgets.EditRigidbodyWindow(self)
+        self.edit_forces_window = widgets.EditForcesWindow(self)
 
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
@@ -70,10 +66,10 @@ class ContextFrame(Frame):
     def on_double_click(self, x, y, button, modifiers):
         self.context_wrapper.select_closer(x - 60, y)
         if self.context_wrapper.selected:
-            self.edit_rb_win.show()
-            self.edit_rb_win.x = x
-            self.edit_rb_win.y = y - self.edit_rb_win.h
-            self.edit_rb_win.set_target(self.context_wrapper.selected[0])
+            self.edit_object_window.show()
+            self.edit_object_window.x = x
+            self.edit_object_window.top = y
+            self.edit_object_window.set_target(self.context_wrapper.selected[0])
 
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
@@ -84,15 +80,18 @@ class ContextFrame(Frame):
                     command = self.KEYMAP[(mod, sym)]
                     break
 
-        if command == 'options':
-            self.show_options()
+        if command == 'add object':
+            self.add_object_window.show()
+        elif command == 'add force':
+            self.add_force_window.show()
+        elif command == 'move object':
+            self.context_wrapper.mode = MOVE_MODE
         elif command == 'home':
             self.context_wrapper.camera_to_home()
         elif command == 'delete':
             self.context_wrapper.delete_selected()
         elif command == 'pause':
             self.context_wrapper.toggle_pause()
-        self.context_wrapper.on_key_press(symbol, modifiers)
     
     def draw(self, offset_x=0, offset_y=0):
         gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
