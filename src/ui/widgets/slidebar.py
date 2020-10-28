@@ -31,4 +31,4 @@ class Slidebar(Widget):
 
         gl.glColor4f(*self.inside_color)
         w = max(6, int(self.value * (self.w - 4)))
-        gu.draw_rounded_rect(x + 2, y + 2, w, 12, 3, gl.GL_POLYGON)
+        gu.draw_rounded_rect(x + 2, y + 2, w, self.h - 4, 3, gl.GL_POLYGON)
