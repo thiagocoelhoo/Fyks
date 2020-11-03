@@ -1,6 +1,5 @@
 import pickle
 
-from ui.utils.filemanager import FileManagerWindow
 from context.context_wrapper import ContextWrapper
 
 ctx_wrapper = ContextWrapper()
