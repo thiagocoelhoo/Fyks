@@ -3,36 +3,26 @@ import string
 from pyglet import gl
 from pyglet.window import key
 
-from ui import Widget, Label
+from ui import widgets, elements
 import graphicutils as gu
 
 
-class Entry(Widget):
+class Entry(widgets.Widget):
     def __init__(self, x, y, w, h, parent=None):
-        super().__init__(x, y, w, h, None)
-        self.text_label = Label(0, 0, 0, 0)
+        super().__init__(x, y, w, h, parent)
+        self.text_label = widgets.Label(0, 0, 0, 0)
         self.text_label.text = 'Entry'
         self.text_label.lab.color=(61, 85, 94, 255)
         self.mask = string.printable
-        self._padding = 8
 
         self.border_radius = 6
-        self.parent = parent
     
-    @property
-    def x(self):
-        return self._x
-
-    @property
-    def y(self):
-        return self._y
-    
-    @x.setter
+    @elements.Element.x.setter
     def x(self, value):
         self._x = value
         self.text_label.x = value
     
-    @y.setter
+    @elements.Element.y.setter
     def y(self, value):
         self._y = value
         self.text_label.y = value

@@ -1,7 +1,7 @@
-from ui import Frame, Button, Entry, FloatEntry, Label, Subwindow
+from ui import widgets
 
 
-class EditRigidbodyWindow(Subwindow):
+class EditRigidbodyWindow(widgets.Subwindow):
     def __init__(self, parent):
         super().__init__(
             x=0, y=0, 
@@ -15,35 +15,35 @@ class EditRigidbodyWindow(Subwindow):
     def init_ui(self):
         super().init_ui()
         
-        label_pos_x = Label(12, 0, 0, 0, parent=self.frame)
+        label_pos_x = widgets.Label(12, 0, 0, 0, parent=self.frame)
         label_pos_x.top = 20
         label_pos_x.lab.color = (200, 200, 200, 255)
         label_pos_x.text = 'Posição X:'
-        self.entry_pos_x = FloatEntry(12, 0, 160, 30, self.frame)
+        self.entry_pos_x = widgets.FloatEntry(12, 0, 160, 30, self.frame)
         self.entry_pos_x.top = 28
 
-        label_pos_y = Label(190, 0, 0, 0, parent=self.frame)
+        label_pos_y = widgets.Label(190, 0, 0, 0, parent=self.frame)
         label_pos_y.top = 20
         label_pos_y.lab.color = (200, 200, 200, 255)
         label_pos_y.text = 'Posição Y:'
-        self.entry_pos_y = FloatEntry(190, 0, 160, 30, self.frame)
+        self.entry_pos_y = widgets.FloatEntry(190, 0, 160, 30, self.frame)
         self.entry_pos_y.top = 28
 
         label_vel_x = Label(12, 0, 0, 0, parent=self.frame)
         label_vel_x.top = 74
         label_vel_x.lab.color = (200, 200, 200, 255)
         label_vel_x.text = 'Velocidade X:'
-        self.entry_vel_x = FloatEntry(12, 0, 160, 30, self.frame)
+        self.entry_vel_x = widgets.FloatEntry(12, 0, 160, 30, self.frame)
         self.entry_vel_x.top = 82
 
         label_vel_y = Label(190, 0, 0, 0, parent=self.frame)
         label_vel_y.top = 74
         label_vel_y.lab.color = (200, 200, 200, 255)
         label_vel_y.text = 'Velocidade Y:'
-        self.entry_vel_y = FloatEntry(190, 0, 160, 30, self.frame)
+        self.entry_vel_y = widgets.FloatEntry(190, 0, 160, 30, self.frame)
         self.entry_vel_y.top = 82
 
-        self.submit_bt = Button(
+        self.submit_bt = widgets.Button(
             x=12,
             y=12,
             w=150,

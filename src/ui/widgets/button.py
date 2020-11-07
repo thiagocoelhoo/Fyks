@@ -1,14 +1,14 @@
 from pyglet.gl import *
 
-from ui import Widget, Label
+from ui import widgets
 import graphicutils as gu
 
 
-class Button(Widget):
+class Button(widgets.Widget):
     def __init__(self, x, y, w, h, parent=None, text='Button', command=None):
         super().__init__(x, y, w, h, parent)
         self.command = command or (lambda: print('Pressed'))
-        self.label = Label(0, 0, 0, 0)
+        self.label = widgets.Label(0, 0, 0, 0)
         self.label.text = text
         self.pressed = False
         self.padding = 8
@@ -36,8 +36,8 @@ class Button(Widget):
         gu.draw_rounded_rect(
             self.x + offset_x, 
             self.y + offset_y,
-            self.w,
-            self.h,
+            self.width,
+            self.height,
             self.border_radius,
             GL_POLYGON
         )
@@ -46,13 +46,13 @@ class Button(Widget):
         gu.draw_rounded_rect(
             self.x + offset_x, 
             self.y + offset_y,
-            self.w,
-            self.h,
+            self.width,
+            self.height,
             self.border_radius + 1, 
             GL_LINE_LOOP
         )
 
         self.label.draw(
-            self.x + offset_x + self.padding,
-            self.y + offset_y + self.padding
+            self.x + offset_x,
+            self.y + offset_y
         )

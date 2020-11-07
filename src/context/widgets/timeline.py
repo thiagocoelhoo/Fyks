@@ -4,7 +4,7 @@ from pyglet.window import key
 
 import graphicutils as gu
 from app import colors
-from ui import Widget, Slidebar, Iconbutton, Label
+from ui import widgets
 from context.context_wrapper import ContextWrapper
 from constants import *
 
@@ -15,9 +15,9 @@ rec_icon = pyglet.image.load('assets/rec_icon.png')
 ctx_wrapper = ContextWrapper(0, 0)
 
 
-class Timeline(Widget):
+class Timeline(widgets.Widget):
     def __init__(self, x, y, parent):
-        super().__init__(x, y, w=parent.w - 104, h=24, parent=parent)
+        super().__init__(x, y, w=parent.width - 104, h=24, parent=parent)
         self.mode = PAUSE
         self.frame = 0
         self.frames = []
@@ -40,7 +40,7 @@ class Timeline(Widget):
 
         self.slidebar = Slidebar(
             x=self.x + 40, y=self.y, 
-            w=self.parent.w - 118, h=16, 
+            w=self.parent.width - 118, h=16, 
             parent=self)
         
         self.slidebar.background_color = colors.TIMELINE_BACKGROUND_COLOR

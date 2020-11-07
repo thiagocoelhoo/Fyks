@@ -1,13 +1,13 @@
 import pyglet
 from pyglet import gl
 
+from ui import widgets
 import graphicutils as gu
-from ui import Frame, Widget, Iconbutton, Label
 
 close_icon = pyglet.image.load('assets/close_icon.png')
 
 
-class Item(Widget):
+class Item(widgets.Widget):
     def __init__(self, x, y, w, h, parent, text):
         super().__init__(x, y, w, h, parent)
         self.background_color = (1, 1, 1, 0.2)
@@ -50,7 +50,7 @@ class Item(Widget):
         self.close_bt.draw(x, y)
 
 
-class List(Frame):
+class List(widgets.Frame):
     def __init__(self, x, y, w, h, parent):
         super().__init__(x, y, w, h, parent)
         self.background_color = (1, 1, 1, 0.05)

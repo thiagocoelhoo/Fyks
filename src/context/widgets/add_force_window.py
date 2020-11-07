@@ -1,10 +1,10 @@
-import ui
+from ui import widgets
 from context import context_wrapper
 
 wrapper = context_wrapper.ContextWrapper(0, 0)
 
 
-class AddForceWindow(ui.Subwindow):
+class AddForceWindow(widgets.Subwindow):
     def __init__(self, parent):
         super().__init__(0, 0, 200, 155, caption='Adicionar força', parent=parent)
         self.build()

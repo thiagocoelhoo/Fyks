@@ -1,9 +1,9 @@
 import pyglet
 
-from ui import Widget
+from ui import widgets
 
 
-class Label(Widget):
+class Label(widgets.Widget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.lab = pyglet.text.Label(

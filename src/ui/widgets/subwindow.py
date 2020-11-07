@@ -1,14 +1,15 @@
 import pyglet
 from pyglet import gl
 
-from ui import Frame, Button, Iconbutton, Label, Widget
+# from ui import Frame, Button, Iconbutton, Label, Widget
+from ui import widgets
 import graphicutils as gu
 from app import colors
 
 close_icon = pyglet.image.load('assets/close_icon.png')
 
 
-class Bar(Widget):
+class Bar(widgets.Widget):
     def __init__(self, x, y, w, h, parent, caption):
         super().__init__(x=x, y=y, w=w, h=h, parent=parent)
         self.background_color = colors.SUBWINDOW_BAR_COLOR
@@ -21,14 +22,14 @@ class Bar(Widget):
         """
 
         # Caption label
-        self.caption_label = Label(x=4, y=2, w=0, h=0)
+        self.caption_label = widgets.Label(x=4, y=2, w=0, h=0)
         self.caption_label.font_size = 14
         self.caption_label.text = self.caption
         self.caption_label.lab.color = (130, 130, 130, 255)
         
         # Close button
-        self.close_bt = Iconbutton(
-            x=self.w - 18, y=2,
+        self.close_bt = widgets.Iconbutton(
+            x=self.width - 18, y=2,
             w=16, h=16,
             image=close_icon,
             parent=self,
@@ -51,7 +52,7 @@ class Bar(Widget):
         self.close_bt.draw(x, y)
 
 
-class Subwindow(Frame):
+class Subwindow(widgets.Frame):
     def __init__(self, x, y, w, h, caption, parent):
         super().__init__(x=x, y=y, w=w, h=h + 20, parent=parent)
         self.caption = caption
@@ -65,23 +66,23 @@ class Subwindow(Frame):
 
     def init_ui(self):
         self.bar = Bar(
-            x=0, y=self.h - self.bar_height, 
-            w=self.w, 
+            x=0, y=self.height - self.bar_height, 
+            w=self.width, 
             h=self.bar_height, 
             parent=self, 
             caption=self.caption
         )
-        self.frame = Frame(0, 0, self.w, self.h - self.bar_height)
+        self.frame = widgets.Frame(0, 0, self.width, self.height - self.bar_height)
         self.frame.color = self.background_color
         self.frame.border_color = (0, 0, 0, 0)
         self.children = [self.bar, self.frame]
     
     def resize(self, w, h):
-        self.w = w
-        self.h = h + self.bar_height
-        self.frame.h = h
-        self.frame.w = w
-        self.bar.w = w
+        self.width = w
+        self.height = h + self.bar_height
+        self.frame.height = h
+        self.frame.width = w
+        self.bar.width = w
     
     def show(self):
         self.close()

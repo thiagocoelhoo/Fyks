@@ -1,7 +1,7 @@
-from ui import Button, FloatEntry, Label, Subwindow
+from ui import widgets
 
 
-class AddRigidbodyWindow(Subwindow):
+class AddRigidbodyWindow(widgets.Subwindow):
     def __init__(self, parent):
         super().__init__(
             x=0, y=0,
