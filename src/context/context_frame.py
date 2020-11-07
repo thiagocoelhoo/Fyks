@@ -3,17 +3,17 @@ from pyglet import gl
 
 import graphicutils as gu
 from app import colors
-from ui import Frame, CustomMouseHandler
+from ui import widgets, elements, handlers
+from context import widgets as context_widgets
 from .context_wrapper import ContextWrapper
-from context import widgets
 from constants import *
 
 
-class ContextFrame(Frame):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.context_wrapper = ContextWrapper(self.w, self.h)
-        self.mouse_handler = CustomMouseHandler()
+class ContextFrame(widgets.Layout):
+    def __init__(self, x, y, w, h):
+        super().__init__(x, y, w, h, 'vertical')
+        self.context_wrapper = ContextWrapper(self.width, self.height)
+        self.mouse_handler = handlers.CustomMouseHandler()
         self.mouse_handler.on_double_click = self.on_double_click
 
         self.KEYMAP = {
@@ -27,14 +27,14 @@ class ContextFrame(Frame):
         self.init_ui()
     
     def init_ui(self):
-        self.timeline = widgets.Timeline(x=70, y=10, parent=self)
-        self.toolbox = widgets.ToolBox(self)
-
-        self.add_object_window = widgets.AddRigidbodyWindow(self)
-        self.add_force_window = widgets.AddForceWindow(self)
-        self.edit_object_window = widgets.EditRigidbodyWindow(self)
-        self.edit_forces_window = widgets.EditForcesWindow(self)
-
+        # self.timeline = widgets.Timeline(x=70, y=10, parent=self)
+        self.toolbox = context_widgets.ToolBox()
+        self.add(self.toolbox)
+        # self.add_object_window = widgets.AddRigidbodyWindow(self)
+        # self.add_force_window = widgets.AddForceWindow(self)
+        # self.edit_object_window = widgets.EditRigidbodyWindow(self)
+        # self.edit_forces_window = widgets.EditForcesWindow(self)
+        self.context_wrapper.add_object((0, 0), (0, 0), (0, 0), 1, 1)
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
     
@@ -62,6 +62,7 @@ class ContextFrame(Frame):
     
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_handler.on_mouse_motion(x, y, dx, dy)
+        pass
     
     def on_double_click(self, x, y, button, modifiers):
         self.context_wrapper.select_closer(x - 60, y)
@@ -98,10 +99,10 @@ class ContextFrame(Frame):
         gu.draw_rect(
             self.x + offset_x,
             self.y + offset_y,
-            self.w, self.h,
+            self.width, self.height,
             gl.GL_QUADS)
         self.context_wrapper.draw(60, 0)
-        self.draw_children(offset_x, offset_y)
+        self.draw_widgets(offset_x, offset_y)
 
     def update(self, dt):
         super().update(dt)

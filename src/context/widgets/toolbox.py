@@ -1,6 +1,6 @@
 import pyglet
 
-import ui
+from ui import widgets
 from core.rigidbody import RigidBody
 from app import colors
 from constants import *
@@ -10,9 +10,10 @@ add_force_icon = pyglet.image.load('assets/add_force_icon.png')
 ruler_icon = pyglet.image.load('assets/ruler_icon.png')
 
 
-class ToolBox(ui.Frame):
-    def __init__(self, parent):
-        super().__init__(0, 0, 60, parent.h, parent)
+class ToolBox(widgets.Layout):
+    def __init__(self):
+        super().__init__(0, 0, 0, 0, None)
+        self.max_width = 60
         self.color = colors.TOOLBOX_COLOR
         self.border_color = (0, 0, 0, 0.2)
         self.button_size = 48
@@ -31,18 +32,18 @@ class ToolBox(ui.Frame):
         self.ruler_bt = tool_buttons[2]
     
     def set_tools(self, tools):
-        self.children.clear()
-        cursor = self.button_margin
-
+        self.elements.clear()
         for icon, command in tools:    
-            bt = ui.Iconbutton(
-                x=self.button_margin, y=0,
-                w=self.button_size, h=self.button_size,
-                parent=self,
+            bt = widgets.Iconbutton(
+                x=self.button_margin, 
+                y=0,
+                w=self.button_size,
+                h=self.button_size,
                 image=icon,
                 command=command)
-            bt.top = cursor
-            cursor += self.button_margin + self.button_size
+            bt.min_height = self.button_size
+            bt.max_height = self.button_size
+            self.add(bt)
             yield bt
     
     def add_bt_function(self):
@@ -54,7 +55,4 @@ class ToolBox(ui.Frame):
     def ruler_bt_function(self):
         # self.parent.context_wrapper.mode = RULER_MODE
         pass
-    
-    def draw(self, offset_x=0, offset_y=0):
-        super().draw(offset_x, offset_y)
-        self.draw_children(self.x + offset_x, self.y + offset_y)
+
