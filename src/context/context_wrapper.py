@@ -94,7 +94,6 @@ class ContextWrapper(Context):
                     self._selected.append(obj)
     
     def add_object(self, *args, **kwargs):
-        kwargs['charge'] = np.random.random() * 500 - 250
         obj = RigidBody(*args, **kwargs)
         self._objects.append(obj)
     
