@@ -13,10 +13,10 @@ class Layout(Frame):
             if self.orientation == 'horizontal':
                 h = (height - cursor) / (len(self.elements) - i)
                 element.resize(width, h)
-                element.top = cursor
+                element.top = cursor + element.margin_top
                 cursor = element.top + element.height
             elif self.orientation == 'vertical':
                 w = (width - cursor) / (len(self.elements) - i)
                 element.resize(w, height)
-                element.left = cursor
+                element.left = cursor + element.margin_left
                 cursor = element.left + element.width

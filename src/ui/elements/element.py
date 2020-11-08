@@ -7,12 +7,18 @@ class Element:
         self._y = y
         self._w = w
         self._h = h
-
+        
         self.parent = parent
+
         self.min_width = 0
         self.min_height = 0
         self.max_width = math.inf
         self.max_height = math.inf
+        
+        self.margin_top = 0
+        self.margin_right = 0
+        self.margin_bottom = 0
+        self.margin_left = 0
     
     @property
     def x(self):
