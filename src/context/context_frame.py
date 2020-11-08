@@ -34,12 +34,9 @@ class ContextFrame(widgets.Layout):
         # self.add_force_window = widgets.AddForceWindow(self)
         # self.edit_object_window = widgets.EditRigidbodyWindow(self)
         # self.edit_forces_window = widgets.EditForcesWindow(self)
-        self.context_wrapper.add_object((0, 0), (0, 0), (0, 0), 1, 1)
+    
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
-    
-    def on_resize(self, w, h):
-        self.context_wrapper.resize(w, h)
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
@@ -94,6 +91,10 @@ class ContextFrame(widgets.Layout):
         elif command == 'pause':
             self.context_wrapper.toggle_pause()
     
+    def resize(self, width, height):
+        super().resize(width, height)
+        self.context_wrapper.resize(int(width), int(height))
+
     def draw(self, offset_x=0, offset_y=0):
         gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
         gu.draw_rect(
