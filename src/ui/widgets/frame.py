@@ -84,12 +84,11 @@ class Frame(widgets.Widget, elements.Frame):
                 widget.update(dt)
 
     def draw_widgets(self, offset_x, offset_y):
+        x = offset_y + self.x
+        y = offset_y + self.y
         for widget in self.elements:
             if widget.is_visible:
-                widget.draw(
-                    offset_x=offset_x + self.x,
-                    offset_y=offset_y + self.y
-                )
+                widget.draw(offset_x=x, offset_y=y)
 
     def draw(self, offset_x=0, offset_y=0):
         gl.glColor4f(*self.color)
