@@ -92,6 +92,16 @@ class Element:
         else:
             self._h = value
 
+    @property
+    def global_position(self):
+        x = self.x
+        y = self.y
+        if self.parent is not None:
+            parent_position = self.parent.global_position
+            x += parent_position[0]
+            y += parent_position[1]
+        return (x, y)
+    
     def resize(self, width, height):
         self.width = width
         self.height = height

@@ -16,22 +16,24 @@ class Frame(widgets.Widget, elements.Frame):
         self.is_visible = not self.is_visible
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        pos_on_screen = self.global_position
         if self.hover:
             for widget in self.elements:
                 if widget.is_visible:
                     widget.on_mouse_scroll(
-                        x=x - self.x,
-                        y=y - self.y,
+                        x=x - pos_on_screen[0],
+                        y=y - pos_on_screen[1],
                         scroll_x=scroll_x,
                         scroll_y=scroll_y
                     )
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        pos_on_screen = self.global_position
         for widget in self.elements:
             if widget.is_visible:
                 widget.on_mouse_drag(
-                    x=x - self.x,
-                    y=y - self.y,
+                    x=x - pos_on_screen[0],
+                    y=y - pos_on_screen[1],
                     dx=dx,
                     dy=dy,
                     buttons=buttons,
@@ -45,8 +47,9 @@ class Frame(widgets.Widget, elements.Frame):
 
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
-        local_mouse_x = x - self.x
-        local_mouse_y = y - self.y
+        pos_on_screen = self.global_position
+        local_mouse_x = x - pos_on_screen[0]
+        local_mouse_y = y - pos_on_screen[1]
 
         if self.hover:
             hover_widget = None
