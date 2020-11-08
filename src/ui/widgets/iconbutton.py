@@ -1,7 +1,5 @@
-import pyglet
 from pyglet import gl
 
-import graphicutils as gu
 from .button import Button
 from .widget import Widget
 
