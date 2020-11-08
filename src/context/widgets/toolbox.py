@@ -33,6 +33,7 @@ class ToolBox(widgets.Layout):
             bt = widgets.Iconbutton(6, 0, 0, 0, image=icon, command=command)
             bt.min_height = self.button_size
             bt.max_height = self.button_size
+            bt.margin_top = 6
             self.add(bt)
     
     def add_bt_function(self):
