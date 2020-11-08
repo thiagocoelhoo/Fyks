@@ -5,7 +5,7 @@ from pyglet.window import key
 import graphicutils as gu
 from app import colors
 from ui import widgets
-from context.context_wrapper import ContextWrapper
+from core.context_wrapper import ContextWrapper
 from constants import *
 
 pause_icon = pyglet.image.load('assets/pause_icon.png')
@@ -24,21 +24,21 @@ class Timeline(widgets.Widget):
         self.init_ui()
     
     def init_ui(self):
-        self.pause_bt = Iconbutton(
+        self.pause_bt = widgets.Iconbutton(
             x=self.x, y=self.y,
             w=16, h=16, 
             image=pause_icon, 
             parent=self,
             command=ctx_wrapper.toggle_pause)
         
-        self.rec_bt = Iconbutton(
+        self.rec_bt = widgets.Iconbutton(
             x=self.x + 20, y=self.y, 
             w=16, h=16,
             image=rec_icon,
             parent=self,
             command=self.toggle_rec)
 
-        self.slidebar = Slidebar(
+        self.slidebar = widgets.Slidebar(
             x=self.x + 40, y=self.y, 
             w=self.parent.width - 118, h=16, 
             parent=self)
@@ -47,7 +47,7 @@ class Timeline(widgets.Widget):
         self.slidebar.inside_color = colors.TIMELINE_COLOR
         self.slidebar.value = 0
 
-        self.clock_label = Label(
+        self.clock_label = widgets.Label(
             x=self.slidebar.x + 24, y=self.slidebar.y + 24, 
             w=0, h=0,
             parent=self)

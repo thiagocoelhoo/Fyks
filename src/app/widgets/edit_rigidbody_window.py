@@ -29,14 +29,14 @@ class EditRigidbodyWindow(widgets.Subwindow):
         self.entry_pos_y = widgets.FloatEntry(190, 0, 160, 30, self.frame)
         self.entry_pos_y.top = 28
 
-        label_vel_x = Label(12, 0, 0, 0, parent=self.frame)
+        label_vel_x = widgets.Label(12, 0, 0, 0, parent=self.frame)
         label_vel_x.top = 74
         label_vel_x.lab.color = (200, 200, 200, 255)
         label_vel_x.text = 'Velocidade X:'
         self.entry_vel_x = widgets.FloatEntry(12, 0, 160, 30, self.frame)
         self.entry_vel_x.top = 82
 
-        label_vel_y = Label(190, 0, 0, 0, parent=self.frame)
+        label_vel_y = widgets.Label(190, 0, 0, 0, parent=self.frame)
         label_vel_y.top = 74
         label_vel_y.lab.color = (200, 200, 200, 255)
         label_vel_y.text = 'Velocidade Y:'

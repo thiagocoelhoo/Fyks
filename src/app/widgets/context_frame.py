@@ -1,17 +1,17 @@
 from pyglet.window import mouse, key
 from pyglet import gl
 
+import app
 import graphicutils as gu
-from app import colors
 from ui import widgets, elements, handlers
-from context import widgets as context_widgets
-from .context_wrapper import ContextWrapper
+from core.context_wrapper import ContextWrapper
 from constants import *
 
 
-class ContextFrame(widgets.Layout):
+class ContextFrame(widgets.Frame):
     def __init__(self, x, y, w, h):
-        super().__init__(x, y, w, h, 'vertical')
+        super().__init__(x, y, w, h)
+        
         self.context_wrapper = ContextWrapper(self.width, self.height)
         self.mouse_handler = handlers.CustomMouseHandler()
         self.mouse_handler.on_double_click = self.on_double_click
@@ -27,14 +27,13 @@ class ContextFrame(widgets.Layout):
         self.init_ui()
     
     def init_ui(self):
-        # self.timeline = widgets.Timeline(x=70, y=10, parent=self)
-        self.toolbox = context_widgets.ToolBox()
-        self.add(self.toolbox)
-        # self.add_object_window = widgets.AddRigidbodyWindow(self)
-        # self.add_force_window = widgets.AddForceWindow(self)
-        # self.edit_object_window = widgets.EditRigidbodyWindow(self)
-        # self.edit_forces_window = widgets.EditForcesWindow(self)
-    
+        self.timeline = app.widgets.Timeline(x=10, y=10, parent=self)
+        self.add_object_window = app.widgets.AddRigidbodyWindow(self)
+        self.add_force_window = app.widgets.AddForceWindow(self)
+        self.edit_object_window = app.widgets.EditRigidbodyWindow(self)
+        self.edit_forces_window = app.widgets.EditForcesWindow(self)
+        self.add_force_window.show()
+
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
 
@@ -96,14 +95,13 @@ class ContextFrame(widgets.Layout):
         self.context_wrapper.resize(int(width), int(height))
 
     def draw(self, offset_x=0, offset_y=0):
-        gl.glColor3f(*colors.CONTEXT_BACKGROUND_COLOR)
-        gu.draw_rect(
-            self.x + offset_x,
-            self.y + offset_y,
-            self.width, self.height,
-            gl.GL_QUADS)
-        self.context_wrapper.draw(60, 0)
-        self.draw_widgets(offset_x, offset_y)
+        x = self.x + offset_x
+        y = self.y + offset_y
+        
+        gl.glColor3f(*app.colors.CONTEXT_BACKGROUND_COLOR)
+        gu.draw_rect(x, y, self.width, self.height, gl.GL_QUADS)
+        self.context_wrapper.draw(x, y)
+        self.draw_widgets(x, y)
 
     def update(self, dt):
         super().update(dt)

@@ -1,5 +1,5 @@
 from ui import widgets
-from context import context_wrapper
+from core import context_wrapper
 
 wrapper = context_wrapper.ContextWrapper(0, 0)
 

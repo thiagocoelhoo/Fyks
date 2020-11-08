@@ -1,5 +1,5 @@
 from ui import widgets
-from context import context_wrapper
+from core import context_wrapper
 
 wrapper = context_wrapper.ContextWrapper(0, 0)
 
@@ -10,21 +10,21 @@ class AddForceWindow(widgets.Subwindow):
         self.build()
 
     def build(self):
-        label_x = ui.Label(20, 0, 0, 0, parent=self.frame)
+        label_x = widgets.Label(20, 0, 0, 0, parent=self.frame)
         label_x.top = 40
         label_x.lab.color = (120, 120, 120, 255)
         label_x.text = 'X:'
-        self.entry_x = ui.FloatEntry(40, 0, 140, 30, self.frame)
+        self.entry_x = widgets.FloatEntry(40, 0, 140, 30, self.frame)
         self.entry_x.top = 20
 
-        label_y = ui.Label(20, 0, 0, 0, parent=self.frame)
+        label_y = widgets.Label(20, 0, 0, 0, parent=self.frame)
         label_y.top = 80
         label_y.lab.color = (120, 120, 120, 255)
         label_y.text = 'Y:'
-        self.entry_y = ui.FloatEntry(40, 0, 140, 30, self.frame)
+        self.entry_y = widgets.FloatEntry(40, 0, 140, 30, self.frame)
         self.entry_y.top = 60
 
-        self.submit_bt = ui.Button(
+        self.submit_bt = widgets.Button(
             x=20,
             y=20,
             w=160,
