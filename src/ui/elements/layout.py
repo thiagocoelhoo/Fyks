@@ -1,7 +1,7 @@
-from .element import Element
+from .frame import Frame
 
 
-class Layout(Element):
+class Layout(Frame):
     def __init__(self, x, y, w, h, orientation='horizontal', parent=None):
         super().__init__(x, y, w, h, parent)
         self.orientation = orientation
