@@ -35,6 +35,7 @@ class ContextFrame(widgets.Frame):
         self.add_force_window.show()
         
         self.add(self.timeline)
+        self.add(self.add_object_window)
 
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
