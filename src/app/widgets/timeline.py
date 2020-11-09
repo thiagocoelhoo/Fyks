@@ -23,6 +23,7 @@ class Timeline(widgets.Layout):
         self.frames = []
         self.clock = 0
         self.init_ui()
+        self.color = (0, 0, 0, 0)
     
     def init_ui(self):
         self.pause_bt = widgets.Iconbutton(
