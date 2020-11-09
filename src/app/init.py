@@ -18,12 +18,13 @@ def init_ui(width, height):
     menu.add_button('Editar', None)
     menu.add_button('Ajuda', None)
 
-    context_frame = app.widgets.ContextFrame(0, 0, 10, 10)
-    toolbox = app.widgets.ToolBox()
     content_layout = widgets.Layout(0, 0, 0, 0, orientation='vertical')
+    toolbox = app.widgets.ToolBox()
+    context_frame = app.widgets.ContextFrame(0, 0, 0, 0)
     content_layout.add(toolbox)
     content_layout.add(context_frame)
 
     layout.add(menu)
     layout.add(content_layout)
+
     return layout
