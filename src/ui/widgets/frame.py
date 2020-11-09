@@ -8,7 +8,7 @@ class Frame(widgets.Widget, elements.Frame):
     def __init__(self, x, y, w, h, parent=None):
         super().__init__(x, y, w, h, parent)
         self.color = (0.9, 0.9, 0.9, 1)
-        self.border_color = (0.7, 0.7, 0.7, 1)
+        self.border_color = (0, 0, 0, 0)
         self.border_radius = 0
         self.elements = []
 
