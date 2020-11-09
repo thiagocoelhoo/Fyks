@@ -27,12 +27,14 @@ class ContextFrame(widgets.Frame):
         self.init_ui()
     
     def init_ui(self):
-        self.timeline = app.widgets.Timeline(x=10, y=10, parent=self)
+        self.timeline = app.widgets.Timeline(x=10, y=10)
         self.add_object_window = app.widgets.AddRigidbodyWindow(self)
         self.add_force_window = app.widgets.AddForceWindow(self)
         self.edit_object_window = app.widgets.EditRigidbodyWindow(self)
         self.edit_forces_window = app.widgets.EditForcesWindow(self)
         self.add_force_window.show()
+        
+        self.add(self.timeline)
 
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
@@ -93,6 +95,7 @@ class ContextFrame(widgets.Frame):
     def resize(self, width, height):
         super().resize(width, height)
         self.context_wrapper.resize(int(width), int(height))
+        self.timeline.resize(width - 20, 24)
 
     def draw(self, offset_x=0, offset_y=0):
         x = self.x + offset_x
