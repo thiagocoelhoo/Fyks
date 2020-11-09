@@ -84,7 +84,7 @@ class Frame(widgets.Widget, elements.Frame):
                 widget.update(dt)
 
     def draw_widgets(self, offset_x, offset_y):
-        x = offset_y + self.x
+        x = offset_x + self.x
         y = offset_y + self.y
         for widget in self.elements:
             if widget.is_visible:
