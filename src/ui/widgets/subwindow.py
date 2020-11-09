@@ -9,10 +9,10 @@ from app import colors
 close_icon = pyglet.image.load('assets/close_icon.png')
 
 
-class Bar(widgets.Widget):
+class Bar(widgets.Frame):
     def __init__(self, x, y, w, h, parent, caption):
         super().__init__(x=x, y=y, w=w, h=h, parent=parent)
-        self.background_color = colors.SUBWINDOW_BAR_COLOR
+        self.color = colors.SUBWINDOW_BAR_COLOR
         self.caption = caption
         self.init_ui()
     
@@ -35,21 +35,13 @@ class Bar(widgets.Widget):
             parent=self,
             command=self.parent.close
         )
+        self.add(self.caption_label)
+        self.add(self.close_bt)
     
     def on_mouse_release(self, x, y, button, modifiers):
         self.close_bt.on_mouse_release(x, y, button, modifiers)
         if self.pressed:
             self.pressed = False
-    
-    def draw(self, offset_x, offset_y):
-        x = self.x + offset_x
-        y = self.y + offset_y
-
-        gl.glColor4f(*self.background_color)
-        gu.draw_rect(x, y,self.w, self.h, gl.GL_QUADS)
-        
-        self.caption_label.draw(x, y)
-        self.close_bt.draw(x, y)
 
 
 class Subwindow(widgets.Frame):
@@ -72,17 +64,24 @@ class Subwindow(widgets.Frame):
             parent=self, 
             caption=self.caption
         )
-        self.frame = widgets.Frame(0, 0, self.width, self.height - self.bar_height)
+
+        self.frame = widgets.Frame(
+            x=0, y=0, 
+            w=self.width, 
+            h=self.height - self.bar_height)
         self.frame.color = self.background_color
         self.frame.border_color = (0, 0, 0, 0)
         self.children = [self.bar, self.frame]
+
+        self.add(self.bar)
+        self.add(self.frame)
     
-    def resize(self, w, h):
-        self.width = w
-        self.height = h + self.bar_height
-        self.frame.height = h
-        self.frame.width = w
-        self.bar.width = w
+    def resize(self, width, height):
+        self.width = width
+        self.height = height + self.bar_height
+        self.frame.height = height
+        self.frame.width = width
+        self.bar.width = width
     
     def show(self):
         self.close()
@@ -107,7 +106,7 @@ class Subwindow(widgets.Frame):
         self.bar.draw(x, y)
         self.frame.draw(x, y)
         gl.glColor4f(*self.border_color)
-        gu.draw_rect(x, y, self.w, self.h, gl.GL_LINE_LOOP)
+        gu.draw_rect(x, y, self.width, self.height, gl.GL_LINE_LOOP)
 
     def update(self, dt):
         self.frame.update(dt)
