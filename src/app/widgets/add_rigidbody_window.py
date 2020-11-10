@@ -7,8 +7,7 @@ class AddRigidbodyWindow(widgets.Subwindow):
             x=0, y=0,
             w=200, h=155,
             caption='Adicionar objeto', 
-            parent=parent
-        )
+            parent=parent)
         self.init_ui()
 
     def init_ui(self):
@@ -35,11 +34,16 @@ class AddRigidbodyWindow(widgets.Subwindow):
             h=30,
             parent=self.frame,
             command=self.submit,
-            text='Adicionar'
-        )
+            text='Adicionar')
 
         self.submit_bt.label.lab.color = (50, 50, 50, 255)
         self.is_visible = False
+
+        self.frame.add(label_x)
+        self.frame.add(self.entry_x)
+        self.frame.add(label_y)
+        self.frame.add(self.entry_y)
+        self.frame.add(self.submit_bt)
 
     def submit(self):
         x = self.entry_x.get_value()
@@ -51,5 +55,4 @@ class AddRigidbodyWindow(widgets.Subwindow):
             mass=1,
             charge=0
         )
-        self.is_visible = False
-
+        self.close()

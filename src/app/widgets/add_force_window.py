@@ -6,7 +6,11 @@ wrapper = context_wrapper.ContextWrapper(0, 0)
 
 class AddForceWindow(widgets.Subwindow):
     def __init__(self, parent):
-        super().__init__(0, 0, 200, 155, caption='Adicionar força', parent=parent)
+        super().__init__(
+            x=0, y=0,
+            w=200, h=155, 
+            caption='Adicionar força', 
+            parent=parent)
         self.build()
 
     def build(self):
@@ -36,6 +40,12 @@ class AddForceWindow(widgets.Subwindow):
         self.submit_bt.label.lab.color = (50, 50, 50, 255)
         self.is_visible = False
 
+        self.frame.add(label_x)
+        self.frame.add(self.entry_x)
+        self.frame.add(label_y)
+        self.frame.add(self.entry_y)
+        self.frame.add(self.submit_bt)
+    
     def submit(self):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
@@ -43,4 +53,4 @@ class AddForceWindow(widgets.Subwindow):
         for rb in wrapper.selected:
             rb.add_force(x, y)
 
-        self.is_visible = False
+        self.close()

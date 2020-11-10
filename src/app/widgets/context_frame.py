@@ -11,7 +11,6 @@ from constants import *
 class ContextFrame(widgets.Frame):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h)
-        
         self.context_wrapper = ContextWrapper(self.width, self.height)
         self.mouse_handler = handlers.CustomMouseHandler()
         self.mouse_handler.on_double_click = self.on_double_click
@@ -32,10 +31,12 @@ class ContextFrame(widgets.Frame):
         self.add_force_window = app.widgets.AddForceWindow(self)
         self.edit_object_window = app.widgets.EditRigidbodyWindow(self)
         self.edit_forces_window = app.widgets.EditForcesWindow(self)
-        self.add_force_window.show()
         
         self.add(self.timeline)
         self.add(self.add_object_window)
+        self.add(self.add_force_window)
+        self.add(self.edit_object_window)
+        self.add(self.edit_forces_window)
 
     def set_ruler_mode(self):
         self.context_wrapper.mode = RULER_MODE
@@ -96,7 +97,7 @@ class ContextFrame(widgets.Frame):
     def resize(self, width, height):
         super().resize(width, height)
         self.context_wrapper.resize(int(width), int(height))
-        self.timeline.resize(width - 20, 24)
+        self.timeline.resize(width - 20, 20)
 
     def draw(self, offset_x=0, offset_y=0):
         x = self.x + offset_x

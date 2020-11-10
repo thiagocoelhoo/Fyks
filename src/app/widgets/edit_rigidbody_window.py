@@ -7,52 +7,56 @@ class EditRigidbodyWindow(widgets.Subwindow):
             x=0, y=0, 
             w=380, h=250,
             caption='Editar objeto', 
-            parent=parent
-        )
+            parent=parent)
         self.target = None
         self.init_ui()
 
     def init_ui(self):
         super().init_ui()
         
-        label_pos_x = widgets.Label(12, 0, 0, 0, parent=self.frame)
+        label_pos_x = widgets.Label(12, 0, 0, 0)
         label_pos_x.top = 20
         label_pos_x.lab.color = (200, 200, 200, 255)
         label_pos_x.text = 'Posição X:'
-        self.entry_pos_x = widgets.FloatEntry(12, 0, 160, 30, self.frame)
+        self.entry_pos_x = widgets.FloatEntry(12, 0, 160, 30)
         self.entry_pos_x.top = 28
 
-        label_pos_y = widgets.Label(190, 0, 0, 0, parent=self.frame)
+        label_pos_y = widgets.Label(190, 0, 0, 0)
         label_pos_y.top = 20
         label_pos_y.lab.color = (200, 200, 200, 255)
         label_pos_y.text = 'Posição Y:'
-        self.entry_pos_y = widgets.FloatEntry(190, 0, 160, 30, self.frame)
+        self.entry_pos_y = widgets.FloatEntry(190, 0, 160, 30)
         self.entry_pos_y.top = 28
 
-        label_vel_x = widgets.Label(12, 0, 0, 0, parent=self.frame)
+        label_vel_x = widgets.Label(12, 0, 0, 0)
         label_vel_x.top = 74
         label_vel_x.lab.color = (200, 200, 200, 255)
         label_vel_x.text = 'Velocidade X:'
-        self.entry_vel_x = widgets.FloatEntry(12, 0, 160, 30, self.frame)
+        self.entry_vel_x = widgets.FloatEntry(12, 0, 160, 30)
         self.entry_vel_x.top = 82
 
-        label_vel_y = widgets.Label(190, 0, 0, 0, parent=self.frame)
+        label_vel_y = widgets.Label(190, 0, 0, 0)
         label_vel_y.top = 74
         label_vel_y.lab.color = (200, 200, 200, 255)
         label_vel_y.text = 'Velocidade Y:'
-        self.entry_vel_y = widgets.FloatEntry(190, 0, 160, 30, self.frame)
+        self.entry_vel_y = widgets.FloatEntry(190, 0, 160, 30)
         self.entry_vel_y.top = 82
 
         self.submit_bt = widgets.Button(
-            x=12,
-            y=12,
-            w=150,
-            h=30,
+            x=12, y=12,
+            w=150, h=30,
             text='Confirmar',
-            command=self.close,
-            parent=self.frame)
+            command=self.close)
         self.submit_bt.label.lab.color = (50, 50, 50, 255)
         self.is_visible = False
+
+        self.frame.add(label_pos_x)
+        self.frame.add(self.entry_pos_y)
+        self.frame.add(label_pos_x)
+        self.frame.add(self.entry_vel_x)
+        self.frame.add(label_vel_y)
+        self.frame.add(self.entry_vel_y)
+        self.frame.add(self.submit_bt)
     
     def set_target(self, obj):
         self.target = obj
@@ -83,4 +87,3 @@ class EditRigidbodyWindow(widgets.Subwindow):
                 self.entry_vel_y.text = vel_y_str[:10]
             else:
                 self.target.velocity[1] = self.entry_vel_y.get_value()
-        
