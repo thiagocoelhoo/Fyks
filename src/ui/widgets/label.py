@@ -4,12 +4,11 @@ from ui import widgets
 
 
 class Label(widgets.Widget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, x, y, w, h, parent=None):
+        super().__init__(x, y, w, h, parent)
         self.lab = pyglet.text.Label(
-            font_name='verdana',
-            color=(80, 80, 80, 240)
-            )
+            font_name='verdana', 
+            color=(80, 80, 80, 240))
         self.font_size = 14
     
     @property

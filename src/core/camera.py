@@ -36,8 +36,6 @@ class Camera:
 
     @zoom.setter
     def zoom(self, value):
-        # self.x += (x - self.centerx) * (value - self.scale)
-        # self.y += (y - self.centery) * (value - self.scale)
         self.scale = value
 
     def to_home(self):

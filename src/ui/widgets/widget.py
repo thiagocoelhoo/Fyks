@@ -1,3 +1,5 @@
+from pyglet import gl
+
 from ui import elements
 
 
@@ -11,7 +13,10 @@ class Widget(elements.Element):
         self.background_color = (0, 0, 0, 1)
 
     def is_hover(self, x, y):
-        return (self.x < x < self.x + self.width and self.y < y < self.y + self.height)
+        left, bottom = self.global_position
+        right = left + self.width
+        top = bottom + self.height
+        return (left <= x <= right and bottom <= y <= top)
 
     def on_resize(self, w, h):
         self.resize(w, h)

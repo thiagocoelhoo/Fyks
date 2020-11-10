@@ -27,15 +27,15 @@ class Timeline(widgets.Layout):
     
     def init_ui(self):
         self.pause_bt = widgets.Iconbutton(
-            x=self.x, y=self.y,
+            x=0, y=2,
             w=16, h=16, 
             image=pause_icon, 
             command=ctx_wrapper.toggle_pause)
         self.pause_bt.max_width = 25
         
         self.rec_bt = widgets.Iconbutton(
-            x=0, y=0, 
-            w=0, h=0, 
+            x=0, y=2, 
+            w=16, h=16, 
             image=rec_icon, 
             command=self.toggle_rec)
         self.rec_bt.max_width = 25
@@ -44,6 +44,7 @@ class Timeline(widgets.Layout):
         self.slidebar.background_color = colors.TIMELINE_BACKGROUND_COLOR
         self.slidebar.inside_color = colors.TIMELINE_COLOR
         self.slidebar.value = 0
+        self.slidebar.max_height = 16
 
         self.clock_label = widgets.Label(0, 0, 0, 0)
         self.clock_label.lab.color = (220, 220, 220, 255)
@@ -52,7 +53,7 @@ class Timeline(widgets.Layout):
         self.add(self.pause_bt)
         self.add(self.rec_bt)
         self.add(self.slidebar)
-        self.add(self.clock_label)
+        # self.add(self.clock_label)
     
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.slidebar.pressed:
@@ -64,10 +65,10 @@ class Timeline(widgets.Layout):
         if symbol == key.G:
             if self.mode == REC:
                 self.mode = PAUSE
-                wrapper._running = False
+                ctx_wrapper._running = False
             else:
                 self.mode = REC
-                wrapper._running = True
+                ctx_wrapper._running = True
     
     def toggle_rec(self):
         if self.mode != REC:
@@ -88,7 +89,6 @@ class Timeline(widgets.Layout):
     
     def resize(self, width, height):
         super().resize(width, height)
-        self.slidebar.width = width - 40
     
     def update(self, dt):
         if self.mode == REC:

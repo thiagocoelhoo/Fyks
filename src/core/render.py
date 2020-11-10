@@ -27,32 +27,29 @@ class Render:
         }
     
     def draw_grid(self, x, y):
-        cam_x = int(self.camera.centerx) + x
-        cam_y = int(self.camera.centery) + y
         size = int(30 * self.camera.zoom)
         if size > 0:
             gl.glColor3f(*colors.CONTEXT_GRID_COLOR)
             gu.draw_grid(
                 self.camera.w,
-                self.camera.h,
-                cam_x,
-                cam_y,
-                size,
+                self.camera.h, 
+                int(self.camera.centerx),
+                int(self.camera.centery),
+                size, 
                 x,
                 y
             )
     
     def draw_axes(self, x, y):
-        center_x = self.camera.centerx + x
-        center_y = self.camera.centery + y
-
+        center_x = int(self.camera.centerx + x)
+        center_y = int(self.camera.centery + y)
         gl.glColor3f(1, 0, 0)
         gu.draw_arrow(x + 20, y + 40, 40, 0)
-        draw_lines((x, center_y, self.camera.w + x, center_y))
+        draw_lines((x, center_y, x + self.camera.w, center_y))
 
         gl.glColor3f(0, 1, 0)
         gu.draw_arrow(x + 20, y + 40, 0, 40)
-        draw_lines((center_x, y, center_x, self.camera.h + y))
+        draw_lines((center_x, y, center_x, y + self.camera.h))
 
     def draw_path(self, obj, offset_x, offset_y):
         gl.glColor4f(1, 0.76, 0.12, 0.8)

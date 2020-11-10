@@ -8,14 +8,14 @@ class Button(widgets.Widget):
     def __init__(self, x, y, w, h, parent=None, text='Button', command=None):
         super().__init__(x, y, w, h, parent)
         self.command = command or (lambda: print('Pressed'))
-        self.label = widgets.Label(0, 0, 0, 0)
+        self.label = widgets.Label(8, 6, 0, 0)
         self.label.text = text
         self.pressed = False
         self.padding = 8
         
         self.null_color = (0.8, 0.8, 0.9, 1)
         self.pressed_color = (0.7, 0.7, 0.9, 1)
-        self.border_color = (0.5, 0.5, 0.6, 1)
+        self.border_color = (0.5, 0.5, 0.6, 0.8)
         self.border_radius = 6
 
         self.color = self.null_color

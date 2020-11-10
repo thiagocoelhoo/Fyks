@@ -16,26 +16,20 @@ class Frame(widgets.Widget, elements.Frame):
         self.is_visible = not self.is_visible
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        pos_on_screen = self.global_position
         if self.hover:
             for widget in self.elements:
                 if widget.is_visible:
                     widget.on_mouse_scroll(
-                        x=x - pos_on_screen[0],
-                        y=y - pos_on_screen[1],
+                        x=x, y=y, 
                         scroll_x=scroll_x,
-                        scroll_y=scroll_y
-                    )
+                        scroll_y=scroll_y)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        pos_on_screen = self.global_position
         for widget in self.elements:
             if widget.is_visible:
                 widget.on_mouse_drag(
-                    x=x - pos_on_screen[0],
-                    y=y - pos_on_screen[1],
-                    dx=dx,
-                    dy=dy,
+                    x=x, y=y,
+                    dx=dx, dy=dy,
                     buttons=buttons,
                     modifiers=modifiers
                 )
@@ -48,14 +42,12 @@ class Frame(widgets.Widget, elements.Frame):
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
         pos_on_screen = self.global_position
-        local_mouse_x = x - pos_on_screen[0]
-        local_mouse_y = y - pos_on_screen[1]
 
         if self.hover:
             hover_widget = None
             for widget in self.elements:
                 if widget.is_visible:
-                    if widget.is_hover(x=local_mouse_x, y=local_mouse_y):
+                    if widget.is_hover(x, y):
                         hover_widget = widget
                         self.pressed = False
                     else:
@@ -63,9 +55,8 @@ class Frame(widgets.Widget, elements.Frame):
             
             if not self.pressed:
                 hover_widget.on_mouse_press(
-                    x=local_mouse_x,
-                    y=local_mouse_y,
-                    button=button,
+                    x=x, y=y,
+                    button=button, 
                     modifiers=modifiers)
     
     def on_mouse_release(self, x, y, button, modifiers):
@@ -84,27 +75,26 @@ class Frame(widgets.Widget, elements.Frame):
                 widget.update(dt)
 
     def draw_widgets(self, offset_x, offset_y):
-        x = offset_x + self.x
-        y = offset_y + self.y
         for widget in self.elements:
             if widget.is_visible:
-                widget.draw(offset_x=x, offset_y=y)
+                widget.draw(offset_x, offset_y)
 
     def draw(self, offset_x=0, offset_y=0):
+        x = self.x + offset_x
+        y = self.y + offset_y
         gl.glColor4f(*self.color)
         gu.draw_rounded_rect(
-            self.x + offset_x,
-            self.y + offset_y,
-            self.width, self.height,
+            x, y,
+            self.width,
+            self.height,
             self.border_radius,
             gl.GL_POLYGON
         )
         gl.glColor4f(*self.border_color)
         gu.draw_rounded_rect(
-            self.x + offset_x,
-            self.y + offset_y,
-            self.width, self.height,
+            x, y,
+            self.width,
+            self.height,
             self.border_radius,
-            gl.GL_LINE_LOOP
-        )
-        self.draw_widgets(offset_x, offset_y)
+            gl.GL_LINE_LOOP)
+        self.draw_widgets(x, y)
