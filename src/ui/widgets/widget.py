@@ -40,7 +40,14 @@ class Widget(elements.Element):
     def on_key_press(self, symbol, modifiers):
         pass
 
-    def draw(self, offset_x=0, offset_y=0):
+    def update_viewport(self):
+        x, y = self.global_position
+        gl.glViewport(x, y, self.width, self.height)
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glLoadIdentity()
+        gl.glOrtho(0, self.width, 0, self.height, 0, 1)
+    
+    def draw(self):
         pass
 
     def update(self, dt):

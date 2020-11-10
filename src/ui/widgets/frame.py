@@ -74,17 +74,17 @@ class Frame(widgets.Widget, elements.Frame):
             if widget.is_visible:
                 widget.update(dt)
 
-    def draw_widgets(self, offset_x, offset_y):
+    def draw_widgets(self):
         for widget in self.elements:
             if widget.is_visible:
-                widget.draw(offset_x, offset_y)
+                widget.draw()
 
-    def draw(self, offset_x=0, offset_y=0):
-        x = self.x + offset_x
-        y = self.y + offset_y
+    def draw(self):
+        self.update_viewport()
+
         gl.glColor4f(*self.color)
         gu.draw_rounded_rect(
-            x, y,
+            0, 0,
             self.width,
             self.height,
             self.border_radius,
@@ -92,9 +92,9 @@ class Frame(widgets.Widget, elements.Frame):
         )
         gl.glColor4f(*self.border_color)
         gu.draw_rounded_rect(
-            x, y,
+            0, 0,
             self.width,
             self.height,
             self.border_radius,
             gl.GL_LINE_LOOP)
-        self.draw_widgets(x, y)
+        self.draw_widgets()

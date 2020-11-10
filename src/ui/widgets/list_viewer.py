@@ -38,16 +38,16 @@ class Item(widgets.Widget):
     def on_mouse_release(self, x, y, button, modifiers):
         pass
 
-    def draw(self, offset_x, offset_y):
-        x = self.x + offset_x
-        y = self.y + offset_y
+    def draw(self):
+        x = self.x
+        y = self.y
         
         if self.pressed:
             gl.glColor4f(*self.background_color)
             gu.draw_rect(x, y, self.w, self.h, gl.GL_QUADS)
         
-        self.label.draw(x, y)
-        self.close_bt.draw(x, y)
+        self.label.draw()
+        self.close_bt.draw()
 
 
 class List(widgets.Frame):
@@ -75,12 +75,12 @@ class List(widgets.Frame):
     def remove_item(self, item):
         self.children.remove(item)
     
-    def draw(self, offset_x, offset_y):
-        x = self.x + offset_x
-        y = self.y + offset_y
+    def draw(self):
+        x = self.x
+        y = self.y
         
         gl.glColor4f(*self.background_color)
         gu.draw_rect(x, y, self.w, self.h, gl.GL_QUADS)
 
         for item in self.children:
-            item.draw(x, y)
+            item.draw()

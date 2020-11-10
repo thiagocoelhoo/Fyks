@@ -10,6 +10,24 @@ class Label(widgets.Widget):
             font_name='verdana', 
             color=(80, 80, 80, 240))
         self.font_size = 14
+
+    @property
+    def x(self):
+        return self._x
+    
+    @x.setter
+    def x(self, value):
+        self._x = value
+        self.lab.x = value
+
+    @property
+    def y(self):
+        return self._y
+    
+    @y.setter
+    def y(self, value):
+        self._y = value
+        self.lab.y = value
     
     @property
     def text(self):
@@ -27,7 +45,5 @@ class Label(widgets.Widget):
     def font_size(self, value):
         self.lab.font_size = value * 3/4
     
-    def draw(self, offset_x=0, offset_y=0):
-        self.lab.x = self.x + offset_x
-        self.lab.y = self.y + offset_y
+    def draw(self):
         self.lab.draw()

@@ -9,21 +9,26 @@ import graphicutils as gu
 
 class Entry(widgets.Widget):
     def __init__(self, x, y, w, h, parent=None):
-        super().__init__(x, y, w, h, parent)
-        self.text_label = widgets.Label(8, 6, 0, 0)
+        super().__init__(0, 0, w, h, parent)
+        self.text_label = widgets.Label(0, 0, 0, 0)
         self.text_label.text = 'Entry'
         self.text_label.lab.color = (61, 85, 94, 255)
         self.mask = string.printable
-
+        self.padding = 8
         self.border_radius = 6
+        
+        self.x = x
+        self.y = y
     
     @elements.Element.x.setter
     def x(self, value):
         self._x = value
-    
+        self.text_label.x = value + self.padding
+
     @elements.Element.y.setter
     def y(self, value):
         self._y = value
+        self.text_label.y = value + self.padding
 
     @property
     def text(self):
@@ -42,14 +47,14 @@ class Entry(widgets.Widget):
             elif symbol == key.BACKSPACE:
                 self.text = self.text[:-1]
     
-    def draw(self, offset_x, offset_y):
+    def draw(self):
         if self.pressed:
             gl.glColor4f(0.95, 0.95, 0.95, 1)
         else:
             gl.glColor4f(0.8, 0.8, 0.8, 1)
         
-        x = self.x + offset_x
-        y = self.y + offset_y
+        x = self.x
+        y = self.y
     
         gu.draw_rounded_rect(
             x, y,
@@ -67,4 +72,4 @@ class Entry(widgets.Widget):
             gl.GL_LINE_LOOP
         )
         
-        self.text_label.draw(x, y)
+        self.text_label.draw()

@@ -100,13 +100,11 @@ class Subwindow(widgets.Frame):
         for widget in self.frame.elements:
             widget.pressed = False
     
-    def draw(self, offset_x=0, offset_y=0):
-        x = self.x + offset_x
-        y = self.y + offset_y
-        self.bar.draw(x, y)
-        self.frame.draw(x, y)
+    def draw(self):
+        self.bar.draw()
+        self.frame.draw()
         gl.glColor4f(*self.border_color)
-        gu.draw_rect(x, y, self.width, self.height, gl.GL_LINE_LOOP)
+        gu.draw_rect(1, 0, self.width, self.height-2, gl.GL_LINE_LOOP)
 
     def update(self, dt):
         self.frame.update(dt)

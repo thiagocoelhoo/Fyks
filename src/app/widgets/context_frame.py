@@ -48,29 +48,45 @@ class ContextFrame(widgets.Frame):
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
         if self.pressed:
-            self.context_wrapper.on_mouse_press(x, y, button, modifiers)
+            self.context_wrapper.on_mouse_press(
+                x=x - self.global_position[0], 
+                y=y - self.global_position[1], 
+                button=button, 
+                modifiers=modifiers)
             
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
         if self.pressed:
-            self.context_wrapper.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+            self.context_wrapper.on_mouse_drag(
+                x=x - self.global_position[0], 
+                y=y - self.global_position[1],
+                dx=dx, dy=dy, 
+                buttons=buttons, 
+                modifiers=modifiers)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
         self.mouse_handler.on_mouse_release(x, y, button, modifiers)
-        self.context_wrapper.on_mouse_release(x, y, button, modifiers)
+        self.context_wrapper.on_mouse_release(
+            x=x - self.global_position[0], 
+            y=y - self.global_position[1], 
+            button=button, 
+            modifiers=modifiers)
     
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_handler.on_mouse_motion(x, y, dx, dy)
-        pass
     
     def on_double_click(self, x, y, button, modifiers):
-        self.context_wrapper.select_closer(x - 60, y)
+        self.context_wrapper.select_closer(
+            x=x - self.global_position[0], 
+            y=y - self.global_position[1])
+
         if self.context_wrapper.selected:
             self.edit_object_window.show()
             self.edit_object_window.x = x
             self.edit_object_window.top = y
-            self.edit_object_window.set_target(self.context_wrapper.selected[0])
+            target = self.context_wrapper.selected[0]
+            self.edit_object_window.set_target(target)
 
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
@@ -99,14 +115,12 @@ class ContextFrame(widgets.Frame):
         self.context_wrapper.resize(int(width), int(height))
         self.timeline.resize(width - 20, 20)
 
-    def draw(self, offset_x=0, offset_y=0):
-        x = self.x + offset_x
-        y = self.y + offset_y
-        
+    def draw(self):
+        self.update_viewport()
         gl.glColor3f(*app.colors.CONTEXT_BACKGROUND_COLOR)
-        gu.draw_rect(x, y, self.width, self.height, gl.GL_QUADS)
-        self.context_wrapper.draw(x, y)
-        self.draw_widgets(x, y)
+        gu.draw_rect(0, 0, self.width, self.height, gl.GL_QUADS)
+        self.context_wrapper.draw()
+        self.draw_widgets()
 
     def update(self, dt):
         super().update(dt)
