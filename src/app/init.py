@@ -1,3 +1,5 @@
+import pyglet
+
 import app
 from ui import widgets
 
@@ -17,10 +19,23 @@ def init_ui(width, height):
     )
     menu.add_button('Editar', None)
     menu.add_button('Ajuda', None)
-
+    menu.z_index = 1
+    
     content_layout = widgets.Layout(0, 0, 0, 0, orientation='vertical')
-    toolbox = app.widgets.ToolBox()
     context_frame = app.widgets.ContextFrame(0, 0, 0, 0)
+    
+    toolbox = app.widgets.ToolBox()
+
+    toolbox.add_tool_bt(
+        icon=pyglet.image.load('assets/add_object_icon.png'), 
+        command=context_frame.add_object_window.show)
+    toolbox.add_tool_bt(
+        icon=pyglet.image.load('assets/add_force_icon.png'), 
+        command=context_frame.add_object_window.show)
+    toolbox.add_tool_bt(
+        icon=pyglet.image.load('assets/ruler_icon.png'), 
+        command=context_frame.add_object_window.show)
+
     content_layout.add(toolbox)
     content_layout.add(context_frame)
 
