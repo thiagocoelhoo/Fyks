@@ -11,6 +11,7 @@ class Widget(elements.Element):
         self.is_visible = True
         self.border_radius = 4
         self.background_color = (0, 0, 0, 1)
+        self.z_index = 0
 
     def is_hover(self, x, y):
         left, bottom = self.global_position

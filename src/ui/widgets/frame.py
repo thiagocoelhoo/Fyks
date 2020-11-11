@@ -75,7 +75,7 @@ class Frame(widgets.Widget, elements.Frame):
                 widget.update(dt)
 
     def draw_widgets(self):
-        for widget in self.elements:
+        for widget in sorted(self.elements, key=lambda i: i.z_index):
             if widget.is_visible:
                 widget.draw()
 
