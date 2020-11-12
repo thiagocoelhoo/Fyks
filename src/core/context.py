@@ -1,14 +1,6 @@
 import numpy as np
 from core.rigidbody import RigidBody
-
-
-class Singleton(type):
-    _instance = None
-
-    def __call__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__call__(*args, **kwargs)
-        return cls._instance
+from utils.singleton import Singleton
 
 
 class Context(metaclass=Singleton):

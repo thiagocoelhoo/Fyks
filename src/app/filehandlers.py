@@ -1,6 +1,6 @@
 import pickle
 
-from context.context_wrapper import ContextWrapper
+from core.context_wrapper import ContextWrapper
 
 ctx_wrapper = ContextWrapper()
 

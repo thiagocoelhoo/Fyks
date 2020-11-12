@@ -7,10 +7,7 @@ from core.camera import Camera
 from core.render import Render, draw_circle
 from .context import Context
 from core.rigidbody import RigidBody
-
-SELECT_MODE = 0
-MOVE_MODE = 1
-RULER_MODE = 2
+from constants import *
 
 
 class ContextWrapper(Context):
@@ -46,8 +43,7 @@ class ContextWrapper(Context):
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if buttons == mouse.RIGHT:
-            self._camera.x -= dx
-            self._camera.y -= dy
+            self.move_camera(-dx, -dy)
         elif buttons == mouse.LEFT:
             if self.mode == SELECT_MODE:
                 if self._selection:
@@ -68,7 +64,7 @@ class ContextWrapper(Context):
             self._camera.zoom += 0.05
     
     def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
+        if self.mode == SELECT_MODE and button == mouse.LEFT:
             self._selection = [x, y, x, y]
 
     def on_mouse_release(self, x, y, button, modifiers):
@@ -78,10 +74,6 @@ class ContextWrapper(Context):
                 self._selection = []
             elif self.mode == MOVE_MODE:
                 self.mode = SELECT_MODE
-    
-    def on_key_press(self, symbol, modifiers):
-        if symbol == key.M:
-            self.mode = MOVE_MODE
     
     def resize(self, w, h):
         self._camera.w = w
@@ -102,7 +94,6 @@ class ContextWrapper(Context):
                     self._selected.append(obj)
     
     def add_object(self, *args, **kwargs):
-        kwargs['charge'] = np.random.random() * 500 - 250
         obj = RigidBody(*args, **kwargs)
         self._objects.append(obj)
     
@@ -133,8 +124,9 @@ class ContextWrapper(Context):
     def select_area(self, x1, y1, x2, y2):
         pass
 
-    def move_camera(self, x, y):
-        pass
+    def move_camera(self, dx, dy):
+        self._camera.x += dx
+        self._camera.y += dy
 
     def move_selected(self, x, y):
         for obj in self.selected:
@@ -146,14 +138,14 @@ class ContextWrapper(Context):
     def camera_to_home(self):
         self._camera.to_home()
 
-    def draw_overlayer(self, x, y):
+    def draw_overlayer(self):
         zoom = self._camera.zoom
 
         for obj in self._selected:
             if self._camera.collide(obj):
                 pos = obj.position * zoom
-                objx = int(pos[0] + self._camera.centerx) + x
-                objy = int(pos[1] + self._camera.centery) + y
+                objx = int(pos[0] + self._camera.centerx)
+                objy = int(pos[1] + self._camera.centery)
                 draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
         
         if self._selection:
@@ -161,22 +153,16 @@ class ContextWrapper(Context):
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
 
             gl.glColor4f(0.1, 0.2, 0.3, 0.2)
-            pyglet.graphics.draw(
-                4, gl.GL_QUADS,
-                ('v2f', rect)
-            )
+            pyglet.graphics.draw(4, gl.GL_QUADS, ('v2f', rect))
             gl.glColor4f(0.3, 0.5, 0.8, 0.5)
-            pyglet.graphics.draw(
-                4, gl.GL_LINE_LOOP,
-                ('v2f', rect)
-            )
+            pyglet.graphics.draw(4, gl.GL_LINE_LOOP, ('v2f', rect))
     
-    def draw(self, x, y):
-        self._render.draw_grid(x, y)
-        self._render.draw_axes(x, y)
+    def draw(self):
+        self._render.draw_grid()
+        self._render.draw_axes()
         for obj in self._objects:
-            self._render.draw_object(obj, offset_x=x, offset_y=y)
-        self.draw_overlayer(x, y)
+            self._render.draw_object(obj)
+        self.draw_overlayer()
     
     def update(self, dt):
         if self._running:

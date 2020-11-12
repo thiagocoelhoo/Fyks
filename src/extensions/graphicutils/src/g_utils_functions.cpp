@@ -21,8 +21,8 @@ void draw_circle(const int x, const int y, const int r, const int vertices, cons
 void draw_grid(const int width, const int height, const int cam_x, const int cam_y, const int size, const int pos_x, const int pos_y)
 {   
     // center of the grid coords
-    int origin_x = MIN(width, cam_x);   
-    int origin_y = MIN(height, cam_y);  
+    int origin_x = MIN(width, cam_x);
+    int origin_y = MIN(height, cam_y);
     int top = pos_y + height;
     int right = pos_x + width;
 
@@ -30,15 +30,15 @@ void draw_grid(const int width, const int height, const int cam_x, const int cam
     for (int i = -cam_x / size; i < (width - origin_x) / size; ++i)
     {
         int x = i * size + cam_x;
-        glVertex2d(x, pos_y);
-        glVertex2d(x, top);
+        glVertex2d(x + pos_x, pos_y);
+        glVertex2d(x + pos_x, top);
     }
     
     for (int i = -cam_y / size; i < (height - origin_y) / size; ++i)
     {
         int y = i * size + cam_y;
-        glVertex2d(pos_x, y);
-        glVertex2d(right, y);
+        glVertex2d(pos_x, y + pos_y);
+        glVertex2d(right, y + pos_y);
     }
     glEnd();
 }

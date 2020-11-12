@@ -2,16 +2,11 @@ import pyglet
 from pyglet import gl
 from pyglet.window import key
 
-from ui.widgets.widget import Widget
-from ui.widgets.slidebar import Slidebar
-from ui.widgets.iconbutton import Iconbutton
-from app import colors
 import graphicutils as gu
-from context.context_wrapper import ContextWrapper
-
-REC = 1
-PLAY = 2
-PAUSE = 3
+from app import colors
+from ui import widgets
+from core.context_wrapper import ContextWrapper
+from constants import *
 
 pause_icon = pyglet.image.load('assets/pause_icon.png')
 play_icon = pyglet.image.load('assets/play_icon.png')
@@ -20,42 +15,46 @@ rec_icon = pyglet.image.load('assets/rec_icon.png')
 ctx_wrapper = ContextWrapper(0, 0)
 
 
-class Timeline(Widget):
-    def __init__(self, x, y, parent):
-        super().__init__(x, y, w=parent.w - 104, h=24, parent=parent)
+class Timeline(widgets.Layout):
+    def __init__(self, x, y):
+        super().__init__(x=x, y=y, w=0, h=24, orientation="vertical")
         self.mode = PAUSE
-
-        self.pause_bt = Iconbutton(
-            x=x, y=y, w=16, h=16, 
+        self.frame = 0
+        self.frames = []
+        self.clock = 0
+        self.init_ui()
+        self.color = (0, 0, 0, 0)
+    
+    def init_ui(self):
+        self.pause_bt = widgets.Iconbutton(
+            x=0, y=2,
+            w=16, h=16, 
             image=pause_icon, 
-            parent=self,
-            command=ctx_wrapper.toggle_pause
-        )
-        self.rec_bt = Iconbutton(
-            x=x + 20, y=y, w=16, h=16,
-            image=rec_icon,
-            parent=self,
-            command=self.toggle_rec
-        )
-        self.slidebar = Slidebar(x + 40, y, parent.w - 118, 16, self)
+            command=ctx_wrapper.toggle_pause)
+        self.pause_bt.max_width = 25
+        
+        self.rec_bt = widgets.Iconbutton(
+            x=0, y=2, 
+            w=16, h=16, 
+            image=rec_icon, 
+            command=self.toggle_rec)
+        self.rec_bt.max_width = 25
+        
+        self.slidebar = widgets.Slidebar(x=0, y=0, w=0, h=16)
         self.slidebar.background_color = colors.TIMELINE_BACKGROUND_COLOR
         self.slidebar.inside_color = colors.TIMELINE_COLOR
         self.slidebar.value = 0
-        self.frame = 0
-        self.frames = []
+        self.slidebar.max_height = 16
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        super().on_mouse_press(x, y, button, modifiers)
-        self.slidebar.on_mouse_press(x, y, button, modifiers)
-        self.pause_bt.on_mouse_press(x, y, button, modifiers)
-        self.rec_bt.on_mouse_press(x, y, button, modifiers)
+        self.clock_label = widgets.Label(0, 0, 0, 0)
+        self.clock_label.lab.color = (220, 220, 220, 255)
+        self.clock_label.text = "00:00"
+
+        self.add(self.pause_bt)
+        self.add(self.rec_bt)
+        self.add(self.slidebar)
+        # self.add(self.clock_label)
     
-    def on_mouse_release(self, x, y, button, modifiers):
-        super().on_mouse_release(x, y, button, modifiers)
-        self.slidebar.on_mouse_release(x, y, button, modifiers)
-        self.pause_bt.on_mouse_release(x, y, button, modifiers)
-        self.rec_bt.on_mouse_release(x, y, button, modifiers)
-
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.slidebar.pressed:
             self.slidebar.on_mouse_drag(x, y, dx, dy, buttons, modifiers)
@@ -66,10 +65,10 @@ class Timeline(Widget):
         if symbol == key.G:
             if self.mode == REC:
                 self.mode = PAUSE
-                wrapper._running = False
+                ctx_wrapper._running = False
             else:
                 self.mode = REC
-                wrapper._running = True
+                ctx_wrapper._running = True
     
     def toggle_rec(self):
         if self.mode != REC:
@@ -88,18 +87,22 @@ class Timeline(Widget):
     def write_frame(self):
         self.frames.append(tuple(ctx_wrapper._get_objects_data()))
     
+    def resize(self, width, height):
+        super().resize(width, height)
+    
     def update(self, dt):
         if self.mode == REC:
             self.write_frame()
-        elif self.mode == PLAY and self.frames:
+        elif self.mode == PLAY and self.frames:         
             self.slidebar.value = self.frame / len(self.frames)
-    
-    def draw(self, offset_x, offset_y):
+        
+        if ctx_wrapper._running:
+            self.clock += dt
+            m = int(self.clock // 60)
+            s = int(self.clock % 60)
+            self.clock_label.text = f'{m:>02}:{s:>02}'
+            
         if ctx_wrapper._running:
             self.pause_bt.image = pause_icon
         else:
             self.pause_bt.image = play_icon
-        
-        self.slidebar.draw(offset_x, offset_y)
-        self.pause_bt.draw(offset_x, offset_y)
-        self.rec_bt.draw(offset_x, offset_y)

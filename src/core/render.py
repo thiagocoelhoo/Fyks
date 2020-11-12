@@ -26,49 +26,46 @@ class Render:
             'rigidbodybordercolor': (0, 1, 0, 0.5),
         }
     
-    def draw_grid(self, x, y):
-        cam_x = int(self.camera.centerx) + x
-        cam_y = int(self.camera.centery) + y
+    def draw_grid(self):
         size = int(30 * self.camera.zoom)
         if size > 0:
             gl.glColor3f(*colors.CONTEXT_GRID_COLOR)
             gu.draw_grid(
                 self.camera.w,
-                self.camera.h,
-                cam_x,
-                cam_y,
-                size,
-                x,
-                y
+                self.camera.h, 
+                int(self.camera.centerx),
+                int(self.camera.centery),
+                size, 
+                0,
+                0
             )
     
-    def draw_axes(self, x, y):
-        center_x = self.camera.centerx + x
-        center_y = self.camera.centery + y
-
+    def draw_axes(self):
+        center_x = int(self.camera.centerx)
+        center_y = int(self.camera.centery)
         gl.glColor3f(1, 0, 0)
-        gu.draw_arrow(x + 20, y + 40, 40, 0)
-        draw_lines((x, center_y, self.camera.w + x, center_y))
+        gu.draw_arrow(20, 40, 40, 0)
+        draw_lines((0, center_y, self.camera.w, center_y))
 
         gl.glColor3f(0, 1, 0)
-        gu.draw_arrow(x + 20, y + 40, 0, 40)
-        draw_lines((center_x, y, center_x, self.camera.h + y))
+        gu.draw_arrow(20, 40, 0, 40)
+        draw_lines((center_x, 0, center_x, self.camera.h))
 
-    def draw_path(self, obj, offset_x, offset_y):
+    def draw_path(self, obj):
         gl.glColor4f(1, 0.76, 0.12, 0.8)
         gl.glBegin(gl.GL_LINES)
         for x, y in obj.path[:100]:
-            pos_x = int(x * self.camera.zoom + self.camera.centerx) + offset_x
-            pos_y = int(y * self.camera.zoom + self.camera.centery) + offset_y
+            pos_x = int(x * self.camera.zoom + self.camera.centerx)
+            pos_y = int(y * self.camera.zoom + self.camera.centery)
             gl.glVertex2d(pos_x, pos_y)
         gl.glEnd()
     
-    def draw_object(self, obj, offset_x, offset_y):
-        self.draw_path(obj, offset_x, offset_y)
+    def draw_object(self, obj):
+        self.draw_path(obj)
         
         pos = (obj.position * self.camera.zoom)
-        x = int(pos[0] + offset_x + self.camera.centerx)
-        y = int(pos[1] + offset_y + self.camera.centery)
+        x = int(pos[0] + self.camera.centerx)
+        y = int(pos[1] + self.camera.centery)
 
         gl.glColor4f(0, 1, 0, 1)
         for force in obj.forces:

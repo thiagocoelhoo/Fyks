@@ -1,10 +1,10 @@
-from ui import List, Subwindow, Button
-from context import context_wrapper
+from ui import widgets
+from core import context_wrapper
 
 wrapper = context_wrapper.ContextWrapper(0, 0)
 
 
-class EditForcesWindow(Subwindow):
+class EditForcesWindow(widgets.Subwindow):
     def __init__(self, parent):
         super().__init__(
             x=0, y=0, 
@@ -16,15 +16,15 @@ class EditForcesWindow(Subwindow):
 
     def init_ui(self):
         super().init_ui()
-        self.list_viewer = List(12, 54, 262, 84, self.frame)
-        self.close_bt = Button(
+        self.list_viewer = widgets.List(12, 54, 262, 84, self.frame)
+        self.close_bt = widgets.Button(
             x=12, y=12,
             w=100, h=30,
             parent=self.frame,
             command=self.close,
             text='Fechar'
         )
-        self.add_bt = Button(
+        self.add_bt = widgets.Button(
             x=124, y=12,
             w=150, h=30,
             parent=self.frame,

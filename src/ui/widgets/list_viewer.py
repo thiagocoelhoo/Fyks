@@ -1,13 +1,13 @@
 import pyglet
 from pyglet import gl
 
+from ui import widgets
 import graphicutils as gu
-from ui import Frame, Widget, Iconbutton, Label
 
 close_icon = pyglet.image.load('assets/close_icon.png')
 
 
-class Item(Widget):
+class Item(widgets.Widget):
     def __init__(self, x, y, w, h, parent, text):
         super().__init__(x, y, w, h, parent)
         self.background_color = (1, 1, 1, 0.2)
@@ -38,19 +38,19 @@ class Item(Widget):
     def on_mouse_release(self, x, y, button, modifiers):
         pass
 
-    def draw(self, offset_x, offset_y):
-        x = self.x + offset_x
-        y = self.y + offset_y
+    def draw(self):
+        x = self.x
+        y = self.y
         
         if self.pressed:
             gl.glColor4f(*self.background_color)
             gu.draw_rect(x, y, self.w, self.h, gl.GL_QUADS)
         
-        self.label.draw(x, y)
-        self.close_bt.draw(x, y)
+        self.label.draw()
+        self.close_bt.draw()
 
 
-class List(Frame):
+class List(widgets.Frame):
     def __init__(self, x, y, w, h, parent):
         super().__init__(x, y, w, h, parent)
         self.background_color = (1, 1, 1, 0.05)
@@ -75,12 +75,12 @@ class List(Frame):
     def remove_item(self, item):
         self.children.remove(item)
     
-    def draw(self, offset_x, offset_y):
-        x = self.x + offset_x
-        y = self.y + offset_y
+    def draw(self):
+        x = self.x
+        y = self.y
         
         gl.glColor4f(*self.background_color)
         gu.draw_rect(x, y, self.w, self.h, gl.GL_QUADS)
 
         for item in self.children:
-            item.draw(x, y)
+            item.draw()

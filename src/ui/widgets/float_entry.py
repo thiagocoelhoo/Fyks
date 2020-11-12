@@ -1,11 +1,11 @@
 import string
 
-from ui import Entry
+from ui import widgets
 
 
-class FloatEntry(Entry):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class FloatEntry(widgets.Entry):
+    def __init__(self, x, y, w, h, parent=None):
+        super().__init__(x, y, w, h, parent)
         self.mask = string.digits + '.-'
         self.text = '0.0'
     

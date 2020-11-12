@@ -1,7 +1,5 @@
-import pyglet
 from pyglet import gl
 
-import graphicutils as gu
 from .button import Button
 from .widget import Widget
 
@@ -17,6 +15,22 @@ class Iconbutton(Button):
         self.pressed_color = (0, 0, 0, 0.3)
         self.color = self.null_color
 
-    def draw(self, offset_x=0, offset_y=0):
+    @property
+    def x(self):
+        return self._x
+    
+    @x.setter
+    def x(self, value):
+        self._x = value
+
+    @property
+    def y(self):
+        return self._y
+    
+    @y.setter
+    def y(self, value):
+        self._y = value
+    
+    def draw(self):
         gl.glColor4f(*self.color)
-        self.image.blit(self.x + offset_x, self.y + offset_y)
+        self.image.blit(self.x, self.y)
