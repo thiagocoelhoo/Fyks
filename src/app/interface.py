@@ -43,10 +43,10 @@ class Interface(widgets.Frame):
             command=context_frame.add_object_window.show)
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/add_force_icon.png'), 
-            command=context_frame.add_object_window.show)
+            command=context_frame.add_force_window.show)
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/ruler_icon.png'), 
-            command=context_frame.add_object_window.show)
+            command=None)
 
         # Add
         content_layout.add(toolbox)
