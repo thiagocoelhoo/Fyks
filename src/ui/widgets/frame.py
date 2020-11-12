@@ -11,9 +11,6 @@ class Frame(widgets.Widget, elements.Frame):
         self.border_color = (0, 0, 0, 0)
         self.border_radius = 0
         self.elements = []
-
-    def toggle_is_visible(self):
-        self.is_visible = not self.is_visible
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.hover:
@@ -41,7 +38,6 @@ class Frame(widgets.Widget, elements.Frame):
 
     def on_mouse_press(self, x, y, button, modifiers):
         super().on_mouse_press(x, y, button, modifiers)
-        pos_on_screen = self.global_position
 
         if self.hover:
             hover_widget = None
@@ -88,8 +84,8 @@ class Frame(widgets.Widget, elements.Frame):
             self.width,
             self.height,
             self.border_radius,
-            gl.GL_POLYGON
-        )
+            gl.GL_POLYGON)
+        
         gl.glColor4f(*self.border_color)
         gu.draw_rounded_rect(
             0, 0,
@@ -97,4 +93,5 @@ class Frame(widgets.Widget, elements.Frame):
             self.height,
             self.border_radius,
             gl.GL_LINE_LOOP)
+        
         self.draw_widgets()

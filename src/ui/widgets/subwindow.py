@@ -103,8 +103,9 @@ class Subwindow(widgets.Frame):
     def draw(self):
         self.bar.draw()
         self.frame.draw()
+        self.update_viewport()
         gl.glColor4f(*self.border_color)
-        gu.draw_rect(1, 0, self.width, self.height-2, gl.GL_LINE_LOOP)
+        gu.draw_rect(1, 0, self.width-1, self.height-1, gl.GL_LINE_LOOP)
 
     def update(self, dt):
         self.frame.update(dt)

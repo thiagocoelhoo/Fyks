@@ -1,7 +1,7 @@
 #! ./venv/bin/python
 import pyglet
 
-from app.init import init_ui
+from app.interface import Interface
 
 display = pyglet.canvas.Display()
 screen = display.get_default_screen()
@@ -19,23 +19,20 @@ def main():
         caption="Fyks",
         resizable=True, 
         vsync=False)
-    
+    window.set_minimum_size(400, 300)
     pyglet.gl.glEnable(pyglet.gl.GL_BLEND)
     pyglet.gl.glBlendFunc(pyglet.gl.GL_SRC_ALPHA, pyglet.gl.GL_ONE_MINUS_SRC_ALPHA)
 
-    frame = init_ui(WIDTH, HEIGHT)
-    window.push_handlers(frame)
-
+    interface = Interface(WIDTH, HEIGHT)
+    window.push_handlers(interface)
 
     @window.event
     def on_draw():
         window.clear()
-        frame.draw()
-
+        interface.draw()
 
     def update(dt):
-        frame.update(DELTA)
-
+        interface.update(DELTA)
 
     pyglet.clock.schedule_interval(update, DELTA)
     pyglet.app.run()

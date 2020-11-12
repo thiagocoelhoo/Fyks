@@ -11,12 +11,12 @@ class Layout(Frame):
         cursor = 0
         for i, element in enumerate(self.elements):
             if self.orientation == 'horizontal':
-                h = (height - cursor) / (len(self.elements) - i)
-                element.resize(width, h)
+                h = (self.height - cursor) / (len(self.elements) - i)
+                element.resize(self.width, h)
                 element.top = cursor + element.margin_top
                 cursor = element.top + element.height
             elif self.orientation == 'vertical':
-                w = (width - cursor) / (len(self.elements) - i)
-                element.resize(w, height)
+                w = (self.width - cursor) / (len(self.elements) - i)
+                element.resize(w, self.height)
                 element.left = cursor + element.margin_left
                 cursor = element.left + element.width
