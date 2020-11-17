@@ -1,7 +1,6 @@
 import pyglet
 from pyglet import gl
 
-# from ui import Frame, Button, Iconbutton, Label, Widget
 from ui import widgets
 import graphicutils as gu
 from app import colors

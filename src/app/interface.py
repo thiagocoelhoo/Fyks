@@ -54,7 +54,6 @@ class Interface(widgets.Frame):
             icon=pyglet.image.load('assets/add_force_icon.png'), 
             command=context_frame.add_force_window.show)
         
-
         # Add
         content_layout.add(toolbox)
         content_layout.add(context_frame)

@@ -105,7 +105,7 @@ class ContextFrame(widgets.Frame):
         elif command == 'add force':
             self.add_force_window.show()
         elif command == 'move object':
-            self.context_wrapper.mode = MOVE_MODE
+            self.context_wrapper.set_move_mode()
         elif command == 'home':
             self.context_wrapper.camera_to_home()
         elif command == 'delete':
