@@ -11,8 +11,8 @@ class Iconbutton(Button):
         self.command = command or (lambda: print('Pressed'))
         self.pressed = False
 
-        self.null_color = (1, 1, 1, 0.5)
-        self.pressed_color = (0, 0, 0, 0.3)
+        self.null_color = (1, 1, 1, 0.9)
+        self.pressed_color = (0, 0, 0, 0.8)
         self.color = self.null_color
 
     @property
