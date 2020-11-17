@@ -32,14 +32,17 @@ class ContextFrame(widgets.Frame):
         self.edit_object_window = app.widgets.EditRigidbodyWindow(self)
         self.edit_forces_window = app.widgets.EditForcesWindow(self)
         
+        self.add_object_window.x = 4
+        self.add_object_window.y = 4
+
+        self.add_force_window.x = 4
+        self.add_force_window.y = 4
+
         self.add(self.timeline)
         self.add(self.add_object_window)
         self.add(self.add_force_window)
         self.add(self.edit_object_window)
         self.add(self.edit_forces_window)
-
-    def set_ruler_mode(self):
-        self.context_wrapper.mode = RULER_MODE
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
