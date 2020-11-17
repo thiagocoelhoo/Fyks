@@ -1,7 +1,8 @@
+import math
+
 import pyglet
 import pyglet.gl as gl
 from pyglet.window import mouse, key
-import numpy as np
 
 from core.camera import Camera
 from core.render import Render, draw_circle
@@ -18,6 +19,7 @@ class ContextWrapper(Context):
         self._running = False
         self._selection = []
         self._selected = []
+        self._ruler = None
         self._mode = None
         self._frames = []
 
@@ -53,8 +55,10 @@ class ContextWrapper(Context):
             elif self.mode == MOVE_MODE:
                 self.move_selected(
                     x=dx / self._camera.zoom, 
-                    y=dy / self._camera.zoom
-                )
+                    y=dy / self._camera.zoom)
+            elif self.mode == RULER_MODE:
+                self._ruler[2] = x
+                self._ruler[3] = y
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if scroll_y < 0:
@@ -64,16 +68,20 @@ class ContextWrapper(Context):
             self._camera.zoom += 0.05
     
     def on_mouse_press(self, x, y, button, modifiers):
-        if self.mode == SELECT_MODE and button == mouse.LEFT:
-            self._selection = [x, y, x, y]
+        if button == mouse.LEFT:
+            if self.mode == SELECT_MODE:
+                self._selection = [x, y, x, y]
+            elif self.mode == RULER_MODE:
+                self._ruler = [x, y, x, y]
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.LEFT:
             if self.mode == SELECT_MODE:
                 self.select()
                 self._selection = []
-            elif self.mode == MOVE_MODE:
-                self.mode = SELECT_MODE
+            else:
+                # self.mode = SELECT_MODE
+                pass
     
     def resize(self, w, h):
         self._camera.w = w
@@ -138,6 +146,15 @@ class ContextWrapper(Context):
     def camera_to_home(self):
         self._camera.to_home()
 
+    def set_select_mode(self):
+        self.mode = SELECT_MODE
+
+    def set_move_mode(self):
+        self.mode = MOVE_MODE
+
+    def set_ruler_mode(self):
+        self.mode = RULER_MODE
+
     def draw_overlayer(self):
         zoom = self._camera.zoom
 
@@ -156,7 +173,11 @@ class ContextWrapper(Context):
             pyglet.graphics.draw(4, gl.GL_QUADS, ('v2f', rect))
             gl.glColor4f(0.3, 0.5, 0.8, 0.5)
             pyglet.graphics.draw(4, gl.GL_LINE_LOOP, ('v2f', rect))
-    
+        
+        elif self._ruler is not None:
+            gl.glColor4f(0.27, 0.92, 0.2, 0.8)
+            pyglet.graphics.draw(2, gl.GL_LINES, ('v2f', self._ruler))
+
     def draw(self):
         self._render.draw_grid()
         self._render.draw_axes()
