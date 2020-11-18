@@ -58,8 +58,10 @@ class ContextWrapper(Context):
                     x=dx / self._camera.zoom, 
                     y=dy / self._camera.zoom)
             elif self.mode == RULER_MODE:
-                self._ruler[2] = x
-                self._ruler[3] = y
+                x_ = (x - self._camera.centerx) / self._camera.zoom
+                y_ = (y - self._camera.centery) / self._camera.zoom
+                self._ruler[2] = x_
+                self._ruler[3] = y_
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if scroll_y < 0:
@@ -73,7 +75,9 @@ class ContextWrapper(Context):
             if self.mode == SELECT_MODE:
                 self._selection = [x, y, x, y]
             elif self.mode == RULER_MODE:
-                self._ruler = [x, y, x, y]
+                x_ = (x - self._camera.centerx) / self._camera.zoom
+                y_ = (y - self._camera.centery) / self._camera.zoom
+                self._ruler = [x_, y_, x_, y_]
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.LEFT:
@@ -178,24 +182,29 @@ class ContextWrapper(Context):
         
         # Draw ruler
         if self.mode == RULER_MODE and self._ruler is not None:
-            x1, y1, x2, y2 = self._ruler
+            x1 = int(self._ruler[0] * self._camera.zoom + self._camera.centerx)
+            y1 = int(self._ruler[1] * self._camera.zoom + self._camera.centery)
+            x2 = int(self._ruler[2] * self._camera.zoom + self._camera.centerx)
+            y2 = int(self._ruler[3] * self._camera.zoom + self._camera.centery)
+            
             gl.glColor4f(0.27, 0.63, 0.78, 0.8)
             gu.draw_dashed_line(x2, y2, x1, y1)
             gu.draw_circle(x1, y1, 4, 8, gl.GL_LINE_LOOP)
             gu.draw_circle(x2, y2, 4, 8, gl.GL_LINE_LOOP)
 
+            size = math.hypot(
+                self._ruler[2] - self._ruler[0],
+                self._ruler[3] - self._ruler[1])
+            
             label = pyglet.text.Label(
                 font_name='verdana', 
                 font_size=12,
                 color=(255, 255, 255, 200))
-            w = x2 - x1
-            h = y2 - y1
-            dist = math.hypot(w, h)
-            label.text = f'{dist:.2f}m'
+            label.text = f'{size:.2f}m'
             label.x = (x1 + x2) // 2
             label.y = (y1 + y2) // 2
             label.draw()
-        
+
     def draw(self):
         self._render.draw_grid()
         self._render.draw_axes()
