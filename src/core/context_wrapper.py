@@ -97,7 +97,7 @@ class ContextWrapper(Context):
             zoom = self._camera.zoom
             for obj in self._objects:
                 pos = obj.position * zoom
-                x = pos[0] + self._camera.centerx + 60
+                x = pos[0] + self._camera.centerx
                 y = pos[1] + self._camera.centery
                 if x1 < x < x2 and y1 < y < y2:
                     self._selected.append(obj)
