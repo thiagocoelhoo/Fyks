@@ -4,6 +4,7 @@ import pyglet
 import pyglet.gl as gl
 from pyglet.window import mouse, key
 
+import graphicutils as gu
 from core.camera import Camera
 from core.render import Render, draw_circle
 from .context import Context
@@ -165,7 +166,8 @@ class ContextWrapper(Context):
                 objy = int(pos[1] + self._camera.centery)
                 draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
         
-        if self._selection:
+        # Draw selection area
+        if self.mode == SELECT_MODE and self._selection:
             x1, y1, x2, y2 = self._selection
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
 
@@ -174,10 +176,26 @@ class ContextWrapper(Context):
             gl.glColor4f(0.3, 0.5, 0.8, 0.5)
             pyglet.graphics.draw(4, gl.GL_LINE_LOOP, ('v2f', rect))
         
-        elif self._ruler is not None:
-            gl.glColor4f(0.27, 0.92, 0.2, 0.8)
-            pyglet.graphics.draw(2, gl.GL_LINES, ('v2f', self._ruler))
+        # Draw ruler
+        if self.mode == RULER_MODE and self._ruler is not None:
+            x1, y1, x2, y2 = self._ruler
+            gl.glColor4f(0.27, 0.63, 0.78, 0.8)
+            gu.draw_dashed_line(x2, y2, x1, y1)
+            gu.draw_circle(x1, y1, 4, 8, gl.GL_LINE_LOOP)
+            gu.draw_circle(x2, y2, 4, 8, gl.GL_LINE_LOOP)
 
+            label = pyglet.text.Label(
+                font_name='verdana', 
+                font_size=12,
+                color=(255, 255, 255, 200))
+            w = x2 - x1
+            h = y2 - y1
+            dist = math.hypot(w, h)
+            label.text = f'{dist:.2f}m'
+            label.x = (x1 + x2) // 2
+            label.y = (y1 + y2) // 2
+            label.draw()
+        
     def draw(self):
         self._render.draw_grid()
         self._render.draw_axes()
