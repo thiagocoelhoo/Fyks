@@ -11,6 +11,7 @@ PyDoc_STRVAR(graphicutils_draw_grid_doc, "draw_grid(width, height, cam_x, cam_y,
 PyDoc_STRVAR(graphicutils_draw_arrow_doc, "draw_arrow(x, y, w, h)");
 PyDoc_STRVAR(graphicutils_draw_rounded_rect_doc, "draw_rounded_rect(x, y, w, h, border_radius, mode)");
 PyDoc_STRVAR(graphicutils_draw_rect_doc, "draw_rect(x, y, w, h, mode)");
+PyDoc_STRVAR(graphicutils_draw_dashed_line_doc, "draw_dashed_line(x1, y1, x2, y2)");
 
 PyObject* graphicutils_draw_circle(PyObject *self, PyObject *args) {
     int x;
@@ -89,6 +90,18 @@ PyObject* graphicutils_draw_rect(PyObject* self, PyObject* args) {
     Py_RETURN_NONE;
 }
 
+PyObject* graphicutils_draw_dashed_line(PyObject* self, PyObject* args) {
+    int x1, y1;
+    int x2, y2;
+
+    if (!PyArg_ParseTuple(args, "iiii", &x1, &y1, &x2, &y2)) {
+        return NULL;
+    }
+
+    draw_dashed_line(x1, y1, x2, y2);
+    Py_RETURN_NONE;
+}
+
 /*
  * List of functions to add to graphicutils in exec_graphicutils().
  */
@@ -98,6 +111,7 @@ static PyMethodDef graphicutils_functions[] = {
     { "draw_arrow", (PyCFunction)graphicutils_draw_arrow, METH_VARARGS, graphicutils_draw_arrow_doc},
     { "draw_rounded_rect", (PyCFunction)graphicutils_draw_rounded_rect, METH_VARARGS, graphicutils_draw_rounded_rect_doc},
     { "draw_rect", (PyCFunction)graphicutils_draw_rect, METH_VARARGS, graphicutils_draw_rect_doc},
+    { "draw_dashed_line", (PyCFunction)graphicutils_draw_dashed_line, METH_VARARGS, graphicutils_draw_dashed_line_doc},
     { NULL, NULL, 0, NULL } /* marks end of array */
 };
 

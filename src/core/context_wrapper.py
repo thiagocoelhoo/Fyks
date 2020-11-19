@@ -1,8 +1,10 @@
+import math
+
 import pyglet
 import pyglet.gl as gl
 from pyglet.window import mouse, key
-import numpy as np
 
+import graphicutils as gu
 from core.camera import Camera
 from core.render import Render, draw_circle
 from .context import Context
@@ -18,6 +20,7 @@ class ContextWrapper(Context):
         self._running = False
         self._selection = []
         self._selected = []
+        self._ruler = None
         self._mode = None
         self._frames = []
 
@@ -53,8 +56,12 @@ class ContextWrapper(Context):
             elif self.mode == MOVE_MODE:
                 self.move_selected(
                     x=dx / self._camera.zoom, 
-                    y=dy / self._camera.zoom
-                )
+                    y=dy / self._camera.zoom)
+            elif self.mode == RULER_MODE:
+                x_ = (x - self._camera.centerx) / self._camera.zoom
+                y_ = (y - self._camera.centery) / self._camera.zoom
+                self._ruler[2] = x_
+                self._ruler[3] = y_
     
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if scroll_y < 0:
@@ -64,16 +71,22 @@ class ContextWrapper(Context):
             self._camera.zoom += 0.05
     
     def on_mouse_press(self, x, y, button, modifiers):
-        if self.mode == SELECT_MODE and button == mouse.LEFT:
-            self._selection = [x, y, x, y]
+        if button == mouse.LEFT:
+            if self.mode == SELECT_MODE:
+                self._selection = [x, y, x, y]
+            elif self.mode == RULER_MODE:
+                x_ = (x - self._camera.centerx) / self._camera.zoom
+                y_ = (y - self._camera.centery) / self._camera.zoom
+                self._ruler = [x_, y_, x_, y_]
 
     def on_mouse_release(self, x, y, button, modifiers):
         if button == mouse.LEFT:
             if self.mode == SELECT_MODE:
                 self.select()
                 self._selection = []
-            elif self.mode == MOVE_MODE:
-                self.mode = SELECT_MODE
+            else:
+                # self.mode = SELECT_MODE
+                pass
     
     def resize(self, w, h):
         self._camera.w = w
@@ -88,7 +101,7 @@ class ContextWrapper(Context):
             zoom = self._camera.zoom
             for obj in self._objects:
                 pos = obj.position * zoom
-                x = pos[0] + self._camera.centerx + 60
+                x = pos[0] + self._camera.centerx
                 y = pos[1] + self._camera.centery
                 if x1 < x < x2 and y1 < y < y2:
                     self._selected.append(obj)
@@ -138,6 +151,15 @@ class ContextWrapper(Context):
     def camera_to_home(self):
         self._camera.to_home()
 
+    def set_select_mode(self):
+        self.mode = SELECT_MODE
+
+    def set_move_mode(self):
+        self.mode = MOVE_MODE
+
+    def set_ruler_mode(self):
+        self.mode = RULER_MODE
+
     def draw_overlayer(self):
         zoom = self._camera.zoom
 
@@ -148,7 +170,8 @@ class ContextWrapper(Context):
                 objy = int(pos[1] + self._camera.centery)
                 draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
         
-        if self._selection:
+        # Draw selection area
+        if self.mode == SELECT_MODE and self._selection:
             x1, y1, x2, y2 = self._selection
             rect = (x1, y1, x2, y1, x2, y2, x1, y2)
 
@@ -156,7 +179,32 @@ class ContextWrapper(Context):
             pyglet.graphics.draw(4, gl.GL_QUADS, ('v2f', rect))
             gl.glColor4f(0.3, 0.5, 0.8, 0.5)
             pyglet.graphics.draw(4, gl.GL_LINE_LOOP, ('v2f', rect))
-    
+        
+        # Draw ruler
+        if self.mode == RULER_MODE and self._ruler is not None:
+            x1 = int(self._ruler[0] * self._camera.zoom + self._camera.centerx)
+            y1 = int(self._ruler[1] * self._camera.zoom + self._camera.centery)
+            x2 = int(self._ruler[2] * self._camera.zoom + self._camera.centerx)
+            y2 = int(self._ruler[3] * self._camera.zoom + self._camera.centery)
+            
+            gl.glColor4f(0.27, 0.63, 0.78, 0.8)
+            gu.draw_dashed_line(x2, y2, x1, y1)
+            gu.draw_circle(x1, y1, 4, 8, gl.GL_LINE_LOOP)
+            gu.draw_circle(x2, y2, 4, 8, gl.GL_LINE_LOOP)
+
+            size = math.hypot(
+                self._ruler[2] - self._ruler[0],
+                self._ruler[3] - self._ruler[1])
+            
+            label = pyglet.text.Label(
+                font_name='verdana', 
+                font_size=12,
+                color=(255, 255, 255, 200))
+            label.text = f'{size:.2f}m'
+            label.x = (x1 + x2) // 2
+            label.y = (y1 + y2) // 2
+            label.draw()
+
     def draw(self):
         self._render.draw_grid()
         self._render.draw_axes()

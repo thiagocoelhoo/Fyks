@@ -1,11 +1,14 @@
 #define _USE_MATH_DEFINES
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
+#include <iostream>
 #include <math.h>
 
 #include <GL/glut.h>
 
 #include "g_utils_functions.h"
+
+using namespace std;
 
 void draw_circle(const int x, const int y, const int r, const int vertices, const int mode)
 {
@@ -92,5 +95,23 @@ void draw_rect(const int x, const int y, const int w, const int h, const int mod
     glVertex2d(x + w, y);
     glVertex2d(x + w, y + h);
     glVertex2d(x, y + h);
+    glEnd();
+}
+
+void draw_dashed_line(const int x1, const int y1, const int x2, const int y2) {
+    float width = x2 - x1;
+    float height = y2 - y1;
+    float size = hypot(width, height);
+    float cos = width / size;
+    float sin = height / size;
+    float x = x1;
+    float y = y1;
+
+    glBegin(GL_LINES);
+    for (int i = 0; i < size / 8; i++) {
+        glVertex2f(x, y);
+        x += cos*8;
+        y += sin*8;
+    }
     glEnd();
 }

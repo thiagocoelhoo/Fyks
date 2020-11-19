@@ -11,3 +11,5 @@ void draw_arc(const int x, const int y, const int r, const float start_ang, cons
 void draw_rounded_rect(const int x, const int y, const int w, const int h, const int border_radius, const int mode);
 
 void draw_rect(const int x, const int y, const int w, const int h, const int mode);
+
+void draw_dashed_line(const int x1, const int y1, const int x2, const int y2);

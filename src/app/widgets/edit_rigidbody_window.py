@@ -35,11 +35,11 @@ class EditRigidbodyWindow(widgets.Subwindow):
         label_vel_y.text = 'Velocidade Y:'
         self.entry_vel_y = widgets.FloatEntry(0, 0, 130, 30)
         
-        self.edit_forces_bt = widgets.Button(12, 12, 110, 32, 
-            text='Forças', command=self.close)
-        self.edit_forces_bt.label.lab.color = (50, 50, 50, 255)
+        # self.edit_forces_bt = widgets.Button(12, 12, 110, 32, 
+        #     text='Forças', command=self.close)
+        # self.edit_forces_bt.label.lab.color = (50, 50, 50, 255)
         
-        self.submit_bt = widgets.Button(134, 12, 110, 32, 
+        self.submit_bt = widgets.Button(12, 12, 110, 32, 
             text='Confirmar', command=self.close)
         self.submit_bt.label.lab.color = (50, 50, 50, 255)
 
@@ -51,7 +51,7 @@ class EditRigidbodyWindow(widgets.Subwindow):
         self.frame.add(self.entry_vel_x)
         self.frame.add(label_vel_y)
         self.frame.add(self.entry_vel_y)
-        self.frame.add(self.edit_forces_bt)
+        # self.frame.add(self.edit_forces_bt)
         self.frame.add(self.submit_bt)
 
         label_pos_x.top = 8
@@ -73,7 +73,6 @@ class EditRigidbodyWindow(widgets.Subwindow):
         label_vel_y.x = 162
         self.entry_vel_y.top = 102
         self.entry_vel_y.x = 162
-
 
         self.is_visible = False
     
