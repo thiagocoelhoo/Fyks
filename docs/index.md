@@ -12,5 +12,5 @@ Binários para windows(64bit): <a href="https://github.com/Rabbithy/Fyks/release
 
 
 # Contatos e redes sociais
-E-mail: fyks.simulator@gmail.com
+E-mail: fyks.simulator@gmail.com<br>
 Instagram: https://www.instagram.com/fyks.simulator/
