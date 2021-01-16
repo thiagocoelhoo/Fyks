@@ -11,7 +11,7 @@ def check_updates(current_version):
     data =  json.loads(response.read().decode('utf-8'))
     release = data[0]
     version = re.search('(\d+\.?)+', release['tag_name'])
-    return version > current_version
+    return version.group() > current_version
 
 
 def update(current_version):
