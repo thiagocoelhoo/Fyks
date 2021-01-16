@@ -2,6 +2,7 @@ import pyglet
 
 import app
 from ui import widgets
+import update
 
 
 class Interface(widgets.Frame):
@@ -26,6 +27,10 @@ class Interface(widgets.Frame):
         )
         menu.add_button('Editar', None)
         menu.add_button('Ajuda', None)
+        if update.check_updates(app.__version__):
+            menu.add_button('Atualizar', update.update)
+            button = menu.elements[-1]
+            button.label.lab.color = (255, 50, 10, 255)
         menu.z_index = 1
         
         overlayer = widgets.Layer(0, 0, self.width, self.height)
