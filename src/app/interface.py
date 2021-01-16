@@ -27,7 +27,7 @@ class Interface(widgets.Frame):
         )
         menu.add_button('Editar', None)
         menu.add_button('Ajuda', None)
-        if update.check_updates(app.__version__):
+        if update.check_updates():
             menu.add_button('Atualizar', update.update)
             button = menu.elements[-1]
             button.label.lab.color = (255, 50, 10, 255)
