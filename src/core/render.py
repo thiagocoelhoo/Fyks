@@ -13,7 +13,7 @@ def draw_lines(vertices):
     )
 
 
-def draw_circle(x, y, r, color, mode=gl.GL_LINE_LOOP, resolution=16):
+def draw_circle(x, y, r, color, mode=gl.GL_LINE_LOOP, resolution=32):
     gl.glColor4f(*color)
     gu.draw_circle(int(x), int(y), int(r), resolution, mode)
 
