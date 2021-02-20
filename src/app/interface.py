@@ -2,7 +2,7 @@ import pyglet
 
 import app
 from ui import widgets
-import update
+from app import update
 
 
 class Interface(widgets.Frame):
