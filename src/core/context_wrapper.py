@@ -6,7 +6,6 @@ from pyglet.window import mouse, key
 
 import graphicutils as gu
 from core.camera import Camera
-from core.render import Render, draw_circle
 from .context import Context
 from core.rigidbody import RigidBody
 from constants import *
@@ -16,7 +15,6 @@ class ContextWrapper:
     def __init__(self, w, h):
         self._context = Context()
         self._camera = Camera(0, 0, w, h)
-        self._render = Render(self._camera)
         self._running = False
         self._selection = []
         self._selected = []
@@ -36,12 +34,6 @@ class ContextWrapper:
     
     @mode.setter
     def mode(self, value):
-        if value == SELECT_MODE:
-            self._render.colors['rigidbodycolor'] = (0.2, 1, 0.2, 0.1)
-            self._render.colors['rigidbodybordercolor'] = (0, 1, 0, 0.5)
-        elif value == MOVE_MODE:
-            self._render.colors['rigidbodycolor'] = (1, 0.8, 0.3, 0.5)
-            self._render.colors['rigidbodybordercolor'] = (1, 0.5, 0.2, 1)
         self._mode = value
 
     def resize(self, w, h):
