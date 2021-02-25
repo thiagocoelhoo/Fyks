@@ -12,9 +12,9 @@ from core.rigidbody import RigidBody
 from constants import *
 
 
-class ContextWrapper(Context):
+class ContextWrapper:
     def __init__(self, w, h):
-        super().__init__()
+        self._context = Context()
         self._camera = Camera(0, 0, w, h)
         self._render = Render(self._camera)
         self._running = False
