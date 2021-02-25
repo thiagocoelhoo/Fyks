@@ -115,58 +115,6 @@ class ContextWrapper(Context):
 
     def set_ruler_mode(self):
         self.mode = RULER_MODE
-
-    def draw_overlayer(self):
-        zoom = self._camera.zoom
-
-        for obj in self._selected:
-            if self._camera.collide(obj):
-                pos = obj.position * zoom
-                objx = int(pos[0] + self._camera.centerx)
-                objy = int(pos[1] + self._camera.centery)
-                draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
-        
-        # Draw selection area
-        if self.mode == SELECT_MODE and self._selection:
-            x1, y1, x2, y2 = self._selection
-            rect = (x1, y1, x2, y1, x2, y2, x1, y2)
-
-            gl.glColor4f(0.1, 0.2, 0.3, 0.2)
-            pyglet.graphics.draw(4, gl.GL_QUADS, ('v2f', rect))
-            gl.glColor4f(0.3, 0.5, 0.8, 0.5)
-            pyglet.graphics.draw(4, gl.GL_LINE_LOOP, ('v2f', rect))
-        
-        # Draw ruler
-        if self.mode == RULER_MODE and self._ruler is not None:
-            x1 = int(self._ruler[0] * self._camera.zoom + self._camera.centerx)
-            y1 = int(self._ruler[1] * self._camera.zoom + self._camera.centery)
-            x2 = int(self._ruler[2] * self._camera.zoom + self._camera.centerx)
-            y2 = int(self._ruler[3] * self._camera.zoom + self._camera.centery)
-            
-            gl.glColor4f(0.27, 0.63, 0.78, 0.8)
-            gu.draw_dashed_line(x2, y2, x1, y1)
-            gu.draw_circle(x1, y1, 4, 8, gl.GL_LINE_LOOP)
-            gu.draw_circle(x2, y2, 4, 8, gl.GL_LINE_LOOP)
-
-            size = math.hypot(
-                self._ruler[2] - self._ruler[0],
-                self._ruler[3] - self._ruler[1])
-            
-            label = pyglet.text.Label(
-                font_name='verdana', 
-                font_size=12,
-                color=(255, 255, 255, 200))
-            label.text = f'{size:.2f}m'
-            label.x = (x1 + x2) // 2
-            label.y = (y1 + y2) // 2
-            label.draw()
-
-    def draw(self):
-        self._render.draw_grid()
-        self._render.draw_axes()
-        for obj in self._objects:
-            self._render.draw_object(obj)
-        self.draw_overlayer()
     
     def update(self, dt):
         if self._running:
