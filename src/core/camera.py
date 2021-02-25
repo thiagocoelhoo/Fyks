@@ -1,4 +1,6 @@
 class Camera:
+    _active = None
+
     def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
@@ -38,6 +40,13 @@ class Camera:
     def zoom(self, value):
         self.scale = value
 
+    @classmethod
+    def get_active(cls):
+        return cls._active
+    
+    def set_active(self):
+        self.__class__._active = self
+    
     def to_home(self):
         self.zoom = 1
         self.x = 0
