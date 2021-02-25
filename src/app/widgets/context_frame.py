@@ -3,6 +3,7 @@ from pyglet import gl
 
 import app
 import graphicutils as gu
+from core import draw
 from ui import widgets, elements, handlers
 from core.context_wrapper import ContextWrapper
 from constants import *
@@ -46,19 +47,25 @@ class ContextFrame(widgets.Frame):
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
-            self.context_wrapper.on_mouse_scroll(x, y, scroll_x, scroll_y)
+            if scroll_y > 0:
+                self.context_wrapper.zoom_out(x, y)
+            elif scroll_y < 0:
+                self.context_wrapper.zoom_in(x, y)
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
+        """
         if self.pressed:
             self.context_wrapper.on_mouse_press(
                 x=x - self.global_position[0], 
                 y=y - self.global_position[1], 
                 button=button, 
                 modifiers=modifiers)
+        """
             
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+        """
         if self.pressed:
             self.context_wrapper.on_mouse_drag(
                 x=x - self.global_position[0], 
@@ -66,31 +73,36 @@ class ContextFrame(widgets.Frame):
                 dx=dx, dy=dy, 
                 buttons=buttons, 
                 modifiers=modifiers)
+        """
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
         self.mouse_handler.on_mouse_release(x, y, button, modifiers)
+        """
         self.context_wrapper.on_mouse_release(
             x=x - self.global_position[0], 
             y=y - self.global_position[1], 
             button=button, 
             modifiers=modifiers)
+        """
     
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_handler.on_mouse_motion(x, y, dx, dy)
     
     def on_double_click(self, x, y, button, modifiers):
+        """
         self.context_wrapper.select_closer(
             x=x - self.global_position[0], 
             y=y - self.global_position[1])
-
+        
         if self.context_wrapper.selected:
             self.edit_object_window.show()
             self.edit_object_window.x = x
             self.edit_object_window.top = y
             target = self.context_wrapper.selected[0]
             self.edit_object_window.set_target(target)
-
+        """
+    
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
         command = None
@@ -104,6 +116,7 @@ class ContextFrame(widgets.Frame):
             self.add_object_window.show()
         elif command == 'add force':
             self.add_force_window.show()
+        """
         elif command == 'move object':
             self.context_wrapper.set_move_mode()
         elif command == 'home':
@@ -112,17 +125,25 @@ class ContextFrame(widgets.Frame):
             self.context_wrapper.delete_selected()
         elif command == 'pause':
             self.context_wrapper.toggle_pause()
+        """
     
     def resize(self, width, height):
         super().resize(width, height)
         self.context_wrapper.resize(int(width), int(height))
         self.timeline.resize(width - 20, 20)
 
+    def draw_ctx(self):
+        draw.draw_grid()
+        draw.draw_axes()
+        for obj in self.context_wrapper.get_objects():
+            draw.draw_object(obj)
+    
     def draw(self):
         self.update_viewport()
         gl.glColor3f(*app.colors.CONTEXT_BACKGROUND_COLOR)
         gu.draw_rect(0, 0, self.width, self.height, gl.GL_QUADS)
-        self.context_wrapper.draw()
+        
+        self.draw_ctx()
         self.draw_widgets()
 
     def update(self, dt):
