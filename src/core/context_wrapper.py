@@ -1,10 +1,3 @@
-import math
-
-import pyglet
-import pyglet.gl as gl
-from pyglet.window import mouse, key
-
-import graphicutils as gu
 from core.camera import Camera
 from .context import Context
 from core.rigidbody import RigidBody
