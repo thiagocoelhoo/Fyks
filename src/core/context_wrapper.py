@@ -1,10 +1,11 @@
-from core.camera import Camera
 from .context import Context
+from utils import singleton
+from core.camera import Camera
 from core.rigidbody import RigidBody
 from constants import *
 
 
-class ContextWrapper:
+class ContextWrapper(metaclass=singleton.Singleton):
     def __init__(self, w, h):
         self._context = Context()
         self._camera = Camera(0, 0, w, h)
