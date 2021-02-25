@@ -9,6 +9,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def __init__(self, w, h):
         self._context = Context()
         self._camera = Camera(0, 0, w, h)
+        self._camera.set_active()
         self._running = False
         self._selected = []
         self._ruler = None
@@ -35,7 +36,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
 
     def add_object(self, *args, **kwargs):
         obj = RigidBody(*args, **kwargs)
-        self._objects.append(obj)
+        self._context._objects.append(obj)
     
     def delete_selected(self):
         while self._selected:
@@ -96,6 +97,9 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def set_ruler_mode(self):
         self.mode = RULER_MODE
     
+    def get_objects(self):
+        return self._context._objects
+
     def update(self, dt):
         if self._running:
             self._update(dt)
