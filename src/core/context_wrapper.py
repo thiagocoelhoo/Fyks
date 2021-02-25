@@ -44,50 +44,6 @@ class ContextWrapper(Context):
             self._render.colors['rigidbodybordercolor'] = (1, 0.5, 0.2, 1)
         self._mode = value
 
-    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-        if buttons == mouse.RIGHT:
-            self.move_camera(-dx, -dy)
-        elif buttons == mouse.LEFT:
-            if self.mode == SELECT_MODE:
-                if self._selection:
-                    self._selection[2] = x
-                    self._selection[3] = y
-                    self.select()
-            elif self.mode == MOVE_MODE:
-                self.move_selected(
-                    x=dx / self._camera.zoom, 
-                    y=dy / self._camera.zoom)
-            elif self.mode == RULER_MODE:
-                x_ = (x - self._camera.centerx) / self._camera.zoom
-                y_ = (y - self._camera.centery) / self._camera.zoom
-                self._ruler[2] = x_
-                self._ruler[3] = y_
-    
-    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
-        if scroll_y < 0:
-            if self._camera.zoom > 0.05:
-                self._camera.zoom -= 0.05
-        elif scroll_y > 0:
-            self._camera.zoom += 0.05
-    
-    def on_mouse_press(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
-            if self.mode == SELECT_MODE:
-                self._selection = [x, y, x, y]
-            elif self.mode == RULER_MODE:
-                x_ = (x - self._camera.centerx) / self._camera.zoom
-                y_ = (y - self._camera.centery) / self._camera.zoom
-                self._ruler = [x_, y_, x_, y_]
-
-    def on_mouse_release(self, x, y, button, modifiers):
-        if button == mouse.LEFT:
-            if self.mode == SELECT_MODE:
-                self.select()
-                self._selection = []
-            else:
-                # self.mode = SELECT_MODE
-                pass
-    
     def resize(self, w, h):
         self._camera.w = w
         self._camera.h = h
