@@ -48,9 +48,9 @@ class ContextFrame(widgets.Frame):
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
             if scroll_y > 0:
-                self.context_wrapper.zoom_out(x, y)
-            elif scroll_y < 0:
                 self.context_wrapper.zoom_in(x, y)
+            elif scroll_y < 0:
+                self.context_wrapper.zoom_out(x, y)
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
@@ -65,15 +65,8 @@ class ContextFrame(widgets.Frame):
             
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
-        """
         if self.pressed:
-            self.context_wrapper.on_mouse_drag(
-                x=x - self.global_position[0], 
-                y=y - self.global_position[1],
-                dx=dx, dy=dy, 
-                buttons=buttons, 
-                modifiers=modifiers)
-        """
+            self.context_wrapper.move_camera(-dx,-dy)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
