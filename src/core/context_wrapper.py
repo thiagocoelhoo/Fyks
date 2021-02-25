@@ -9,7 +9,6 @@ class ContextWrapper:
         self._context = Context()
         self._camera = Camera(0, 0, w, h)
         self._running = False
-        self._selection = []
         self._selected = []
         self._ruler = None
         self._mode = None
