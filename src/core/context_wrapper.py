@@ -32,20 +32,6 @@ class ContextWrapper:
         self._camera.w = w
         self._camera.h = h
 
-    def select(self):
-        if self._selection:
-            self._selected.clear()
-            x1, y1, x2, y2 = self._selection
-            x1, x2 = sorted((x1, x2))
-            y1, y2 = sorted((y1, y2))
-            zoom = self._camera.zoom
-            for obj in self._objects:
-                pos = obj.position * zoom
-                x = pos[0] + self._camera.centerx
-                y = pos[1] + self._camera.centery
-                if x1 < x < x2 and y1 < y < y2:
-                    self._selected.append(obj)
-    
     def add_object(self, *args, **kwargs):
         obj = RigidBody(*args, **kwargs)
         self._objects.append(obj)
@@ -75,7 +61,16 @@ class ContextWrapper:
             self._selected = [closer]
     
     def select_area(self, x1, y1, x2, y2):
-        pass
+        x1, x2 = sorted((x1, x2))
+        y1, y2 = sorted((y1, y2))
+        
+        zoom = self._camera.zoom
+        for obj in self._objects:
+            pos = obj.position * zoom
+            x = pos[0] + self._camera.centerx
+            y = pos[1] + self._camera.centery
+            if x1 < x < x2 and y1 < y < y2:
+                self._selected.append(obj)
 
     def move_camera(self, dx, dy):
         self._camera.x += dx
