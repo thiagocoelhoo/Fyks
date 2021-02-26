@@ -124,7 +124,25 @@ class ContextFrame(widgets.Frame):
         super().resize(width, height)
         self.context_wrapper.resize(int(width), int(height))
         self.timeline.resize(width - 20, 20)
+    
+    def draw_overlayer(self):
+        zoom = self._camera.zoom
 
+        for obj in self._selected:
+            if self._camera.collide(obj):
+                pos = obj.position * zoom
+                objx = int(pos[0] + self._camera.centerx)
+                objy = int(pos[1] + self._camera.centery)
+                draw.draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
+        
+        # Draw selection area
+        if self.mode == SELECT_MODE and self._selection:
+            pass
+        
+        # Draw ruler
+        if self.mode == RULER_MODE and self._ruler is not None:
+            draw.draw_ruler(0, 0, 0, 0)
+    
     def draw_ctx(self):
         draw.draw_grid()
         draw.draw_axes()
