@@ -11,25 +11,27 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._camera = Camera(0, 0, w, h)
         self._camera.set_active()
         self._running = False
+        self._mode = SELECT_MODE
         self._selected = []
         self._ruler = None
-        self._mode = None
         self._frames = []
 
-        self.mode = SELECT_MODE
-    
     @property
     def selected(self):
         return tuple(self._selected)
     
-    @property
-    def mode(self):
+    def get_mode(self):
         return self._mode
-    
-    @mode.setter
-    def mode(self, value):
-        self._mode = value
 
+    def set_select_mode(self):
+        self._mode = SELECT_MODE
+
+    def set_move_mode(self):
+        self._mode = MOVE_MODE
+
+    def set_ruler_mode(self):
+        self._mode = RULER_MODE
+    
     def resize(self, w, h):
         self._camera.w = w
         self._camera.h = h
@@ -95,15 +97,6 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def camera_to_home(self):
         self._camera.to_home()
 
-    def set_select_mode(self):
-        self.mode = SELECT_MODE
-
-    def set_move_mode(self):
-        self.mode = MOVE_MODE
-
-    def set_ruler_mode(self):
-        self.mode = RULER_MODE
-    
     def get_objects(self):
         return self._context._objects
 
