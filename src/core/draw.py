@@ -1,3 +1,5 @@
+import math
+
 import pyglet
 from pyglet import gl
 
@@ -99,3 +101,35 @@ def draw_object(obj):
         20 * camera.zoom,
         colors.RIGIDBODY_BORDER_COLOR,
     )
+
+
+def draw_ruler(x1, y1, x2, y2):
+    camera = Camera.get_active()
+
+    vx1 = int(x1 * camera.zoom + camera.centerx)
+    vy1 = int(y1 * camera.zoom + camera.centery)
+    vx2 = int(x2 * camera.zoom + camera.centerx)
+    vy2 = int(y2 * camera.zoom + camera.centery)
+    
+    gl.glColor4f(0.27, 0.63, 0.78, 0.8)
+    gu.draw_dashed_line(vx2, vy2, vx1, vy1)
+    gu.draw_circle(vx1, vy1, 4, 8, gl.GL_LINE_LOOP)
+    gu.draw_circle(vx2, vy2, 4, 8, gl.GL_LINE_LOOP)
+
+    size = math.hypot(x2 - x1, y2 - y1)
+    label = pyglet.text.Label(
+        font_name='verdana', 
+        font_size=12,
+        color=(255, 255, 255, 200))
+    label.text = f'{size:.2f}m'
+    label.x = (x1 + x2) // 2
+    label.y = (y1 + y2) // 2
+    label.draw()
+
+
+def draw_select_area(x1, y1, x2, y2):
+    rect = (x1, y1, x2, y1, x2, y2, x1, y2)
+    gl.glColor4f(0.1, 0.2, 0.3, 0.2)
+    pyglet.graphics.draw(4, gl.GL_QUADS, ('v2f', rect))
+    gl.glColor4f(0.3, 0.5, 0.8, 0.5)
+    pyglet.graphics.draw(4, gl.GL_LINE_LOOP, ('v2f', rect))
