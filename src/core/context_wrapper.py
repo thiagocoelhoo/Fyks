@@ -23,6 +23,9 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def get_camera(self):
         return self._camera
     
+    def get_selected(self):
+        return self._selected
+    
     def get_mode(self):
         return self._mode
 
