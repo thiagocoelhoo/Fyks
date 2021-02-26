@@ -14,6 +14,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._mode = SELECT_MODE
         self._selected = []
         self._ruler = None
+        self._selection_area = None
         self._frames = []
 
     def get_camera(self):
@@ -66,17 +67,19 @@ class ContextWrapper(metaclass=singleton.Singleton):
         if closer is not None:
             self._selected = [closer]
     
-    def select_area(self, x1, y1, x2, y2):
-        x1, x2 = sorted((x1, x2))
-        y1, y2 = sorted((y1, y2))
-        
-        zoom = self._camera.zoom
-        for obj in self._objects:
-            pos = obj.position * zoom
-            x = pos[0] + self._camera.centerx
-            y = pos[1] + self._camera.centery
-            if x1 < x < x2 and y1 < y < y2:
-                self._selected.append(obj)
+    def select_area(self):
+        if self._selection_area is not None:
+            x1, y1, x2, y2 = self._selection_area
+            x1, x2 = sorted((x1, x2))
+            y1, y2 = sorted((y1, y2))
+            
+            zoom = self._camera.zoom
+            for obj in self._objects:
+                pos = obj.position * zoom
+                x = pos[0] + self._camera.centerx
+                y = pos[1] + self._camera.centery
+                if x1 < x < x2 and y1 < y < y2:
+                    self._selected.append(obj)
 
     def zoom_out(self, x, y):
         if self._camera.zoom > 0.05:
