@@ -109,7 +109,6 @@ class ContextFrame(widgets.Frame):
             self.add_object_window.show()
         elif command == 'add force':
             self.add_force_window.show()
-        """
         elif command == 'move object':
             self.context_wrapper.set_move_mode()
         elif command == 'home':
@@ -118,7 +117,6 @@ class ContextFrame(widgets.Frame):
             self.context_wrapper.delete_selected()
         elif command == 'pause':
             self.context_wrapper.toggle_pause()
-        """
     
     def resize(self, width, height):
         super().resize(width, height)
