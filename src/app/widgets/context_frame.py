@@ -148,6 +148,7 @@ class ContextFrame(widgets.Frame):
         draw.draw_axes()
         for obj in self.context_wrapper.get_objects():
             draw.draw_object(obj)
+        self.draw_overlayer()
     
     def draw(self):
         self.update_viewport()
