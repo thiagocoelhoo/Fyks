@@ -26,6 +26,15 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def get_mode(self):
         return self._mode
 
+    def get_selection_area(self):
+        return self._selection_area
+
+    def set_selection_area(self, x1, y1, x2, y2):
+        if x1 - x2 == 0 or y1 - y2 == 0:
+            self.select_area = None
+        else:
+            self._selection_area = (x1, y1, x2, y2)
+    
     def set_select_mode(self):
         self._mode = SELECT_MODE
 
