@@ -12,7 +12,7 @@ from constants import *
 class ContextFrame(widgets.Frame):
     def __init__(self, x, y, w, h):
         super().__init__(x, y, w, h)
-        self.context_wrapper = ContextWrapper(self.width, self.height)
+        self.ctx_wrapper = ContextWrapper(self.width, self.height)
         self.mouse_handler = handlers.CustomMouseHandler()
         self.mouse_handler.on_double_click = self.on_double_click
 
@@ -48,15 +48,15 @@ class ContextFrame(widgets.Frame):
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
             if scroll_y > 0:
-                self.context_wrapper.zoom_in(x, y)
+                self.ctx_wrapper.zoom_in(x, y)
             elif scroll_y < 0:
-                self.context_wrapper.zoom_out(x, y)
+                self.ctx_wrapper.zoom_out(x, y)
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
         """
         if self.pressed:
-            self.context_wrapper.on_mouse_press(
+            self.ctx_wrapper.on_mouse_press(
                 x=x - self.global_position[0], 
                 y=y - self.global_position[1], 
                 button=button, 
@@ -66,13 +66,13 @@ class ContextFrame(widgets.Frame):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
         if self.pressed:
-            self.context_wrapper.move_camera(-dx,-dy)
+            self.ctx_wrapper.move_camera(-dx,-dy)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
         self.mouse_handler.on_mouse_release(x, y, button, modifiers)
         """
-        self.context_wrapper.on_mouse_release(
+        self.ctx_wrapper.on_mouse_release(
             x=x - self.global_position[0], 
             y=y - self.global_position[1], 
             button=button, 
@@ -84,15 +84,15 @@ class ContextFrame(widgets.Frame):
     
     def on_double_click(self, x, y, button, modifiers):
         """
-        self.context_wrapper.select_closer(
+        self.ctx_wrapper.select_closer(
             x=x - self.global_position[0], 
             y=y - self.global_position[1])
         
-        if self.context_wrapper.selected:
+        if self.ctx_wrapper.selected:
             self.edit_object_window.show()
             self.edit_object_window.x = x
             self.edit_object_window.top = y
-            target = self.context_wrapper.selected[0]
+            target = self.ctx_wrapper.selected[0]
             self.edit_object_window.set_target(target)
         """
     
@@ -110,25 +110,25 @@ class ContextFrame(widgets.Frame):
         elif command == 'add force':
             self.add_force_window.show()
         elif command == 'move object':
-            self.context_wrapper.set_move_mode()
+            self.ctx_wrapper.set_move_mode()
         elif command == 'home':
-            self.context_wrapper.camera_to_home()
+            self.ctx_wrapper.camera_to_home()
         elif command == 'delete':
-            self.context_wrapper.delete_selected()
+            self.ctx_wrapper.delete_selected()
         elif command == 'pause':
-            self.context_wrapper.toggle_pause()
+            self.ctx_wrapper.toggle_pause()
     
     def resize(self, width, height):
         super().resize(width, height)
-        self.context_wrapper.resize(int(width), int(height))
+        self.ctx_wrapper.resize(int(width), int(height))
         self.timeline.resize(width - 20, 20)
     
     def draw_overlayer(self):
-        camera = self.context_wrapper.get_camera()
-        ctx_mode = self.context_wrapper.get_mode()
+        camera = self.ctx_wrapper.get_camera()
+        ctx_mode = self.ctx_wrapper.get_mode()
         zoom = camera.zoom
 
-        for obj in self.context_wrapper.get_selected():
+        for obj in self.ctx_wrapper.get_selected():
             if camera.collide(obj):
                 pos = obj.position * zoom
                 objx = int(pos[0] + camera.centerx)
@@ -141,13 +141,13 @@ class ContextFrame(widgets.Frame):
         
         # Draw ruler
         if ctx_mode == RULER_MODE:
-            if self.context_wrapper._ruler is not None:
-                draw.draw_ruler(*self.context_wrapper._ruler)
+            if self.ctx_wrapper._ruler is not None:
+                draw.draw_ruler(*self.ctx_wrapper._ruler)
     
     def draw_ctx(self):
         draw.draw_grid()
         draw.draw_axes()
-        for obj in self.context_wrapper.get_objects():
+        for obj in self.ctx_wrapper.get_objects():
             draw.draw_object(obj)
         self.draw_overlayer()
     
@@ -161,4 +161,4 @@ class ContextFrame(widgets.Frame):
 
     def update(self, dt):
         super().update(dt)
-        self.context_wrapper.update(dt)
+        self.ctx_wrapper.update(dt)
