@@ -54,19 +54,31 @@ class ContextFrame(widgets.Frame):
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
-        """
+    
         if self.pressed:
-            self.ctx_wrapper.on_mouse_press(
-                x=x - self.global_position[0], 
-                y=y - self.global_position[1], 
-                button=button, 
-                modifiers=modifiers)
-        """
+            mode = self.ctx_wrapper.get_mode()
+            cam = self.ctx_wrapper.get_camera()
+            x_, y_ = cam.get_absolute_position(x, y)
+
+            if button == mouse.LEFT:    
+                if mode == SELECT_MODE:
+                    self.ctx_wrapper.set_selection_area(x, y, x, y)
+                elif mode == RULER_MODE:
+                    self.ctx_wrapper.set_ruler(x_, y_, x_, y_)
             
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
         if self.pressed:
-            self.ctx_wrapper.move_camera(-dx,-dy)
+            if buttons == mouse.LEFT:
+                mode = self.ctx_wrapper.get_mode()
+                if mode == SELECT_MODE:
+                    pass
+                elif mode == RULER_MODE:
+                    pass
+                elif mode == MOVE_MODE:
+                    pass
+            elif buttons == mouse.RIGHT:
+                self.ctx_wrapper.move_camera(-dx,-dy)
     
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
