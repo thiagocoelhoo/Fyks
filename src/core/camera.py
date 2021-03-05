@@ -44,6 +44,17 @@ class Camera:
     def get_active(cls):
         return cls._active
     
+    def get_absolute_position(self, x, y):
+        """
+        Returns the absolute position of (x, y)
+        """
+        
+        position = (
+            (x - self.centerx) / self.zoom,
+            (y - self.centery) / self.zoom
+        )
+        return position
+    
     def set_active(self):
         self.__class__._active = self
     
