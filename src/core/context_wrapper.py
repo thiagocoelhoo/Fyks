@@ -17,6 +17,15 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._selection_area = None
         self._frames = []
 
+    def get_ruler(self):
+        return self._ruler
+    
+    def set_ruler(self, *args):
+        self._ruler = args
+
+    def get_objects(self):
+        return self._context._objects
+
     def get_camera(self):
         return self._camera
     
@@ -110,9 +119,6 @@ class ContextWrapper(metaclass=singleton.Singleton):
     
     def camera_to_home(self):
         self._camera.to_home()
-
-    def get_objects(self):
-        return self._context._objects
 
     def update(self, dt):
         if self._running:
