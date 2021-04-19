@@ -50,7 +50,7 @@ class AddForceWindow(widgets.Subwindow):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
 
-        for rb in ctx_wrapper.selected:
+        for rb in ctx_wrapper.get_selected():
             rb.add_force(x, y)
 
         self.close()
