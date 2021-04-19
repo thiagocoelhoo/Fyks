@@ -69,7 +69,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
         min_dist = 20 * self._camera.zoom
         closer = None
         
-        for obj in self._objects:
+        for obj in self._context._objects:
             dist_x = point_x - obj.position[0]
             dist_y = point_y - obj.position[1]
             dist = (dist_x*dist_x + dist_y*dist_y)**0.5
