@@ -18,6 +18,12 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._ruler = (0, 0, 0, 0)
         self._selection_area = (0, 0, 0, 0)
         self._frames = []
+    
+    def get_data(self):
+        return self._context._get_objects_data()
+
+    def set_data(self, data):
+        self._context._set_objects_data(data)
 
     def get_ruler(self):
         return self._ruler
@@ -134,4 +140,4 @@ class ContextWrapper(metaclass=singleton.Singleton):
 
     def update(self, dt):
         if self._running:
-            self._update(dt)
+            self._context._update(dt)
