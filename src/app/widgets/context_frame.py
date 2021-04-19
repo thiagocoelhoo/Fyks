@@ -102,14 +102,6 @@ class ContextFrame(widgets.Frame):
                 if mode == SELECT_MODE:
                     self.ctx_wrapper.select_area()
                     self.ctx_wrapper.set_selection_area(0, 0, 0, 0)
-
-        """
-        self.ctx_wrapper.on_mouse_release(
-            x=x - self.global_position[0], 
-            y=y - self.global_position[1], 
-            button=button, 
-            modifiers=modifiers)
-        """
     
     def on_mouse_motion(self, x, y, dx, dy):
         self.mouse_handler.on_mouse_motion(x, y, dx, dy)
