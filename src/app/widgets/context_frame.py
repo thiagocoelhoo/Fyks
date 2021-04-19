@@ -88,7 +88,7 @@ class ContextFrame(widgets.Frame):
                     x1, y1, x2, y2 = self.ctx_wrapper.get_ruler()
                     self.ctx_wrapper.set_ruler(x1, y1, x_, y_)
                 elif mode == MOVE_MODE:
-                    pass
+                    self.ctx_wrapper.move_selected(dx, dy)
             elif buttons == mouse.RIGHT:
                 self.ctx_wrapper.move_camera(-dx,-dy)
     
