@@ -13,7 +13,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._running = False
         self._mode = SELECT_MODE
         self._selected = []
-        self._ruler = None
+        self._ruler = (0, 0, 0, 0)
         self._selection_area = (0, 0, 0, 0)
         self._frames = []
 
