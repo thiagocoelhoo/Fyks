@@ -112,7 +112,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._camera.y += dy
 
     def move_selected(self, x, y):
-        for obj in self.selected:
+        for obj in self.get_selected():
             obj.position += (x, y)
 
     def toggle_pause(self):
