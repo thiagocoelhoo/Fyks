@@ -23,7 +23,7 @@ def draw_circle(x, y, r, color, mode=gl.GL_LINE_LOOP, resolution=32):
 
 def draw_grid():
     camera = Camera.get_active()
-    size = int(30 * camera.zoom)
+    size = int(20 * camera.zoom)
     if size > 0:
         gl.glColor3f(*colors.CONTEXT_GRID_COLOR)
         gu.draw_grid(
