@@ -174,6 +174,7 @@ class ContextFrame(widgets.Frame):
         draw.draw_axes()
         for obj in self.ctx_wrapper.get_objects():
             draw.draw_object(obj)
+            draw.draw_path(obj)
         self.draw_overlayer()
     
     def draw(self):
