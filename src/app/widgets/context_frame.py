@@ -54,7 +54,9 @@ class ContextFrame(widgets.Frame):
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
-    
+        x -= self.x
+        y -= self.y
+
         if self.pressed:
             mode = self.ctx_wrapper.get_mode()
             cam = self.ctx_wrapper.get_camera()
@@ -65,14 +67,20 @@ class ContextFrame(widgets.Frame):
                     self.ctx_wrapper.set_selection_area(x, y, x, y)
                 elif mode == RULER_MODE:
                     self.ctx_wrapper.set_ruler(x_, y_, x_, y_)
+                elif mode == MOVE_MODE:
+                    pass
             
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         super().on_mouse_drag(x, y, dx, dy, buttons, modifiers)
+        x -= self.x
+        y -= self.y
+
         if self.pressed:
             if buttons == mouse.LEFT:
                 mode = self.ctx_wrapper.get_mode()
                 if mode == SELECT_MODE:
-                    pass
+                    x1, y1, x2, y2 = self.ctx_wrapper.get_selection_area()
+                    self.ctx_wrapper.set_selection_area(x1, y1, x, y)
                 elif mode == RULER_MODE:
                     pass
                 elif mode == MOVE_MODE:
@@ -83,6 +91,14 @@ class ContextFrame(widgets.Frame):
     def on_mouse_release(self, x, y, button, modifiers):
         super().on_mouse_release(x, y, button, modifiers)
         self.mouse_handler.on_mouse_release(x, y, button, modifiers)
+
+        if self.pressed:
+            if button == mouse.LEFT:
+                mode = self.ctx_wrapper.get_mode()
+                if mode == SELECT_MODE:
+                    self.ctx_wrapper.select_area()
+                    self.ctx_wrapper.set_selection_area(0, 0, 0, 0)
+
         """
         self.ctx_wrapper.on_mouse_release(
             x=x - self.global_position[0], 
@@ -149,12 +165,14 @@ class ContextFrame(widgets.Frame):
         
         # Draw selection area
         if ctx_mode == SELECT_MODE:
-            pass
+            x1, y1, x2, y2 = self.ctx_wrapper.get_selection_area()
+            if x1 != x2 and y1 != y2:
+                draw.draw_select_area(x1, y1, x2, y2)
         
         # Draw ruler
         if ctx_mode == RULER_MODE:
-            if self.ctx_wrapper._ruler is not None:
-                draw.draw_ruler(*self.ctx_wrapper._ruler)
+            if self.ctx_wrapper.get_ruler() is not None:
+                draw.draw_ruler(*self.ctx_wrapper.get_ruler())
     
     def draw_ctx(self):
         draw.draw_grid()
