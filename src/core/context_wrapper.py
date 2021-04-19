@@ -1,3 +1,5 @@
+import pyglet
+
 from .context import Context
 from utils import singleton
 from core.camera import Camera
@@ -43,12 +45,21 @@ class ContextWrapper(metaclass=singleton.Singleton):
 
     def set_select_mode(self):
         self._mode = SELECT_MODE
+        window = tuple(pyglet.app.windows)[0]
+        cursor = window.get_system_mouse_cursor(window.CURSOR_DEFAULT)
+        window.set_mouse_cursor(cursor)
 
     def set_move_mode(self):
         self._mode = MOVE_MODE
+        window = tuple(pyglet.app.windows)[0]
+        cursor = window.get_system_mouse_cursor(window.CURSOR_SIZE)
+        window.set_mouse_cursor(cursor)
 
     def set_ruler_mode(self):
         self._mode = RULER_MODE
+        window = tuple(pyglet.app.windows)[0]
+        cursor = window.get_system_mouse_cursor(window.CURSOR_CROSSHAIR)
+        window.set_mouse_cursor(cursor)
     
     def resize(self, w, h):
         self._camera.w = w
