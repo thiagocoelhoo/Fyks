@@ -99,9 +99,13 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def zoom_out(self, x, y):
         if self._camera.zoom > 0.05:
             self._camera.zoom *= 10/11
+            self._camera.x *= 10/11
+            self._camera.y *= 10/11
     
     def zoom_in(self, x, y):
-        self._camera.zoom *= 11/10    
+        self._camera.zoom *= 11/10
+        self._camera.x *= 11/10  
+        self._camera.y *= 11/10
     
     def move_camera(self, dx, dy):
         self._camera.x += dx
