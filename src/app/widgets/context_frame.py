@@ -78,12 +78,14 @@ class ContextFrame(widgets.Frame):
         if self.pressed:
             if buttons == mouse.LEFT:
                 mode = self.ctx_wrapper.get_mode()
+                cam = self.ctx_wrapper.get_camera()
+                x_, y_ = cam.get_relative_position(x, y)
+
                 if mode == SELECT_MODE:
                     x1, y1, x2, y2 = self.ctx_wrapper.get_selection_area()
                     self.ctx_wrapper.set_selection_area(x1, y1, x, y)
                 elif mode == RULER_MODE:
                     x1, y1, x2, y2 = self.ctx_wrapper.get_ruler()
-                    x_, y_ = cam.get_relative_position(x, y)
                     self.ctx_wrapper.set_ruler(x1, y1, x_, y_)
                 elif mode == MOVE_MODE:
                     pass
