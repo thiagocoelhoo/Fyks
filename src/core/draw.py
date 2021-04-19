@@ -122,8 +122,8 @@ def draw_ruler(x1, y1, x2, y2):
         font_size=12,
         color=(255, 255, 255, 200))
     label.text = f'{size:.2f}m'
-    label.x = (x1 + x2) // 2
-    label.y = (y1 + y2) // 2
+    label.x = (vx1 + vx2) // 2
+    label.y = (vy1 + vy2) // 2
     label.draw()
 
 
