@@ -115,18 +115,16 @@ class ContextFrame(widgets.Frame):
         self.mouse_handler.on_mouse_motion(x, y, dx, dy)
     
     def on_double_click(self, x, y, button, modifiers):
-        """
         self.ctx_wrapper.select_closer(
             x=x - self.global_position[0], 
             y=y - self.global_position[1])
         
-        if self.ctx_wrapper.selected:
+        selected = self.ctx_wrapper.get_selected()
+        if selected:
             self.edit_object_window.show()
             self.edit_object_window.x = x
             self.edit_object_window.top = y
-            target = self.ctx_wrapper.selected[0]
-            self.edit_object_window.set_target(target)
-        """
+            self.edit_object_window.set_target(selected[0])
     
     def on_key_press(self, symbol, modifiers):
         super().on_key_press(symbol, modifiers)
