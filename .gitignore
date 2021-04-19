@@ -3,3 +3,5 @@ venv/*
 dist/
 build/
 .vscode/settings.json
+*.pyd
+*.so
