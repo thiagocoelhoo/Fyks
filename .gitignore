@@ -5,3 +5,5 @@ build/
 .vscode/settings.json
 *.pyd
 *.so
+src/graphicutils.cpython-38-x86_64-linux-gnu.so
+src/graphicutils.cp38-win_amd64.pyd
