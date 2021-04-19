@@ -44,9 +44,9 @@ class Camera:
     def get_active(cls):
         return cls._active
     
-    def get_absolute_position(self, x, y):
+    def get_relative_position(self, x, y):
         """
-        Returns the absolute position of (x, y)
+        Returns the relative position of (x, y)
         """
         
         position = (
