@@ -14,7 +14,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
         self._mode = SELECT_MODE
         self._selected = []
         self._ruler = None
-        self._selection_area = None
+        self._selection_area = (0, 0, 0, 0)
         self._frames = []
 
     def get_ruler(self):
@@ -39,11 +39,8 @@ class ContextWrapper(metaclass=singleton.Singleton):
         return self._selection_area
 
     def set_selection_area(self, x1, y1, x2, y2):
-        if x1 - x2 == 0 or y1 - y2 == 0:
-            self.select_area = None
-        else:
-            self._selection_area = (x1, y1, x2, y2)
-    
+        self._selection_area = (x1, y1, x2, y2)
+
     def set_select_mode(self):
         self._mode = SELECT_MODE
 
@@ -92,7 +89,7 @@ class ContextWrapper(metaclass=singleton.Singleton):
             y1, y2 = sorted((y1, y2))
             
             zoom = self._camera.zoom
-            for obj in self._objects:
+            for obj in self._context._objects:
                 pos = obj.position * zoom
                 x = pos[0] + self._camera.centerx
                 y = pos[1] + self._camera.centery
