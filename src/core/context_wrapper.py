@@ -96,13 +96,13 @@ class ContextWrapper(metaclass=singleton.Singleton):
                 if x1 < x < x2 and y1 < y < y2:
                     self._selected.append(obj)
 
-    def zoom_out(self, x, y):
+    def zoom_out(self):
         if self._camera.zoom > 0.05:
             self._camera.zoom *= 10/11
             self._camera.x *= 10/11
             self._camera.y *= 10/11
     
-    def zoom_in(self, x, y):
+    def zoom_in(self):
         self._camera.zoom *= 11/10
         self._camera.x *= 11/10  
         self._camera.y *= 11/10

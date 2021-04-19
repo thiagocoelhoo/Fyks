@@ -48,9 +48,9 @@ class ContextFrame(widgets.Frame):
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         if self.pressed:
             if scroll_y > 0:
-                self.ctx_wrapper.zoom_in(x, y)
+                self.ctx_wrapper.zoom_in()
             elif scroll_y < 0:
-                self.ctx_wrapper.zoom_out(x, y)
+                self.ctx_wrapper.zoom_out()
     
     def on_mouse_press(self, x, y, button, modifiers): 
         super().on_mouse_press(x, y, button, modifiers)
