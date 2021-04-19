@@ -60,7 +60,7 @@ class ContextFrame(widgets.Frame):
         if self.pressed:
             mode = self.ctx_wrapper.get_mode()
             cam = self.ctx_wrapper.get_camera()
-            x_, y_ = cam.get_absolute_position(x, y)
+            x_, y_ = cam.get_relative_position(x, y)
 
             if button == mouse.LEFT:    
                 if mode == SELECT_MODE:
@@ -82,7 +82,9 @@ class ContextFrame(widgets.Frame):
                     x1, y1, x2, y2 = self.ctx_wrapper.get_selection_area()
                     self.ctx_wrapper.set_selection_area(x1, y1, x, y)
                 elif mode == RULER_MODE:
-                    pass
+                    x1, y1, x2, y2 = self.ctx_wrapper.get_ruler()
+                    x_, y_ = cam.get_relative_position(x, y)
+                    self.ctx_wrapper.set_ruler(x1, y1, x_, y_)
                 elif mode == MOVE_MODE:
                     pass
             elif buttons == mouse.RIGHT:
@@ -171,8 +173,9 @@ class ContextFrame(widgets.Frame):
         
         # Draw ruler
         if ctx_mode == RULER_MODE:
-            if self.ctx_wrapper.get_ruler() is not None:
-                draw.draw_ruler(*self.ctx_wrapper.get_ruler())
+            x1, y1, x2, y2 = self.ctx_wrapper.get_ruler()
+            if x1 != x2 and y1 != y2:
+                draw.draw_ruler(x1, y1, x2, y2)
     
     def draw_ctx(self):
         draw.draw_grid()
