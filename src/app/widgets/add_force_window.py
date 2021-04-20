@@ -1,7 +1,7 @@
 from ui import widgets
 from core import context_wrapper
 
-wrapper = context_wrapper.ContextWrapper(0, 0)
+ctx_wrapper = context_wrapper.ContextWrapper(0, 0)
 
 
 class AddForceWindow(widgets.Subwindow):
@@ -50,7 +50,7 @@ class AddForceWindow(widgets.Subwindow):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
 
-        for rb in wrapper.selected:
+        for rb in ctx_wrapper.get_selected():
             rb.add_force(x, y)
 
         self.close()

@@ -28,16 +28,18 @@ void draw_grid(const int width, const int height, const int cam_x, const int cam
     int origin_y = MIN(height, cam_y);
     int top = pos_y + height;
     int right = pos_x + width;
+    int columns = (width - origin_x) / size;
+    int rows = (height - origin_y) / size;
 
     glBegin(GL_LINES);
-    for (int i = -cam_x / size; i < (width - origin_x) / size; ++i)
+    for (int i = -cam_x / size; i <= columns; ++i)
     {
         int x = i * size + cam_x;
         glVertex2d(x + pos_x, pos_y);
         glVertex2d(x + pos_x, top);
     }
     
-    for (int i = -cam_y / size; i < (height - origin_y) / size; ++i)
+    for (int i = -cam_y / size; i <= rows; ++i)
     {
         int y = i * size + cam_y;
         glVertex2d(pos_x, y + pos_y);

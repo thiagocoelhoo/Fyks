@@ -2,6 +2,7 @@ import pyglet
 
 import app
 from ui import widgets
+from app import update
 
 
 class Interface(widgets.Frame):
@@ -26,6 +27,10 @@ class Interface(widgets.Frame):
         )
         menu.add_button('Editar', None)
         menu.add_button('Ajuda', None)
+        if update.check_updates():
+            menu.add_button('Atualizar', update.update)
+            button = menu.elements[-1]
+            button.label.lab.color = (255, 50, 10, 255)
         menu.z_index = 1
         
         overlayer = widgets.Layer(0, 0, self.width, self.height)
@@ -40,13 +45,13 @@ class Interface(widgets.Frame):
         toolbox = app.widgets.ToolBox()
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/cursor_icon.png'),
-            command=context_frame.context_wrapper.set_select_mode)
+            command=context_frame.ctx_wrapper.set_select_mode)
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/move_icon.png'),
-            command=context_frame.context_wrapper.set_move_mode)
+            command=context_frame.ctx_wrapper.set_move_mode)
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/ruler_icon.png'), 
-            command=context_frame.context_wrapper.set_ruler_mode)
+            command=context_frame.ctx_wrapper.set_ruler_mode)
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/add_object_icon.png'), 
             command=context_frame.add_object_window.show)

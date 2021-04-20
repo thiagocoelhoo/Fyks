@@ -48,7 +48,7 @@ class AddRigidbodyWindow(widgets.Subwindow):
     def submit(self):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
-        self.parent.context_wrapper.add_object(
+        self.parent.ctx_wrapper.add_object(
             position=(x, y),
             velocity=(0, 0),
             acceleration=(0, 0),

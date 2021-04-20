@@ -82,10 +82,10 @@ class Timeline(widgets.Layout):
     def set_frame(self, frame):
         if -1 < frame < len(self.frames):
             self.frame = frame
-            ctx_wrapper._set_objects_data(self.frames[frame])
+            ctx_wrapper.set_data(self.frames[frame])
     
     def write_frame(self):
-        self.frames.append(tuple(ctx_wrapper._get_objects_data()))
+        self.frames.append(tuple(ctx_wrapper.get_data()))
     
     def resize(self, width, height):
         super().resize(width, height)
