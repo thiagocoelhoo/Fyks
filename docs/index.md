@@ -9,4 +9,4 @@ Binários para windows(64bit): <a href="https://github.com/Rabbithy/Fyks/release
 Binários para windows(64bit): <a href="https://github.com/Rabbithy/Fyks/releases/download/v2.1.0-alpha/Fyks_win_64bit.zip">Fyks 2.1.0-alpha.zip</a>[23MB]
 # Contatos e redes sociais
 E-mail: fyks.simulator@gmail.com<br>
-Instagram: https://www.instagram.com/fyks.simulator/
+Instagram: <a href="https://www.instagram.com/fyks.simulator/">@fyks.simulator</a>
