@@ -11,9 +11,23 @@ class Interface(widgets.Frame):
         self.init_ui()
     
     def init_ui(self):
-        layout = widgets.Layout(0, 0, self.width, self.height)
+        main_layout = widgets.Layout(0, 0, self.width, self.height)
+        menu, overlayer = self.create_menu()
+        
+        content_layout = widgets.Layout(0, 0, 1, 1, orientation='vertical')
+        context_frame = app.widgets.ContextFrame(0, 0, 1, 1)
+        toolbox = self.create_toolbox(context_frame)
+        
+        content_layout.add(toolbox)
+        content_layout.add(context_frame)
+        
+        main_layout.add(menu)
+        main_layout.add(content_layout)
 
-        # Menu
+        self.add(main_layout)
+        self.add(overlayer)
+    
+    def create_menu(self):
         file_dialog = app.utils.FileDialog()
         
         menu = widgets.Menu()
@@ -37,12 +51,11 @@ class Interface(widgets.Frame):
         overlayer.z_index = 1
         overlayer.add(dropdown)
 
-        # Context
-        content_layout = widgets.Layout(0, 0, 1, 1, orientation='vertical')
-        context_frame = app.widgets.ContextFrame(0, 0, 1, 1)
-        
-        # Toolbox
+        return menu, overlayer
+    
+    def create_toolbox(self, context_frame):
         toolbox = app.widgets.ToolBox()
+    
         toolbox.add_tool_bt(
             icon=pyglet.image.load('assets/cursor_icon.png'),
             command=context_frame.ctx_wrapper.set_select_mode)
@@ -59,16 +72,8 @@ class Interface(widgets.Frame):
             icon=pyglet.image.load('assets/add_force_icon.png'), 
             command=context_frame.add_force_window.show)
         
-        # Add
-        content_layout.add(toolbox)
-        content_layout.add(context_frame)
-
-        layout.add(menu)
-        layout.add(content_layout)
-
-        self.add(layout)
-        self.add(overlayer)
-
+        return toolbox
+    
     def on_resize(self, w, h):
         self.resize(w, h)
         for widget in self.elements:
