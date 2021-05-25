@@ -3,8 +3,7 @@ from pyglet import gl
 
 import app
 import graphicutils as gu
-from core import draw
-from ui import widgets, elements, handlers
+from ui import widgets, handlers
 from core.context_wrapper import ContextWrapper
 from constants import *
 
@@ -145,44 +144,12 @@ class ContextFrame(widgets.Frame):
         self.ctx_wrapper.resize(int(width), int(height))
         self.timeline.resize(width - 20, 20)
     
-    def draw_overlayer(self):
-        camera = self.ctx_wrapper.get_camera()
-        ctx_mode = self.ctx_wrapper.get_mode()
-        zoom = camera.zoom
-
-        for obj in self.ctx_wrapper.get_selected():
-            if camera.collide(obj):
-                pos = obj.position * zoom
-                objx = int(pos[0] + camera.centerx)
-                objy = int(pos[1] + camera.centery)
-                draw.draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
-        
-        # Draw selection area
-        if ctx_mode == SELECT_MODE:
-            x1, y1, x2, y2 = self.ctx_wrapper.get_selection_area()
-            if x1 != x2 and y1 != y2:
-                draw.draw_select_area(x1, y1, x2, y2)
-        
-        # Draw ruler
-        if ctx_mode == RULER_MODE:
-            x1, y1, x2, y2 = self.ctx_wrapper.get_ruler()
-            if x1 != x2 and y1 != y2:
-                draw.draw_ruler(x1, y1, x2, y2)
-    
-    def draw_ctx(self):
-        draw.draw_grid()
-        draw.draw_axes()
-        for obj in self.ctx_wrapper.get_objects():
-            draw.draw_object(obj)
-            draw.draw_path(obj)
-        self.draw_overlayer()
-    
     def draw(self):
         self.update_viewport()
         gl.glColor3f(*app.colors.CONTEXT_BACKGROUND_COLOR)
         gu.draw_rect(0, 0, self.width, self.height, gl.GL_QUADS)
         
-        self.draw_ctx()
+        self.ctx_wrapper.draw_ctx()
         self.draw_widgets()
 
     def update(self, dt):

@@ -1,9 +1,10 @@
 import pyglet
 
-from .context import Context
+from core.context import Context
 from utils import singleton
 from core.camera import Camera
 from core.rigidbody import RigidBody
+from core import draw
 from constants import *
 
 
@@ -138,6 +139,38 @@ class ContextWrapper(metaclass=singleton.Singleton):
     def camera_to_home(self):
         self._camera.to_home()
 
+    def draw_overlayer(self):
+        camera = self.get_camera()
+        mode = self.get_mode()
+        zoom = camera.zoom
+
+        for obj in self.get_selected():
+            if camera.collide(obj):
+                pos = obj.position * zoom
+                objx = int(pos[0] + camera.centerx)
+                objy = int(pos[1] + camera.centery)
+                draw.draw_circle(objx, objy, 25 * zoom, (1, 0.2, 0.2, 1))
+        
+        # Draw selection area
+        if mode == SELECT_MODE:
+            x1, y1, x2, y2 = self.get_selection_area()
+            if x1 != x2 and y1 != y2:
+                draw.draw_select_area(x1, y1, x2, y2)
+        
+        # Draw ruler
+        if mode == RULER_MODE:
+            x1, y1, x2, y2 = self.get_ruler()
+            if x1 != x2 and y1 != y2:
+                draw.draw_ruler(x1, y1, x2, y2)
+    
+    def draw_ctx(self):
+        draw.draw_grid()
+        draw.draw_axes()
+        for obj in self.get_objects():
+            draw.draw_object(obj)
+            draw.draw_path(obj)
+        self.draw_overlayer()
+    
     def update(self, dt):
         if self._running:
             self._context._update(dt)
