@@ -1,8 +1,6 @@
 from ui import widgets
 from core import context_wrapper
 
-ctx_wrapper = context_wrapper.ContextWrapper(0, 0)
-
 
 class AddForceWindow(widgets.Subwindow):
     def __init__(self, parent):
@@ -49,6 +47,8 @@ class AddForceWindow(widgets.Subwindow):
     def submit(self):
         x = self.entry_x.get_value()
         y = self.entry_y.get_value()
+        
+        ctx_wrapper = context_wrapper.ContextWrapper.get()
 
         for rb in ctx_wrapper.get_selected():
             rb.add_force(x, y)
