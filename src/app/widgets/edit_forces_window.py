@@ -1,7 +1,4 @@
 from ui import widgets
-from core import context_wrapper
-
-wrapper = context_wrapper.ContextWrapper(0, 0)
 
 
 class EditForcesWindow(widgets.Subwindow):

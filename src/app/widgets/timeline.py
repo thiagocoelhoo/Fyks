@@ -3,14 +3,11 @@ from pyglet.window import key
 
 from app import colors
 from ui import widgets
-from core.context_wrapper import ContextWrapper
 from constants import *
 
 pause_icon = pyglet.image.load('assets/pause_icon.png')
 play_icon = pyglet.image.load('assets/play_icon.png')
 rec_icon = pyglet.image.load('assets/rec_icon.png')
-
-ctx_wrapper = ContextWrapper(0, 0)
 
 
 class Timeline(widgets.Layout):

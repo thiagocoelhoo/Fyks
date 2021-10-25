@@ -1,7 +1,4 @@
-import pyglet
-
 from ui import widgets
-from core.rigidbody import RigidBody
 from app import colors
 from constants import *
 
